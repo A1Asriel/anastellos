@@ -1,0 +1,124 @@
+{
+    "__meta__": {
+        "lang_name": "German",
+        "lang_name_native": "Deutsch",
+        "aliases": ["de", "ge", "ger", "german", "deutsch"],
+        "yes": ["yes [TRANSLATE ME]", "true [TRANSLATE ME]", "on [TRANSLATE ME]"],
+        "no": ["no [TRANSLATE ME]", "false [TRANSLATE ME]", "off [TRANSLATE ME]"]
+    },
+    "anastellos": {
+        "info": {
+            "about": {
+                "desc": "[Bot description]\n\n> *Benutze `{prefix}help` um Informationen zu den meisten Befehlen zu erhalten.*",
+                "indev": "\n\nDer Bot operiert in INDEV modus. Das heißt einige Fehler könnten auftreten. Wir raten davon ab ihn zu benutzen bis die Wartungen abgeschlossen sind.",
+                "anastellos": "Powered by Anastellos Engine [TRANSLATE ME]",
+                "creator": "Bot kreiert von {creator}"
+            },
+            "help": {
+                "title": "Verfügbare Befehle",
+                "desc": "*`[argument=X]` - ein optionales Argument. wenn es nicht von dir gegeben wurde - wird es standartmäßing X sein.*\n*`<argument>` heißst das es benötigt wird.*",
+                "usage": "**Befehlverwendung:**",
+                "description": "**Beschreibung:**",
+                "extra": "**Extra:**",
+                "commands": {
+                    "help": {
+                        "desc": "Zeigt diese Nachricht an."
+                    },
+                    "about": {
+                        "desc": "Zeigt die Information zum Bot."
+                    },
+                    "ping": {
+                        "desc": "gibt die Ping zurück. Du kannst dies benutzen, um zu überprüfen das der Bot funktioniert."
+                    },
+                    "settings": {
+                        "desc": "Zeigt die konfiguration für den Server an. Nur Admins haben die erlaubnis diesen Befehl und alle Unterbefehle zu benutzen."
+                    },
+                    "prefix": {
+                        "desc": "ändert den Prefix vom Bot für diesen Server. Leeres Argument setzt die Einstellung zu `!` zurück.",
+                        "args": {
+                            "new_prefix": "neuer Prefix"
+                        }
+                    },
+                    "language": {
+                        "desc": "Ändert die Sprache vom Bot für diesen Server.",
+                        "extra": "Verfügbare Sprachen: `en`, `ru`, `de` (verwaltet von Zero), `qps-ploc`",
+                        "args": {
+                            "new_lang": "Neue Sprache"
+                        }
+                    },
+                    "leave": {
+                        "desc": "Entfernt den Bot mit oder ohne löschen der konfiguration vom Server. Nur Admins haben die Erlaubnis diesen Befehl auszufühern."
+                    }
+                }
+            }
+        },
+
+        "technical": {
+            "stop": "*Bot wird gestoppt...*",
+            "shutdown": {
+                "msg": "*Bot wird gestoppt und Host wird heruntergefahren...*",
+                "error_indev": "*Der Bot opperiert INDEV-Mode. Host shutdown ist nicht verfügbar.*"
+            },
+            "reload": {
+                "start": "*Neuinitialisierung gestartet...*",
+                "error": "*Beim Laden des {i} Moduls ist eine Ausnahme aufgetreten.*",
+                "success": "*Neuinitialisierung abgeschlossen.*"
+            },
+            "indev_notif": "\n> **WARNUNG! Der Bot opperiert in INDEV Mode. Bitte verwende diesen Modus nicht, wenn keine Tests laufen.**",
+            "error_stop_noperms": "*Nur Entwickler haben die erlaubnis den Bot herunterzufahren.*",
+            "error_reload_noperms": "*Nur Entwickler haben die erlaubnis den Bot neu zu laden.*"
+        },
+
+        "settings": {
+            "list": {
+                "title": "Server Präferenzen",
+                "prefix": "Prefix",
+                "lang": "Sprache",
+                "enabled": "**Aktiviert**",
+                "disabled": "**Deaktiviert**"
+            },
+            "prefix": {
+                "title": "Prefix erfolgreich geändert",
+                "desc": "Der neue Prefix: `{new_prefix}`."
+            },
+            "lang": {
+                "title": "Sprache vom Bot erfolgreich geändert",
+                "desc": "Der Bot wird ab jetzt Deutsch reden.\n*German translation made by Zero!*"
+            },
+            "leave": {
+                "title_msg": "{name} macht sich bereit zu gehen...",
+                "desc_msg": "Bist du sicher das der Bot gehen soll? wähle eine Option.\n\n leave - Der Bot wird gehen und entfernt nur seine Webhooks und deaktiviert den Protokollkanal.\nLeave and forget - wird auch jede Spur des Servers aus den Bot-Datenbanken entfernen.\nCancel - behalte den Bot.",
+                "ui": {
+                    "leave": {
+                        "label": "Leave",
+                        "title": "{name} hat den Server verlassen. Tschüss!",
+                        "desc": "Wir hoffen euch hat unser Bot gefallen! Und für den fall das du deine Meinung änderst, haben wir deine Konfiguration behalten damit wir normal weiterarbeiten können wenn du dich dazu entscheidest das wir zurückkommen können."
+                    },
+                    "purge": {
+                        "label": "Leave and forget",
+                        "title": "{name} hat den Server verlassen und jegliche ",
+                        "desc": "Wir hoffen euch hat unser Bot gefallen! Jegliche Daten über diesen Server wurden von unserem Server gelöscht damit du entspannt sein kannst über deine Privatsphäre. Falls du deine meinung änderst, kannst du denn Bot wieder auf den Server holen aber es könnte eine neukonfiguration nötig sein."
+                    },
+                    "cancel": {
+                        "label": "Cancel",
+                        "title": "Verlassen abgebrochen",
+                        "desc": "Der Bot bleibt auf dem Server. Wir werden dich nicht enttäuschen."
+                    }
+                }
+            }
+        },
+
+        "global_errors": {
+            "max_concurrency": "*Die maximale Anzahl an ausführbaren Befehlen werden gerade bearbeitet.*",
+            "channel_not_found": "*Es sieht so aus als gäbe es hier so einen Channel nicht.*",
+            "bad_argument": "*ungültige Argumente.*",
+            "insufficient_perms": "*Unzureichende Erlaubnis.*",
+            "bot_insufficient_perms": "*Der Bot hat nicht genug Rechte um diese Aktion zu vollführen.*",
+            "guild_admins_only": "*Du hast nicht die Erlaubnis um diesen Befehel auszuführen.*",
+            "missing_required_argument": "*Das erforderliche Argument fehlt. Überprüfe den Befehlsyntax.*",
+            "command_not_found": "*Der angegebene Befehl wurde nicht gefunden.*",
+            "forbidden": "*Tut mir Leid, Irgentwas lässt mich dies nicht tun.*"
+        }
+    },
+    "cmds": {}
+}

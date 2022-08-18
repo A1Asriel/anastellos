@@ -1,0 +1,124 @@
+{
+    "__meta__": {
+        "lang_name": "English",
+        "lang_name_native": "English",
+        "aliases": ["en", "eng", "english"],
+        "yes": ["yes", "y", "true", "on"],
+        "no": ["no", "n", "false", "off"]
+    },
+    "anastellos": {
+        "info": {
+            "about": {
+                "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the information about most commands.*",
+                "indev": "\n\nThe bot is operating in INDEV mode that means some bugs may appear. We recommend you to refrain from using it until the maintainance is complete.",
+                "anastellos": "Powered by Anastellos Engine",
+                "creator": "<> with ❤ by {creator}"
+            },
+            "help": {
+                "title": "Available commands",
+                "desc": "*`[argument=X]` - an optional argument. If it wasn't stated by you - it'll default to X.*\n*`<argument>` means that it is required.*",
+                "usage": "**Command usage:**",
+                "description": "**Description:**",
+                "extra": "**Extra:**",
+                "commands": {
+                    "help": {
+                        "desc": "Prints this message."
+                    },
+                    "about": {
+                        "desc": "Prints the info about the bot."
+                    },
+                    "ping": {
+                        "desc": "Returns the latency time. You may want to use that to check the bot working."
+                    },
+                    "settings": {
+                        "desc": "Prints the current server configuration. Only admins are allowed to use this command and every subcommand."
+                    },
+                    "prefix": {
+                        "desc": "Changes the bot prefix for this server. Empty argument resets the setting to `!`.",
+                        "args": {
+                            "new_prefix": "new prefix"
+                        }
+                    },
+                    "language": {
+                        "desc": "Changes the bot language for this server.",
+                        "extra": "Available languages: `en`, `ru`, `de` (maintained by Zero), `qps-ploc`",
+                        "args": {
+                            "new_lang": "new language"
+                        }
+                    },
+                    "leave": {
+                        "desc": "Properly remove the bot from your server with or without wiping the config. Only admins are allowed to use this command."
+                    }
+                }
+            }
+        },
+
+        "technical": {
+            "stop": "*Stopping the bot...*",
+            "shutdown": {
+                "msg": "*Stopping the bot and shutting down the host...*",
+                "error_indev": "*The bot is operating in INDEV mode. Host shutdown is unavailable.*"
+            },
+            "reload": {
+                "start": "*Reinitializing started...*",
+                "error": "*An exception occurred while loading {i} module.*",
+                "success": "*Reinitializing complete.*"
+            },
+            "indev_notif": "\n> **WARNING! The bot is operating in INDEV mode. Please refrain from using this mode if there are no tests running.**",
+            "error_stop_noperms": "*Only developer is allowed to shut down the bot.*",
+            "error_reload_noperms": "*Only developer is allowed to reload the bot.*"
+        },
+
+        "settings": {
+            "list": {
+                "title": "Server preferences",
+                "prefix": "Prefix",
+                "lang": "Language",
+                "enabled": "**enabled**",
+                "disabled": "**disabled**"
+            },
+            "prefix": {
+                "title": "Prefix changed successfully",
+                "desc": "The new prefix: `{new_prefix}`."
+            },
+            "lang": {
+                "title": "Bot language changed successfully",
+                "desc": "The bot will speak English from now on."
+            },
+            "leave": {
+                "title_msg": "{name} is preparing to leave...",
+                "desc_msg": "Are you sure you want the bot to leave? Choose an option below.\n\nLeave - the bot will leave and remove only its webhooks and deassign log channel.\nLeave and forget - will also remove every trail of the server from the bot databases.\nCancel - keep the bot.",
+                "ui": {
+                    "leave": {
+                        "label": "Leave",
+                        "title": "{name} left the server. Goodbye!",
+                        "desc": "We hope you enjoyed using our bot! Just in case you change your mind, we kept your configuration, so we can continue working just like before when you decide to let us come back."
+                    },
+                    "purge": {
+                        "label": "Leave and forget",
+                        "title": "{name} left and wiped data",
+                        "desc": "We hope you enjoyed using our bot! All data about your server was wiped from our servers, so you can stay calm and not worry about your privacy. In case if you change your mind about us leaving, you still can get the bot working again, although it may be required to reconfigure it."
+                    },
+                    "cancel": {
+                        "label": "Cancel",
+                        "title": "Leaving cancelled",
+                        "desc": "The bot is staying on the server. We won't disappoint you."
+                    }
+                }
+            }
+        },
+
+        "global_errors": {
+            "max_concurrency": "*The maximum amount of command instances is being processed right now.*",
+            "channel_not_found": "*It seems there is no such channel in this server.*",
+            "bad_argument": "*Bad arguments provided.*",
+            "insufficient_perms": "*Insufficient permissions.*",
+            "bot_insufficient_perms": "*The bot doesn't have enough permissions to complete this action.*",
+            "guild_admins_only": "*You don't have enough permissions to use this command.*",
+            "missing_required_argument": "*You have missed a required argument. Check the command usage syntax.*",
+            "command_not_found": "*The specified command not found.*",
+            "forbidden": "*Something won't let me do this, sorry.*"
+        }
+    },
+    "cmds": {}
+}

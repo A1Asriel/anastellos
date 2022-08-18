@@ -1,0 +1,5 @@
+ign_*
+__ign_*
+__pycache__
+/.vscode
+*.code-workspace
