@@ -23,8 +23,9 @@ class SimpleConfig:
             self.__setattr__(key, cfg[key])
 
     def __compileschema__(self):
-        self._schema = {key: self.__getattribute__(key) for key in self._def_schema.keys()}
-    
+        self._schema = {key: self.__getattribute__(
+            key) for key in self._def_schema.keys()}
+
     def __resetschema__(self):
         self._schema = self._def_schema
 
@@ -32,11 +33,13 @@ class SimpleConfig:
         with open(self._filename, 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
 
+
 class Config(SimpleConfig):
     def __init__(self, filename: str = 'cfg', *, additional_guild_params: dict[str] = {}, **kwargs):
         super().__init__(filename, **kwargs)
 
-        self.__settings = ('name', 'stage', 'mode', 'version', 'def_prefix', 'owner', 'anastellos_logo')
+        self.__settings = ('name', 'stage', 'mode', 'version',
+                           'def_prefix', 'owner', 'anastellos_logo')
 
         self.name: str = 'Anastellos Engine'
         self.stage = 'Release'
@@ -46,7 +49,8 @@ class Config(SimpleConfig):
         self.owner = 0
         self.anastellos_logo = 'https://cdn.discordapp.com/attachments/713481949896900622/992450921852313640/anastellos_engine_logo.png'
 
-        self._def_schema = {name: self.__getattribute__(name) for name in self.__settings}
+        self._def_schema = {name: self.__getattribute__(
+            name) for name in self.__settings}
         self._schema = self._def_schema
 
         self.__assignattrs__()
@@ -69,7 +73,8 @@ class Config(SimpleConfig):
                 continue
             self.lang_names.add(langn.removesuffix('.json'))
         if not self.lang_names:
-            print('[FATAL] No localization files found. The bot is unable to initialize.')
+            print(
+                '[FATAL] No localization files found. The bot is unable to initialize.')
             raise AnastellosInitError(__stage__='config')
 
         for arg, value in kwargs.items():

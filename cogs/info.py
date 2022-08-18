@@ -1,14 +1,16 @@
 import nextcord
 from nextcord.ext import commands
-from ..classes import AnastellosCog, AEEmbed
+
+from ..classes import AEEmbed, AnastellosCog
 from ..utils import *
 
 
 class Info(AnastellosCog):
-    @commands.command(aliases = ['info'])
+    @commands.command(aliases=['info'])
     @commands.guild_only()
     async def about(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['info']['about']
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['info']['about']
         title = f'{self.bot.config.name} {self.bot.config.full_version}'
         desc = l10n['desc'].format(prefix=get_prefix(self.bot, ctx.message))
         if self.bot.config.mode == 'indev':
@@ -40,7 +42,8 @@ class Info(AnastellosCog):
                 if len(patches) > 25:
                     self.page = page
                     self.max_page = len(patches) // 25 + 1
-                    self.add_item(SelectPatch(patches[25*(self.page - 1) : 25*self.page]))
+                    self.add_item(SelectPatch(
+                        patches[25*(self.page - 1): 25*self.page]))
                     self.add_item(PageControls('◀️', self))
                     self.add_item(PageControls('▶️', self))
                 else:
@@ -48,14 +51,17 @@ class Info(AnastellosCog):
 
             async def update(self):
                 self.clear_items()
-                self.add_item(SelectPatch(self.patches[25*(self.page - 1) : 25*self.page]))
+                self.add_item(SelectPatch(
+                    self.patches[25*(self.page - 1): 25*self.page]))
                 self.add_item(PageControls('◀️', self))
                 self.add_item(PageControls('▶️', self))
-                
-                l10n = localization(lang=self.lang)['anastellos']['info']['changelog']
+
+                l10n = localization(lang=self.lang)[
+                    'anastellos']['info']['changelog']
                 fields = []
-                for ver in self.patches[25*(self.page - 1) : 25*self.page]:
-                    fields.append((ver['fullname'], ver.get(self.lang, ver['en'])['desc']))
+                for ver in self.patches[25*(self.page - 1): 25*self.page]:
+                    fields.append((ver['fullname'], ver.get(
+                        self.lang, ver['en'])['desc']))
                 embed = AEEmbed(ctx.bot, title=l10n['title'], fields=fields)
                 await self.message.edit(view=self, embed=embed)
                 return
@@ -75,7 +81,6 @@ class Info(AnastellosCog):
                 else:
                     return False
 
-
         class SelectPatch(nextcord.ui.Select):
             def __init__(self, patches) -> None:
                 self.patches = patches
@@ -86,13 +91,14 @@ class Info(AnastellosCog):
             async def callback(self, interaction: nextcord.Interaction):
                 patch = self.patches[int(self.values[0])]
                 desc = patch.get(self.view.lang, patch['en'])['desc']
-                changes = '\n'.join(patch.get(self.view.lang, patch['en'])['changes'])
+                changes = '\n'.join(
+                    patch.get(self.view.lang, patch['en'])['changes'])
                 desc = f'{desc}\n\n{changes}'
-                embed = AEEmbed(interaction.client, title=patch['fullname'], desc=desc)
+                embed = AEEmbed(interaction.client,
+                                title=patch['fullname'], desc=desc)
                 await self.view.message.edit(embed=embed, view=None)
                 self.view.stop()
                 return
-
 
         class PageControls(nextcord.ui.Button):
             def __init__(self, emoji, view):
@@ -104,16 +110,16 @@ class Info(AnastellosCog):
                     self.disabled = True
 
             async def callback(self, interaction: nextcord.Interaction):
-                if self.emoji.name=='▶️':
+                if self.emoji.name == '▶️':
                     self.view.page += 1
-                elif self.emoji.name=='◀️':
+                elif self.emoji.name == '◀️':
                     self.view.page -= 1
                 await self.view.update()
                 return
 
-
         filter = filter.lower().split(' ')
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['info']['changelog']
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['info']['changelog']
         lang = fetch_json('server_cfg')[str(ctx.guild.id)]['lang']
         try:
             chglog = fetch_json('jsons/changelog')
@@ -130,7 +136,8 @@ class Info(AnastellosCog):
                     break
         filtered = list(filtered.values())
         if not filtered:
-            embed = AEEmbed(self.bot, title=l10n['title'], desc=l10n['no_patches'])
+            embed = AEEmbed(
+                self.bot, title=l10n['title'], desc=l10n['no_patches'])
             return await ctx.reply(embed=embed)
         fields = []
         for ver in filtered[:25]:
@@ -139,6 +146,7 @@ class Info(AnastellosCog):
         _ChangelogUI = ChangelogUI(ctx, filtered, lang)
         msg = await ctx.reply(embed=embed, view=_ChangelogUI)
         _ChangelogUI.message = msg
+
 
 def setup(bot):
     bot.add_cog(Info(bot))

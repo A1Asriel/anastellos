@@ -1,6 +1,8 @@
 from inspect import Parameter
 from itertools import zip_longest
+
 from nextcord.ext import commands
+
 from .classes import AEEmbed
 from .utils import localization
 
@@ -10,7 +12,8 @@ class AEHelpCommand(commands.HelpCommand):
         super().__init__(**options)
 
     def get_command_signature(self, command: commands.Command):
-        l10n: dict = localization(self.context.guild.id)['anastellos']['info']['help']['commands'].get(command.name, dict())
+        l10n: dict = localization(self.context.guild.id)[
+            'anastellos']['info']['help']['commands'].get(command.name, dict())
         if command.parent:
             alias = self.context.clean_prefix + command.full_parent_name + ' ' + command.name
         else:
@@ -19,7 +22,8 @@ class AEHelpCommand(commands.HelpCommand):
             if command.parent:
                 aliases = command.aliases
             else:
-                aliases = [self.context.clean_prefix + i for i in command.aliases]
+                aliases = [self.context.clean_prefix +
+                           i for i in command.aliases]
             alias += ' | ' + ' | '.join(aliases)
 
         out = alias
@@ -42,7 +46,8 @@ class AEHelpCommand(commands.HelpCommand):
         return out
 
     def get_command_description(self, command: commands.Command, *, detailed=False):
-        l10n: dict = localization(self.context.guild.id)['anastellos']['info']['help']['commands'].get(command.name, dict())
+        l10n: dict = localization(self.context.guild.id)[
+            'anastellos']['info']['help']['commands'].get(command.name, dict())
         out = l10n.get('desc')
         extra = l10n.get('extra')
         if detailed:
@@ -50,13 +55,15 @@ class AEHelpCommand(commands.HelpCommand):
         return out
 
     async def send_command_help(self, command: commands.Command):
-        l10n: dict = localization(self.context.guild.id)['anastellos']['info']['help']
+        l10n: dict = localization(self.context.guild.id)[
+            'anastellos']['info']['help']
         if not await command.can_run(self.context):
             raise commands.MissingPermissions
         signature = '`' + self.get_command_signature(command) + '`'
         description = self.get_command_description(command, detailed=True)
         if command.parent:
-            embed_title = self.context.clean_prefix + command.full_parent_name + ' ' + command.name
+            embed_title = self.context.clean_prefix + \
+                command.full_parent_name + ' ' + command.name
         else:
             embed_title = self.context.clean_prefix + command.name
         embed_desc = f'{l10n["usage"]}\n{signature}'
@@ -68,7 +75,8 @@ class AEHelpCommand(commands.HelpCommand):
         await self.context.reply(embed=embed)
 
     async def send_bot_help(self, mapping):
-        l10n: dict = localization(self.context.guild.id)['anastellos']['info']['help']
+        l10n: dict = localization(self.context.guild.id)[
+            'anastellos']['info']['help']
         bot: commands.Bot = self.context.bot
         embed_title = l10n['title']
         embed_description = l10n['desc']
@@ -77,16 +85,20 @@ class AEHelpCommand(commands.HelpCommand):
         for command in commandlist:
             if not command.enabled or command.parent:
                 continue
-            field = [f'`{self.get_command_signature(command)}`', self.get_command_description(command)]
+            field = [
+                f'`{self.get_command_signature(command)}`', self.get_command_description(command)]
             embed_fields.append(field)
-        embed = AEEmbed(self.context.bot, title=embed_title, desc=embed_description, fields=embed_fields)
+        embed = AEEmbed(self.context.bot, title=embed_title,
+                        desc=embed_description, fields=embed_fields)
         await self.context.reply(embed=embed)
 
     async def send_group_help(self, group: commands.Group):
-        l10n: dict = localization(self.context.guild.id)['anastellos']['info']['help']
+        l10n: dict = localization(self.context.guild.id)[
+            'anastellos']['info']['help']
         embed_title = l10n['title']
         if group.parent:
-            embed_title = self.context.clean_prefix + group.full_parent_name + ' ' + group.name
+            embed_title = self.context.clean_prefix + \
+                group.full_parent_name + ' ' + group.name
         else:
             embed_title = self.context.clean_prefix + group.name
         embed_fields = []
@@ -94,9 +106,11 @@ class AEHelpCommand(commands.HelpCommand):
         for command in commandlist:
             if not command.enabled:
                 continue
-            field = [f'`{self.get_command_signature(command)}`', self.get_command_description(command)]
+            field = [
+                f'`{self.get_command_signature(command)}`', self.get_command_description(command)]
             embed_fields.append(field)
-        embed = AEEmbed(self.context.bot, title=embed_title, fields=embed_fields)
+        embed = AEEmbed(self.context.bot, title=embed_title,
+                        fields=embed_fields)
         await self.context.reply(embed=embed)
 
     async def command_not_found(self, string):

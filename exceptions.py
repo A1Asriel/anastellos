@@ -1,4 +1,6 @@
-class AnastellosException(Exception): ...
+class AnastellosException(Exception):
+    ...
+
 
 class AnastellosInitError(AnastellosException):
     def __init__(self, message=None, **kwargs):

@@ -1,11 +1,13 @@
-from os import listdir
 from datetime import datetime
-from nextcord import Embed, Colour
+from os import listdir
+
+from nextcord import Colour, Embed
 from nextcord.ext import commands
 from nextcord.ext.commands import Bot, Cog
+
 from .checks import reply_or_send
 from .config import Config
-from .utils import localization, fetch_json, write_config
+from .utils import fetch_json, localization, write_config
 
 
 class AnastellosBot(Bot):
@@ -47,7 +49,8 @@ class Settings(AnastellosCog):
     @commands.has_guild_permissions(manage_guild=True)
     async def settings(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            l10n = localization(guild_id=ctx.guild.id)['anastellos']['settings']['list']
+            l10n = localization(guild_id=ctx.guild.id)[
+                'anastellos']['settings']['list']
             cfg = fetch_json('server_cfg')[str(ctx.guild.id)]
             fields = [
                 [l10n['prefix'], '`'+cfg['prefix']+'`'],
@@ -59,13 +62,15 @@ class Settings(AnastellosCog):
                 elif value[0] == 'bool':
                     second_field = l10n['enabled'] if cfg[name] else l10n['disabled']
                 elif value[0] == 'channel':
-                    second_field = self.bot.get_channel(cfg[name]).mention if cfg[name]!=0 else l10n['disabled']
+                    second_field = self.bot.get_channel(
+                        cfg[name]).mention if cfg[name] != 0 else l10n['disabled']
                 fields += [[l10n[name], second_field]]
             await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], fields=fields))
 
     @settings.command(name='prefix', aliases=('set_prefix',))
     async def set_prefix(self, ctx: commands.Context, *, new_prefix: str = None):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['settings']['prefix']
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['settings']['prefix']
         if new_prefix == None:
             new_prefix = self.bot.config.def_prefix
         append = {'prefix': new_prefix}
@@ -81,7 +86,8 @@ class Settings(AnastellosCog):
             if lang.startswith(('ign_', '__')):
                 continue
             lang_name = lang.removesuffix('.json')
-            lang_aliases = fetch_json(langfiles_path + lang_name)['__meta__']['aliases']
+            lang_aliases = fetch_json(
+                langfiles_path + lang_name)['__meta__']['aliases']
             langs[lang_name] = lang_aliases
 
         found = False
@@ -95,7 +101,8 @@ class Settings(AnastellosCog):
 
         append = {'lang': new_lang}
         write_config(append, ctx.guild.id, 'server_cfg')
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['settings']['lang']
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['settings']['lang']
         return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.brand_green()))
 
 
@@ -118,6 +125,7 @@ class AEEmbed(Embed):
         thumbnail_url: URL string for a thumbnail. Can be empty.
         timestamp: datetime instance. Can be empty.
     """
+
     def __init__(
         self,
         bot: AnastellosBot,
@@ -140,11 +148,11 @@ class AEEmbed(Embed):
             self.colour = Colour(self.colour)
 
         super().__init__(
-            colour = colour,
-            title = title,
-            url = url,
-            description = desc,
-            timestamp = timestamp
+            colour=colour,
+            title=title,
+            url=url,
+            description=desc,
+            timestamp=timestamp
         )
 
         self.author_name = author_name
@@ -156,7 +164,8 @@ class AEEmbed(Embed):
                 self.author_name += ' | INDEV'
         if self.author_icon is AEEmbedDefault:
             self.author_icon = bot.config.self_avatar_url
-        self.set_author(name=self.author_name, url=self.author_url, icon_url=self.author_icon)
+        self.set_author(name=self.author_name,
+                        url=self.author_url, icon_url=self.author_icon)
 
         self.footer_title = footer_title
         self.footer_icon = footer_icon
@@ -175,7 +184,7 @@ class AEEmbed(Embed):
                     i = list(i)
                 if i[1] in ('', None):
                     i[1] = 'None'
-                if len(i)==3:
+                if len(i) == 3:
                     self.add_field(name=i[0], value=i[1], inline=i[2])
-                elif len(i)==2:
+                elif len(i) == 2:
                     self.add_field(name=i[0], value=i[1], inline=False)

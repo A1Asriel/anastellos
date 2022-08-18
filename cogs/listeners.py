@@ -1,8 +1,9 @@
 import nextcord
 from nextcord.ext import commands
+
 from ..checks import reply_or_send
 from ..classes import AnastellosCog
-from ..utils import write_config, fetch_json, localization
+from ..utils import fetch_json, localization, write_config
 
 
 class Listeners(AnastellosCog):
@@ -10,7 +11,7 @@ class Listeners(AnastellosCog):
     async def del_message(self, reaction: nextcord.Reaction, user: nextcord.Member):
         if reaction.message.author != self.bot.user:
             return
-        if reaction.emoji=='❌':
+        if reaction.emoji == '❌':
             return await reaction.message.delete()
         if reaction.message.channel.permissions_for(reaction.message.guild.me).read_message_history:
             return await reaction.message.clear_reaction('❌')
@@ -18,7 +19,8 @@ class Listeners(AnastellosCog):
 
     @commands.Cog.listener(name='on_guild_join')
     async def new_server_cfg(self, guild: nextcord.Guild):
-        print(f'[INFO] Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ', end='')
+        print(
+            f'[INFO] Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ', end='')
         if fetch_json('server_cfg').get(str(guild.id), False):
             print('Already existing.')
             return None
@@ -57,7 +59,8 @@ class Listeners(AnastellosCog):
     async def error_handler(self, ctx: commands.Context, error):
         await reply_or_send(ctx)
         delete_after = 10
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['global_errors']
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['global_errors']
         if isinstance(error, commands.MissingPermissions):
             await ctx.reply(l10n['insufficient_perms'], delete_after=delete_after)
         elif isinstance(error, commands.BotMissingPermissions):
@@ -70,10 +73,12 @@ class Listeners(AnastellosCog):
             print(f'[WARN] {ctx.author} missed the argument "{error.param.name}" while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
         elif isinstance(error, commands.BadArgument):
             await ctx.reply(l10n['bad_argument'], delete_after=delete_after)
-            print(f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild}).')
+            print(
+                f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild}).')
         elif isinstance(error, commands.MaxConcurrencyReached):
             await ctx.reply(l10n['max_concurrency'], delete_after=delete_after)
-            print(f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
+            print(
+                f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
         elif isinstance(error, commands.CommandNotFound):
             await ctx.reply(l10n['command_not_found'], delete_after=delete_after)
         elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, nextcord.Forbidden):
@@ -81,7 +86,8 @@ class Listeners(AnastellosCog):
                 await ctx.send(l10n.get('no_history_access', f'`{error.original.text}`'), delete_after=delete_after)
                 return
             await ctx.reply(l10n['forbidden'], delete_after=delete_after)
-            print(f'[WARN] {ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
+            print(
+                f'[WARN] {ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
         else:
             raise error
 

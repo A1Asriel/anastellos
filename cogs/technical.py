@@ -1,9 +1,11 @@
 # import os
-import nextcord
 from timeit import default_timer
+
+import nextcord
 from nextcord.ext import commands
+
 from ..checks import reply_or_send
-from ..classes import AnastellosCog, AEEmbed
+from ..classes import AEEmbed, AnastellosCog
 from ..utils import *
 
 
@@ -12,7 +14,8 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
     @commands.guild_only()
     @commands.is_owner()
     async def stop(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['technical']['stop']
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['technical']['stop']
         await ctx.reply(l10n)
         return await self.bot.close()
 
@@ -34,8 +37,9 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
     @commands.guild_only()
     @commands.is_owner()
     async def reload(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['technical']['reload']
-        msg=await ctx.reply(l10n['start'], delete_after=5)
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['technical']['reload']
+        msg = await ctx.reply(l10n['start'], delete_after=5)
         i = '$modulename'
         try:
             for i in list(self.bot.extensions):
@@ -62,7 +66,8 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
         latency = round((time2 - time1)*1000)
         msg2 = f'Pong! | {latency}ms'
         await msg.edit(content=msg2)
-        print(f'[DEBUG] {ctx.author} pinged the bot @ #{ctx.channel} ({ctx.guild}). Latency: {latency}ms.')
+        print(
+            f'[DEBUG] {ctx.author} pinged the bot @ #{ctx.channel} ({ctx.guild}). Latency: {latency}ms.')
 
     @commands.command()
     @commands.check_any(
@@ -76,8 +81,10 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
                 self.ctx = ctx
                 self.l10n = l10n
                 self.add_item(self.LeaveButton(self.l10n['leave']))
-                self.add_item(self.PurgeLeaveButton(self.l10n['purge'], style=nextcord.ButtonStyle.danger))
-                self.add_item(self.BaseLeaveButton(self.l10n['cancel'], style=nextcord.ButtonStyle.primary))
+                self.add_item(self.PurgeLeaveButton(
+                    self.l10n['purge'], style=nextcord.ButtonStyle.danger))
+                self.add_item(self.BaseLeaveButton(
+                    self.l10n['cancel'], style=nextcord.ButtonStyle.primary))
 
             async def on_timeout(self):
                 for item in self.children:
@@ -92,7 +99,6 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
             async def interaction_check(self, interaction: nextcord.Interaction):
                 return self.ctx.author == interaction.user
 
-
             class BaseLeaveButton(nextcord.ui.Button):
                 def __init__(self, l10n: dict, style: nextcord.ButtonStyle = nextcord.ButtonStyle.secondary):
                     self.l10n = l10n
@@ -100,43 +106,46 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
 
                 async def callback(self, interaction: nextcord.Interaction):
                     embed = interaction.message.embeds[0]
-                    embed.title = self.l10n['title'].format(name=interaction.client.config.name)
+                    embed.title = self.l10n['title'].format(
+                        name=interaction.client.config.name)
                     embed.description = self.l10n['desc']
                     _LeaveMessageUI.message = await interaction.message.edit(embed=embed)
                     await interaction.response.defer(ephemeral=True, with_message=False)
                     await self.view.stop()
                     return
 
-
             class LeaveButton(BaseLeaveButton):
                 async def callback(self, interaction: nextcord.Interaction):
                     append = {'telemetry': 0}
-                    write_config(append=append, guildid=interaction.guild.id, filename='server_cfg')
+                    write_config(
+                        append=append, guildid=interaction.guild.id, filename='server_cfg')
                     guild = interaction.guild
                     await super().callback(interaction)
-                    print(f'[DEBUG] {interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave a guild.')
+                    print(
+                        f'[DEBUG] {interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave a guild.')
                     await guild.leave()
                     return
-
 
             class PurgeLeaveButton(BaseLeaveButton):
                 async def callback(self, interaction: nextcord.Interaction):
                     delete_guild_config(interaction.guild.id, 'server_cfg')
                     guild = interaction.guild
                     await super().callback(interaction)
-                    print(f'[DEBUG] {interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave and forget a guild.')
+                    print(
+                        f'[DEBUG] {interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave and forget a guild.')
                     await guild.leave()
                     return
 
-
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['settings']['leave']
-        emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(name=self.bot.config.name), desc=l10n['desc_msg'], colour=nextcord.Color.brand_red())
+        l10n = localization(guild_id=ctx.guild.id)[
+            'anastellos']['settings']['leave']
+        emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(
+            name=self.bot.config.name), desc=l10n['desc_msg'], colour=nextcord.Color.brand_red())
         _LeaveMessageUI = LeaveMessageUI(ctx, l10n['ui'])
         msg = await ctx.reply(embed=emb1, view=_LeaveMessageUI)
         _LeaveMessageUI.message = msg
 
-
     # @shutdown.error
+
     @stop.error
     async def error(self, ctx: commands.Context, error: Exception):
         l10n = localization(guild_id=ctx.guild.id)['anastellos']['technical']
