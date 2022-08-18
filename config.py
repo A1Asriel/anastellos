@@ -64,7 +64,8 @@ class Config(SimpleConfig):
         }
         self.build = '1.0.0.1'
         self.additional_guild_params = additional_guild_params
-        self._def_guild_config.update(self.additional_guild_params)
+        for name, value in self.additional_guild_params.items():
+            self._def_guild_config[name] = value[1]
 
         langfiles = listdir(self._langfiles_path)
         self.lang_names = set()

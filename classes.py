@@ -63,7 +63,7 @@ class Settings(AnastellosCog):
                     second_field = l10n['enabled'] if cfg[name] else l10n['disabled']
                 elif value[0] == 'channel':
                     second_field = self.bot.get_channel(
-                        cfg[name][1]).mention if cfg[name][1] != 0 else l10n['disabled']
+                        cfg[name]).mention if cfg[name] != 0 else l10n['disabled']
                 fields += [[l10n[name], second_field]]
             await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], fields=fields))
 
