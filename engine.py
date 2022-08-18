@@ -10,8 +10,8 @@ from .utils import *
 
 
 class AnastellosEngine:
-    def __init__(self, *, additional_guild_params={}, build=__build__):
-        self.config = Config(additional_guild_params=additional_guild_params)
+    def __init__(self, *, additional_guild_params={}):
+        self.config = Config(additional_guild_params=additional_guild_params, build=__build__)
 
         print(f'- {self.config.name} {self.config.full_version} -', end='')
         if self.config.mode == 'indev':
