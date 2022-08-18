@@ -20,6 +20,7 @@ class Info(AnastellosCog):
         thumbnail = self.bot.config.self_avatar_url
         author_name = l10n['anastellos']
         author_icon = self.bot.config.anastellos_logo
+        author_url = 'https://github.com/A1Asriel/anastellos/'
         await ctx.send(embed=AEEmbed(self.bot,
                                      title=title,
                                      desc=desc,
@@ -27,7 +28,8 @@ class Info(AnastellosCog):
                                      footer_icon=footer_icon,
                                      thumbnail_url=thumbnail,
                                      author_name=author_name,
-                                     author_icon=author_icon)
+                                     author_icon=author_icon,
+                                     author_url=author_url)
                        )
 
 
