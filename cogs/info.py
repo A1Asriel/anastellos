@@ -1,4 +1,3 @@
-import nextcord
 from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosCog
