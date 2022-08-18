@@ -48,7 +48,7 @@ def get_config(filename: str = 'cfg', schema: dict = {}) -> dict:
     try:
         return fetch_json(filename)
     except FileNotFoundError:
-        if schema:
+        if schema is not None:
             print(f'[WARN] Creating a new config at {filename}.json.')
             with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                 json.dump(schema, f, indent=4, ensure_ascii=False)
