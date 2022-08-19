@@ -79,6 +79,8 @@ class Listeners(AnastellosCog):
             await ctx.reply(l10n['max_concurrency'], delete_after=delete_after)
             print(
                 f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
+        elif isinstance(error, commands.NotOwner):
+            await ctx.reply(l10n['not_owner'], delete_after=5)
         elif isinstance(error, commands.CommandNotFound):
             await ctx.reply(l10n['command_not_found'], delete_after=delete_after)
         elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, nextcord.Forbidden):

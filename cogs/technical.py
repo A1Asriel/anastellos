@@ -144,24 +144,6 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
         msg = await ctx.reply(embed=emb1, view=_LeaveMessageUI)
         _LeaveMessageUI.message = msg
 
-    # @shutdown.error
-
-    @stop.error
-    async def error(self, ctx: commands.Context, error: Exception):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['technical']
-        if isinstance(error, commands.CheckFailure):
-            await reply_or_send(ctx)
-            return await ctx.reply(l10n['error_stop_noperms'], delete_after=5)
-        raise error
-
-    @reload.error
-    async def error(self, ctx: commands.Context, error: Exception):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['technical']
-        if isinstance(error, commands.CheckFailure):
-            await reply_or_send(ctx)
-            return await ctx.reply(l10n['error_reload_noperms'], delete_after=5)
-        raise error
-
 
 def setup(bot):
     bot.add_cog(Technical(bot))

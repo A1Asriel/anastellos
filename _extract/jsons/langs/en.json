@@ -64,9 +64,7 @@
                 "error": "*An exception occurred while loading {i} module.*",
                 "success": "*Reinitializing complete.*"
             },
-            "indev_notif": "\n> **WARNING! The bot is operating in INDEV mode. Please refrain from using this mode if there are no tests running.**",
-            "error_stop_noperms": "*Only developer is allowed to shut down the bot.*",
-            "error_reload_noperms": "*Only developer is allowed to reload the bot.*"
+            "indev_notif": "\n> **WARNING! The bot is operating in INDEV mode. Please refrain from using this mode if there are no tests running.**"
         },
 
         "settings": {
@@ -117,7 +115,8 @@
             "guild_admins_only": "*You don't have enough permissions to use this command.*",
             "missing_required_argument": "*You have missed a required argument. Check the command usage syntax.*",
             "command_not_found": "*The specified command not found.*",
-            "forbidden": "*Something won't let me do this, sorry.*"
+            "forbidden": "*Something won't let me do this, sorry.*",
+            "not_owner": "*Only bot owner is allowed to do that.*"
         }
     },
     "cmds": {}

@@ -64,9 +64,7 @@
                 "error": "*Beim Laden des {i} Moduls ist eine Ausnahme aufgetreten.*",
                 "success": "*Neuinitialisierung abgeschlossen.*"
             },
-            "indev_notif": "\n> **WARNUNG! Der Bot opperiert in INDEV Mode. Bitte verwende diesen Modus nicht, wenn keine Tests laufen.**",
-            "error_stop_noperms": "*Nur Entwickler haben die erlaubnis den Bot herunterzufahren.*",
-            "error_reload_noperms": "*Nur Entwickler haben die erlaubnis den Bot neu zu laden.*"
+            "indev_notif": "\n> **WARNUNG! Der Bot opperiert in INDEV Mode. Bitte verwende diesen Modus nicht, wenn keine Tests laufen.**"
         },
 
         "settings": {
@@ -117,7 +115,8 @@
             "guild_admins_only": "*Du hast nicht die Erlaubnis um diesen Befehel auszuführen.*",
             "missing_required_argument": "*Das erforderliche Argument fehlt. Überprüfe den Befehlsyntax.*",
             "command_not_found": "*Der angegebene Befehl wurde nicht gefunden.*",
-            "forbidden": "*Tut mir Leid, Irgentwas lässt mich dies nicht tun.*"
+            "forbidden": "*Tut mir Leid, Irgentwas lässt mich dies nicht tun.*",
+            "not_owner": "*Only bot owner is allowed to do that.* [TRANSLATE ME]"
         }
     },
     "cmds": {}
