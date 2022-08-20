@@ -1,4 +1,4 @@
-__build__ = '2.0.22222.4'
+__build__ = '2.0.22222.5'
 
 import nextcord
 
@@ -60,6 +60,10 @@ class AnastellosEngine:
     def load_cogs(self):
         loadcog(self.bot, 'anastellos/cogs', 'internal ')
         loadcog(self.bot, 'cogs')
+        if not self.bot.get_cog('Settings'):
+            print('[WARN] No custom settings cog found, falling back to the default one.')
+            from .classes import Settings
+            self.bot.add_cog(Settings(self.bot))
 
     def start(self):
         try:
