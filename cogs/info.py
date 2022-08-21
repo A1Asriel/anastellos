@@ -1,14 +1,14 @@
 from nextcord.ext import commands
 
-from ..classes import AEEmbed, AnastellosCog
+from ..classes import AEEmbed, AnastellosInternalCog
 from ..utils import *
 
 
-class Info(AnastellosCog):
+class Info(AnastellosInternalCog):
     @commands.command(aliases=['info'])
     @commands.guild_only()
     async def about(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)[
+        l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['info']['about']
         title = f'{self.bot.config.name} {self.bot.config.full_version}'
         desc = l10n['desc'].format(prefix=get_prefix(self.bot, ctx.message))
@@ -19,7 +19,7 @@ class Info(AnastellosCog):
         footer_icon = creator.display_avatar.url
         thumbnail = self.bot.config.self_avatar_url
         author_name = l10n['anastellos']
-        author_icon = self.bot.config.anastellos_logo
+        author_icon = 'https://cdn.discordapp.com/attachments/713481949896900622/992450921852313640/anastellos_engine_logo.png'
         author_url = 'https://github.com/A1Asriel/anastellos/'
         await ctx.send(embed=AEEmbed(self.bot,
                                      title=title,

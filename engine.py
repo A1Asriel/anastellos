@@ -1,9 +1,9 @@
-__build__ = '2.0.22222.5'
+__build__ = '2.0.22233.1'
 
 import nextcord
 
 from .classes import AnastellosBot
-from .config import Config
+from .config import Config, GuildConfigFile
 from .exceptions import *
 from .help import AEHelpCommand
 from .utils import *
@@ -11,7 +11,9 @@ from .utils import *
 
 class AnastellosEngine:
     def __init__(self, *, additional_guild_params={}):
-        self.config = Config(additional_guild_params=additional_guild_params, build=__build__)
+        self.config = Config(
+            additional_guild_params=additional_guild_params, build=__build__)
+        self.guild_config = GuildConfigFile(additional_guild_params=additional_guild_params)
 
         print(f'- {self.config.name} {self.config.full_version} -', end='')
         if self.config.mode == 'indev':
@@ -35,6 +37,7 @@ class AnastellosEngine:
         allowed_mentions.replied_user = False
 
         self.bot = AnastellosBot(config=self.config,
+                                 guild_config=self.guild_config,
                                  command_prefix=get_prefix,
                                  intents=intents,
                                  activity=activity,
@@ -61,7 +64,8 @@ class AnastellosEngine:
         loadcog(self.bot, 'anastellos/cogs', 'internal ')
         loadcog(self.bot, 'cogs')
         if not self.bot.get_cog('Settings'):
-            print('[WARN] No custom settings cog found, falling back to the default one.')
+            print(
+                '[WARN] No custom settings cog found, falling back to the default one.')
             from .classes import Settings
             self.bot.add_cog(Settings(self.bot))
 

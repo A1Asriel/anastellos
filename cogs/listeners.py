@@ -2,11 +2,11 @@ import nextcord
 from nextcord.ext import commands
 
 from ..checks import reply_or_send
-from ..classes import AnastellosCog
+from ..classes import AEEmbed, AnastellosInternalCog
 from ..utils import fetch_json, localization, write_config
 
 
-class Listeners(AnastellosCog):
+class Listeners(AnastellosInternalCog):
     @commands.Cog.listener(name='on_reaction_add')
     async def del_message(self, reaction: nextcord.Reaction, user: nextcord.Member):
         if reaction.message.author != self.bot.user:
@@ -21,15 +21,25 @@ class Listeners(AnastellosCog):
     async def new_server_cfg(self, guild: nextcord.Guild):
         print(
             f'[INFO] Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ', end='')
-        if fetch_json('server_cfg').get(str(guild.id), False):
+        if self.bot.guild_config.get_guild_cfg(guild.id) is not None:
             print('Already existing.')
             return None
         new_cfg = self.bot.config._def_guild_config
         pref_locale = guild.preferred_locale
         if pref_locale and pref_locale in self.bot.config.lang_names:
             new_cfg['lang'] = guild.preferred_locale[:2]
+        print('None existing, waiting for a user to accept the agreement.')
+        try:
+            channels = await guild.fetch_channels()
+            for c in channels:
+                perms = c.permissions_for(guild.me)
+                if str(c.type) == 'text' and perms.send_messages:
+                    if perms.embed_links:
+                        embed = AEEmbed
+        except:
+            pass
         write_config(new_cfg, guild.id, filename='server_cfg')
-        print('None existing, new one generated.')
+
         return None
 
     @commands.Cog.listener(name='on_guild_remove')
@@ -37,11 +47,12 @@ class Listeners(AnastellosCog):
         print(f'[INFO] Left a guild. Name: {guild.name}, ID: {guild.id}.')
         return None
 
-    @commands.Cog.listener(name='on_ready')
+    # Disabled due to the Privacy Policy.
+    """ @commands.Cog.listener(name='on_ready')
     async def new_server_check_cfg(self):
         new_cfg = self.bot.config._def_guild_config
         try:
-            cfg = fetch_json('server_cfg')
+            cfg = fetch_json('server_cfg')['guilds']
         except FileNotFoundError:
             write_config(new_cfg, 0, filename='server_cfg')
             return None
@@ -54,12 +65,12 @@ class Listeners(AnastellosCog):
                 write_config(new_cfg, guild.id, filename='server_cfg')
                 return None
         return None
-
+ """
     @commands.Cog.listener('on_command_error')
     async def error_handler(self, ctx: commands.Context, error):
         await reply_or_send(ctx)
         delete_after = 10
-        l10n = localization(guild_id=ctx.guild.id)[
+        l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['global_errors']
         if isinstance(error, commands.MissingPermissions):
             await ctx.reply(l10n['insufficient_perms'], delete_after=delete_after)
@@ -90,6 +101,9 @@ class Listeners(AnastellosCog):
             await ctx.reply(l10n['forbidden'], delete_after=delete_after)
             print(
                 f'[WARN] {ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).')
+        elif isinstance(error, commands.CheckFailure):
+            if not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
+                pass
         else:
             raise error
 

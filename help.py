@@ -12,7 +12,7 @@ class AEHelpCommand(commands.HelpCommand):
         super().__init__(**options)
 
     def get_command_signature(self, command: commands.Command):
-        l10n: dict = localization(self.context.guild.id)[
+        l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']['commands'].get(command.name, dict())
         if command.parent:
             alias = self.context.clean_prefix + command.full_parent_name + ' ' + command.name
@@ -46,7 +46,7 @@ class AEHelpCommand(commands.HelpCommand):
         return out
 
     def get_command_description(self, command: commands.Command, *, detailed=False):
-        l10n: dict = localization(self.context.guild.id)[
+        l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']['commands'].get(command.name, dict())
         out = l10n.get('desc')
         extra = l10n.get('extra')
@@ -55,7 +55,7 @@ class AEHelpCommand(commands.HelpCommand):
         return out
 
     async def send_command_help(self, command: commands.Command):
-        l10n: dict = localization(self.context.guild.id)[
+        l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']
         if not await command.can_run(self.context):
             raise commands.MissingPermissions
@@ -75,7 +75,7 @@ class AEHelpCommand(commands.HelpCommand):
         await self.context.reply(embed=embed)
 
     async def send_bot_help(self, mapping):
-        l10n: dict = localization(self.context.guild.id)[
+        l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']
         bot: commands.Bot = self.context.bot
         embed_title = l10n['title']
@@ -93,7 +93,7 @@ class AEHelpCommand(commands.HelpCommand):
         await self.context.reply(embed=embed)
 
     async def send_group_help(self, group: commands.Group):
-        l10n: dict = localization(self.context.guild.id)[
+        l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']
         embed_title = l10n['title']
         if group.parent:
