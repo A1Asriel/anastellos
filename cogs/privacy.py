@@ -10,53 +10,63 @@ class Privacy(AnastellosInternalCog):
     def cog_check(self, ctx):
         return True
 
-
     class AgreementView(nextcord.ui.View):
-        def __init__(self):
+        def __init__(self, l10n):
             super().__init__(timeout=300)
-        
-        @nextcord.ui.button(
-            emoji='✅',
-            style=nextcord.ButtonStyle.green
-        )
-        async def agree(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-            bot: AnastellosBot = interaction.client
-            guild_cfg = bot.guild_config.get_guild_cfg(interaction.guild.id)
-            guild_cfg.is_eula_accepted = True
-            guild_cfg.save()
-            for i in range(len(self.children)):
-                self.children[i].disabled = True
-            await interaction.message.edit(view=None)
+            self.l10n = l10n
+            self.add_item(self.AgreeButton(self.l10n))
+            self.add_item(self.DeclineButton(self.l10n))
 
-        @nextcord.ui.button(
-            emoji='❎',
-            style=nextcord.ButtonStyle.red
-        )
-        async def not_agree(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-            try:
-                await interaction.delete_original_message()
-            except:
-                pass
-            await interaction.guild.leave()
+        class AgreeButton(nextcord.ui.Button):
+            def __init__(self, l10n):
+                super().__init__(
+                    label=l10n['agree'], emoji='✅', style=nextcord.ButtonStyle.green)
 
+            async def callback(self, interaction: nextcord.Interaction):
+                bot: AnastellosBot = interaction.client
+                guild_cfg = bot.guild_config.create_guild_cfg(
+                    interaction.guild.id)
+                guild_cfg.is_eula_accepted = True
+                guild_cfg.lang = interaction.guild.preferred_locale if interaction.guild.preferred_locale is not None else guild_cfg.lang
+                guild_cfg.save()
+                await interaction.message.edit(view=None)
+
+        class DeclineButton(nextcord.ui.Button):
+            def __init__(self, l10n):
+                super().__init__(
+                    label=l10n['decline'], emoji='❎', style=nextcord.ButtonStyle.red)
+
+            async def callback(self, interaction: nextcord.Interaction):
+                try:
+                    await interaction.delete_original_message()
+                except:
+                    pass
+                await interaction.guild.leave()
 
     @commands.command()
     @commands.guild_only()
-    async def privacy(self, ctx: commands.Context):
-        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['privacy']['privacy']
+    async def privacy(self, ctx: commands.Context, lang='en'):
+        if lang not in self.bot.config.lang_names or localization(None, lang=lang)['anastellos'].get('privacy', {}).get('privacy') is None:
+            lang = 'en'
+        l10n = localization(None, lang=lang)[
+            'anastellos']['privacy']['privacy']
         title = l10n['title']
         desc = l10n['desc']
         creator = await self.bot.fetch_user(296735247213789215)
         footer_title = l10n['footer'].format(creator=creator)
-        author_url = l10n.get('url', 'https://a1asriel.github.io/AsrielBot-site/privacy.html')
-        await ctx.send(embed=AEEmbed(self.bot,
-                                     title=title,
-                                     desc=desc,
-                                     footer_title=footer_title,
-                                     author_url=author_url,
-                                     timestamp=datetime.fromtimestamp(1661115600)),
-                       view=self.AgreementView()
-                       )
+        url = l10n.get(
+            '_url', 'https://a1asriel.github.io/AsrielBot-site/privacy.html')
+        embed = AEEmbed(self.bot,
+                        title=title,
+                        desc=desc,
+                        footer_title=footer_title,
+                        url=url,
+                        timestamp=datetime.fromtimestamp(l10n['timestamp']))
+
+        if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
+            await ctx.send(embed=embed, view=self.AgreementView(l10n))
+        else:
+            await ctx.send(embed=embed)
 
 
 def setup(bot):

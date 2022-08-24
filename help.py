@@ -3,6 +3,8 @@ from itertools import zip_longest
 
 from nextcord.ext import commands
 
+from anastellos.checks import is_eula_accepted
+
 from .classes import AEEmbed
 from .utils import localization
 
@@ -10,6 +12,13 @@ from .utils import localization
 class AEHelpCommand(commands.HelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
+
+    def copy(self):  # This fixes the check disappearance.
+        obj = self.__class__(*self.__original_args__, **
+                             self.__original_kwargs__)  # type: ignore
+        obj._command_impl = self._command_impl
+        self.add_check(is_eula_accepted)
+        return obj
 
     def get_command_signature(self, command: commands.Command):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[

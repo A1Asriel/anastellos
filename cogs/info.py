@@ -11,7 +11,7 @@ class Info(AnastellosInternalCog):
         l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['info']['about']
         title = f'{self.bot.config.name} {self.bot.config.full_version}'
-        desc = l10n['desc'].format(prefix=get_prefix(self.bot, ctx.message))
+        desc = l10n['desc'].format(prefix=ctx.clean_prefix)
         if self.bot.config.mode == 'indev':
             desc += l10n['indev']
         creator = await self.bot.fetch_user(296735247213789215)

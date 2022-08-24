@@ -1,6 +1,8 @@
-__build__ = '2.0.22233.1'
+__build__ = '2.0.22233.2'
 
 import nextcord
+
+from anastellos.checks import is_eula_accepted
 
 from .classes import AnastellosBot
 from .config import Config, GuildConfigFile
@@ -13,7 +15,6 @@ class AnastellosEngine:
     def __init__(self, *, additional_guild_params={}):
         self.config = Config(
             additional_guild_params=additional_guild_params, build=__build__)
-        self.guild_config = GuildConfigFile(additional_guild_params=additional_guild_params)
 
         print(f'- {self.config.name} {self.config.full_version} -', end='')
         if self.config.mode == 'indev':
@@ -35,16 +36,20 @@ class AnastellosEngine:
         intents = nextcord.Intents.all()
         allowed_mentions = nextcord.AllowedMentions.all()
         allowed_mentions.replied_user = False
+        help_command = AEHelpCommand()
 
         self.bot = AnastellosBot(config=self.config,
-                                 guild_config=self.guild_config,
                                  command_prefix=get_prefix,
                                  intents=intents,
                                  activity=activity,
                                  status=status,
                                  allowed_mentions=allowed_mentions,
-                                 help_command=AEHelpCommand()
+                                 help_command=help_command
                                  )
+
+        self.guild_config = GuildConfigFile(
+            self.bot, additional_guild_params=additional_guild_params)
+        self.bot.guild_config = self.guild_config
         self.bot.owner_id = self.config.owner
 
         @self.bot.event

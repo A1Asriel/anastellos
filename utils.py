@@ -35,33 +35,6 @@ def fetch_json(filename: str) -> dict:
         raise exception
 
 
-def get_config(filename: str = 'cfg', schema: dict = {}) -> dict:
-    """Fetch default config file.
-
-    Args:
-        filename: JSON file name without extension.
-
-    Returns:
-        Config in the form of dictionary.
-
-    Raises:
-        JSONDecodeError: If the file is not valid JSON and the schema is not defined.
-    """
-    try:
-        return fetch_json(filename)
-    except FileNotFoundError:
-        if schema is not None:
-            print(f'[WARN] Creating a new config at {filename}.json.')
-            with open(f'{filename}.json', mode='x', encoding='utf8') as f:
-                json.dump(schema, f, indent=4, ensure_ascii=False)
-                return schema
-    except JSONDecodeError as e:
-        if schema:
-            print('[WARN] Using the default config.')
-            return schema
-        raise e
-
-
 def write_config(append: dict, guildid: int | str, filename: str = 'server_cfg'):
     """Modify the specified servers config file.
 

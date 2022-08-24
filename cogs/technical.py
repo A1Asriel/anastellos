@@ -48,9 +48,9 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                     self.bot.reload_extension(i)
                 except ExtensionFailed as e:
                     # FIXME: Workaround to avoid exception during the custom commands reload.
-                    print(f'[ERROR] Couldn\'t reload the cog {i}, skipping.')
                     if not isinstance(e.original, commands.CommandRegistrationError):
                         raise e
+                    print(f'[ERROR] Couldn\'t reload the cog {i}, skipping.')
         except ExtensionFailed:
             print(f'[ERROR Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)

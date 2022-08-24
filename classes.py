@@ -7,14 +7,14 @@ from nextcord.ext.commands import Bot, Cog
 
 from .checks import reply_or_send, is_eula_accepted
 from .config import Config, GuildConfigFile
-from .utils import fetch_json, localization, write_config
+from .utils import fetch_json, localization
 
 
 class AnastellosBot(Bot):
-    def __init__(self, config, guild_config, **kwargs):
+    def __init__(self, config, **kwargs):
         super().__init__(**kwargs)
         self.config: Config = config
-        self.guild_config: GuildConfigFile = guild_config
+        self.guild_config: GuildConfigFile
 
 
 class AnastellosCog(Cog):
@@ -82,8 +82,9 @@ class Settings(AnastellosInternalCog):
             'anastellos']['settings']['prefix']
         if new_prefix == None:
             new_prefix = self.bot.config.def_prefix
-        append = {'prefix': new_prefix}
-        write_config(append, ctx.guild.id, 'server_cfg')
+        cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
+        cfg.prefix = new_prefix
+        cfg.save()
         return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'].format(new_prefix=new_prefix), colour=Colour.brand_green()))
 
     @settings.command(name='language', aliases=('lang', 'set_language', 'set_lang'))
@@ -108,8 +109,9 @@ class Settings(AnastellosInternalCog):
         if not found:
             raise commands.BadArgument
 
-        append = {'lang': new_lang}
-        write_config(append, ctx.guild.id, 'server_cfg')
+        cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
+        cfg.lang = new_lang
+        cfg.save()
         l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['settings']['lang']
         return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.brand_green()))
