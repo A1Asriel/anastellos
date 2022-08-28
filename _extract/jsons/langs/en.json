@@ -2,9 +2,23 @@
     "__meta__": {
         "lang_name": "English",
         "lang_name_native": "English",
-        "aliases": ["en", "eng", "english"],
-        "yes": ["yes", "y", "true", "on"],
-        "no": ["no", "n", "false", "off"]
+        "aliases": [
+            "en",
+            "eng",
+            "english"
+        ],
+        "yes": [
+            "yes",
+            "y",
+            "true",
+            "on"
+        ],
+        "no": [
+            "no",
+            "n",
+            "false",
+            "off"
+        ]
     },
     "anastellos": {
         "info": {
@@ -52,7 +66,6 @@
                 }
             }
         },
-
         "technical": {
             "stop": "*Stopping the bot...*",
             "shutdown": {
@@ -66,7 +79,6 @@
             },
             "indev_notif": "\n> **WARNING! The bot is operating in INDEV mode. Please refrain from using this mode if there are no tests running.**"
         },
-
         "settings": {
             "list": {
                 "title": "Server preferences",
@@ -105,7 +117,6 @@
                 }
             }
         },
-
         "global_errors": {
             "max_concurrency": "*The maximum amount of command instances is being processed right now.*",
             "channel_not_found": "*It seems there is no such channel in this server.*",
@@ -116,7 +127,19 @@
             "missing_required_argument": "*You have missed a required argument. Check the command usage syntax.*",
             "command_not_found": "*The specified command not found.*",
             "forbidden": "*Something won't let me do this, sorry.*",
-            "not_owner": "*Only bot owner is allowed to do that.*"
+            "not_owner": "*Only bot owner is allowed to do that.*",
+            "no_history_access": "*The bot cannot access the message history and therefore unable to complete this action.*"
+        },
+        "privacy": {
+            "privacy": {
+                "title": "Anastellos Engine Example Privacy Policy",
+                "desc": "> __THIS IS A PLACEHOLDER VERSION OF PRIVACY POLICY, MAKE YOUR CHANGES BEFORE USING IT__\n\nThis document (\"Privacy Policy\") only applies to the instance of Bot Name hosted by the bot account <@80351110224678912> (\"Bot\"). The use of the Bot in a server (guild) requires the processing and/or storing of some specific user data (\"Data\").\n*To use the Bot, you are required to agree to the terms of Privacy Policy. If you decline them, the Bot will leave the server automatically.*\n\n**Processing of Data:**\nBot starts processing the guild ID as soon as it is invited to a server. It can be shown in the developer console, which is cleared every time the Bot is being turned off.\nThe Bot might log IDs of the users who typed any valid commands into any channel, accessible by the Bot, sent a direct message to the Bot, or explicitly mentioned the Bot in any channel.\nThe Bot processes and/or caches almost all the accessible Data including but not limited to: message IDs, message content, message attachments, member IDs, member usernames, member server nicknames, member avatar URLs, member custom statuses with the purpose of operating properly, although it cannot be accessed by the developer directly.\n\n**Storing of Data:**\nThe Bot does not store any user Data until the person managing the mentioned account grants permission to do so for reasons including but not limited to: attribution for help in developing/translating the Bot.\nAfter a member with the permission to Manage Server accepts the terms of Privacy Policy, the Bot writes the guild ID into the local database to store the server configuration. It also stores preferences including but not limited to: prefix, language code.\n\n**Access to Data:**\nThe mentioned Data is stored on a personal computer of the Bot developer. Only they are able to access and/or modify the Data at any given time.\n\n**Removal of Data:**\nThe Bot is able to delete the server preferences alongside with its ID from the database by using the option \"Leave and forget\", provided by using the command `ae!leave`.\nIn case if you want to remove all your user information (considering you gave your permission to store it before), you can request the removal manually by contacting the Bot developer in the direct messages or in the support server.\n\n> The developer reserves the right to modify this document at any given time, with or without noticing the users.\n\n*This document is available in following languages: `en`, `qps-ploc`.*",
+                "footer": "Developer: {creator} | Last updated:",
+                "timestamp": 1618953630,
+                "_url": "https://example.com/",
+                "agree": "Agree",
+                "decline": "Decline"
+            }
         }
     },
     "cmds": {}

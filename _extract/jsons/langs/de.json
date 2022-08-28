@@ -2,9 +2,23 @@
     "__meta__": {
         "lang_name": "German",
         "lang_name_native": "Deutsch",
-        "aliases": ["de", "ge", "ger", "german", "deutsch"],
-        "yes": ["yes [TRANSLATE ME]", "true [TRANSLATE ME]", "on [TRANSLATE ME]"],
-        "no": ["no [TRANSLATE ME]", "false [TRANSLATE ME]", "off [TRANSLATE ME]"]
+        "aliases": [
+            "de",
+            "ge",
+            "ger",
+            "german",
+            "deutsch"
+        ],
+        "yes": [
+            "yes [TRANSLATE ME]",
+            "true [TRANSLATE ME]",
+            "on [TRANSLATE ME]"
+        ],
+        "no": [
+            "no [TRANSLATE ME]",
+            "false [TRANSLATE ME]",
+            "off [TRANSLATE ME]"
+        ]
     },
     "anastellos": {
         "info": {
@@ -52,7 +66,6 @@
                 }
             }
         },
-
         "technical": {
             "stop": "*Bot wird gestoppt...*",
             "shutdown": {
@@ -66,7 +79,6 @@
             },
             "indev_notif": "\n> **WARNUNG! Der Bot opperiert in INDEV Mode. Bitte verwende diesen Modus nicht, wenn keine Tests laufen.**"
         },
-
         "settings": {
             "list": {
                 "title": "Server Präferenzen",
@@ -105,7 +117,6 @@
                 }
             }
         },
-
         "global_errors": {
             "max_concurrency": "*Die maximale Anzahl an ausführbaren Befehlen werden gerade bearbeitet.*",
             "channel_not_found": "*Es sieht so aus als gäbe es hier so einen Channel nicht.*",
@@ -116,7 +127,11 @@
             "missing_required_argument": "*Das erforderliche Argument fehlt. Überprüfe den Befehlsyntax.*",
             "command_not_found": "*Der angegebene Befehl wurde nicht gefunden.*",
             "forbidden": "*Tut mir Leid, Irgentwas lässt mich dies nicht tun.*",
-            "not_owner": "*Only bot owner is allowed to do that.* [TRANSLATE ME]"
+            "not_owner": "*Only bot owner is allowed to do that.* [TRANSLATE ME]",
+            "no_history_access": "*The bot cannot access the message history and therefore unable to complete this action.* [TRANSLATE ME]"
+        },
+        "privacy": {
+            "privacy": {}
         }
     },
     "cmds": {}
