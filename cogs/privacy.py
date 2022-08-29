@@ -8,7 +8,7 @@ from ..utils import *
 
 class Privacy(AnastellosInternalCog):
     def cog_check(self, ctx):
-        return True
+        return self.bot.config.demand_agreement
 
     class AgreementView(nextcord.ui.View):
         def __init__(self, l10n):

@@ -69,7 +69,7 @@ class Config(SimpleConfig):
 
         # Settings that go into cfg.json.
         self.__settings = ('name', 'stage', 'mode', 'version',
-                           'def_prefix', 'owner')
+                           'def_prefix', 'owner', 'demand_agreement')
 
         self.name: str = 'Anastellos Engine'
         self.stage = 'Release'
@@ -77,6 +77,7 @@ class Config(SimpleConfig):
         self.version = '1.0'
         self.def_prefix = 'ae!'
         self.owner = 0
+        self.demand_agreement = False
 
         self._def_schema = {name: self.__getattribute__(
             name) for name in self.__settings}

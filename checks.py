@@ -7,6 +7,8 @@ async def reply_or_send(ctx: commands.Context):
 
 
 def is_eula_accepted(ctx: commands.Context):
+    if not ctx.bot.config.demand_agreement:
+        return True
     guild_cfg = ctx.bot.guild_config.get_guild_cfg(ctx.guild.id)
     if guild_cfg is None:
         return False
