@@ -115,7 +115,7 @@ class Config(SimpleConfig):
 
     @property
     def full_version(self):
-        return f'{self.stage} {self.version} [{self.build}]'
+        return f'{self.stage+" " if self.stage.lower() != "release" else ""}{self.version} [AE {self.build}]'
 
 
 class GuildConfigFile(SimpleConfig):
@@ -231,7 +231,7 @@ class GuildConfigEntry(SimpleConfig):
         else:
             cfg = self._guildConfigFile._schema['guilds'][str(self._guild_id)]
         for key in self._def_schema.keys():
-            self.__setattr__(key, cfg[key])
+            self.__setattr__(key, cfg.get(key, self.additional_guild_params.get(key, (None, None))[1]))
 
     def __int__(self):
         return self._guild_id
