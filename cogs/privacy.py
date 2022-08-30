@@ -27,7 +27,7 @@ class Privacy(AnastellosInternalCog):
                 guild_cfg = bot.guild_config.create_guild_cfg(
                     interaction.guild.id)
                 guild_cfg.is_eula_accepted = True
-                guild_cfg.lang = interaction.guild.preferred_locale if interaction.guild.preferred_locale is not None else guild_cfg.lang
+                guild_cfg.lang = interaction.guild.preferred_locale[:2] if interaction.guild.preferred_locale is not None else guild_cfg.lang
                 guild_cfg.save()
                 await interaction.message.edit(view=None)
 
