@@ -1,8 +1,6 @@
-__build__ = '2.0.22233.4'
+__build__ = '2.0.22233.5'
 
 import nextcord
-
-from anastellos.checks import is_eula_accepted
 
 from .classes import AnastellosBot
 from .config import Config, GuildConfigFile

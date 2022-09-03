@@ -38,6 +38,12 @@
                     "help": {
                         "desc": "Zeigt diese Nachricht an."
                     },
+                    "privacy": {
+                        "desc": "Show the Privacy Policy document. [TRANSLATE ME]",
+                        "args": {
+                            "lang": "language [TRANSLATE ME]"
+                        }
+                    },
                     "about": {
                         "desc": "Zeigt die Information zum Bot."
                     },

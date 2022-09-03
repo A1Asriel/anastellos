@@ -38,6 +38,12 @@
                     "help": {
                         "desc": "Prints this message."
                     },
+                    "privacy": {
+                        "desc": "Show the Privacy Policy document.",
+                        "args": {
+                            "lang": "language"
+                        }
+                    },
                     "about": {
                         "desc": "Prints the info about the bot."
                     },
