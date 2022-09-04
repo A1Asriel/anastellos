@@ -5,16 +5,16 @@ import nextcord
 from nextcord.ext import commands
 
 from ..checks import reply_or_send
-from ..classes import AEEmbed, AnastellosCog
+from ..classes import AEEmbed, AnastellosInternalCog
 from ..utils import *
 
 
-class Technical(AnastellosCog, command_attrs={'hidden': True}):
+class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
     @commands.command(aliases=('destroy',))
     @commands.guild_only()
     @commands.is_owner()
     async def stop(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)[
+        l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['technical']['stop']
         await ctx.reply(l10n)
         return await self.bot.close()
@@ -24,7 +24,7 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
     @commands.guild_only()
     @commands.is_owner()
     async def shutdown(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)['anastellos']['technical']['shutdown']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['technical']['shutdown']
         if self.bot.config.mode == 'indev':
             return await ctx.reply(l10n['error_indev'], delete_after=5)
         # if not self.bot.config.can_shutdown:
@@ -37,7 +37,7 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
     @commands.guild_only()
     @commands.is_owner()
     async def reload(self, ctx: commands.Context):
-        l10n = localization(guild_id=ctx.guild.id)[
+        l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['technical']['reload']
         msg = await ctx.reply(l10n['start'], delete_after=5)
         i = '$modulename'
@@ -48,9 +48,9 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
                     self.bot.reload_extension(i)
                 except ExtensionFailed as e:
                     # FIXME: Workaround to avoid exception during the custom commands reload.
-                    print(f'[ERROR] Couldn\'t reload the cog {i}, skipping.')
                     if not isinstance(e.original, commands.CommandRegistrationError):
                         raise e
+                    print(f'[ERROR] Couldn\'t reload the cog {i}, skipping.')
         except ExtensionFailed:
             print(f'[ERROR Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
@@ -136,7 +136,7 @@ class Technical(AnastellosCog, command_attrs={'hidden': True}):
                     await guild.leave()
                     return
 
-        l10n = localization(guild_id=ctx.guild.id)[
+        l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['settings']['leave']
         emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(
             name=self.bot.config.name), desc=l10n['desc_msg'], colour=nextcord.Color.brand_red())

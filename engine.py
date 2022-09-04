@@ -1,9 +1,9 @@
-__build__ = '2.0.22222.5'
+__build__ = '2.0.22233.5'
 
 import nextcord
 
 from .classes import AnastellosBot
-from .config import Config
+from .config import Config, GuildConfigFile
 from .exceptions import *
 from .help import AEHelpCommand
 from .utils import *
@@ -11,7 +11,8 @@ from .utils import *
 
 class AnastellosEngine:
     def __init__(self, *, additional_guild_params={}):
-        self.config = Config(additional_guild_params=additional_guild_params, build=__build__)
+        self.config = Config(
+            additional_guild_params=additional_guild_params, build=__build__)
 
         print(f'- {self.config.name} {self.config.full_version} -', end='')
         if self.config.mode == 'indev':
@@ -33,6 +34,7 @@ class AnastellosEngine:
         intents = nextcord.Intents.all()
         allowed_mentions = nextcord.AllowedMentions.all()
         allowed_mentions.replied_user = False
+        help_command = AEHelpCommand()
 
         self.bot = AnastellosBot(config=self.config,
                                  command_prefix=get_prefix,
@@ -40,8 +42,12 @@ class AnastellosEngine:
                                  activity=activity,
                                  status=status,
                                  allowed_mentions=allowed_mentions,
-                                 help_command=AEHelpCommand()
+                                 help_command=help_command
                                  )
+
+        self.guild_config = GuildConfigFile(
+            self.bot, additional_guild_params=additional_guild_params)
+        self.bot.guild_config = self.guild_config
         self.bot.owner_id = self.config.owner
 
         @self.bot.event
@@ -61,7 +67,8 @@ class AnastellosEngine:
         loadcog(self.bot, 'anastellos/cogs', 'internal ')
         loadcog(self.bot, 'cogs')
         if not self.bot.get_cog('Settings'):
-            print('[WARN] No custom settings cog found, falling back to the default one.')
+            print(
+                '[WARN] No custom settings cog found, falling back to the default one.')
             from .classes import Settings
             self.bot.add_cog(Settings(self.bot))
 

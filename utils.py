@@ -6,6 +6,8 @@ from nextcord import Message
 from nextcord.ext.commands import Bot
 from nextcord.ext.commands.errors import ExtensionFailed
 
+# from anastellos.classes import AnastellosBot  Won't fix: cannot import.
+
 
 def fetch_json(filename: str) -> dict:
     """Fetch JSON file.
@@ -33,33 +35,6 @@ def fetch_json(filename: str) -> dict:
         raise exception
 
 
-def get_config(filename: str = 'cfg', schema: dict = {}) -> dict:
-    """Fetch default config file.
-
-    Args:
-        filename: JSON file name without extension.
-
-    Returns:
-        Config in the form of dictionary.
-
-    Raises:
-        JSONDecodeError: If the file is not valid JSON and the schema is not defined.
-    """
-    try:
-        return fetch_json(filename)
-    except FileNotFoundError:
-        if schema is not None:
-            print(f'[WARN] Creating a new config at {filename}.json.')
-            with open(f'{filename}.json', mode='x', encoding='utf8') as f:
-                json.dump(schema, f, indent=4, ensure_ascii=False)
-                return schema
-    except JSONDecodeError as e:
-        if schema:
-            print('[WARN] Using the default config.')
-            return schema
-        raise e
-
-
 def write_config(append: dict, guildid: int | str, filename: str = 'server_cfg'):
     """Modify the specified servers config file.
 
@@ -74,9 +49,6 @@ def write_config(append: dict, guildid: int | str, filename: str = 'server_cfg')
     mode = 'w'
     try:
         cfg = fetch_json(filename)
-    except FileNotFoundError:
-        mode = 'x'
-        cfg = dict()
     except JSONDecodeError as exception:
         print('[ERROR] JSON file is corrupted, cannot modify it.')
         raise exception
@@ -84,10 +56,10 @@ def write_config(append: dict, guildid: int | str, filename: str = 'server_cfg')
     if isinstance(guildid, int):
         guildid = str(guildid)
     try:
-        cfg[guildid].update(append)
+        cfg['guilds'][guildid].update(append)
     except KeyError:
-        cfg[guildid] = {}
-        cfg[guildid].update(append)
+        cfg['guilds'][guildid] = {}
+        cfg['guilds'][guildid].update(append)
     try:
         with open(f'{filename}.json', encoding='utf8', mode=mode) as out:
             json.dump(cfg, out, indent=4)
@@ -98,7 +70,7 @@ def write_config(append: dict, guildid: int | str, filename: str = 'server_cfg')
 def delete_guild_config(guild_id: int | str, filename: str):
     if isinstance(guild_id, int):
         guild_id = str(guild_id)
-    cfg = fetch_json(filename=filename)
+    cfg = fetch_json(filename)['guilds']
     cfg.pop(guild_id)
     with open(f'{filename}.json', encoding='utf8', mode='w') as out:
         json.dump(cfg, out, indent=4)
@@ -122,15 +94,17 @@ def loadcog(bot: Bot, path: str, type: str = ''):
 
 
 def get_prefix(bot: Bot, msg: Message):
+    prefixes = [f'{bot.user.mention} ']
     try:
-        return fetch_json('server_cfg')[str(msg.guild.id)]['prefix']
+        prefixes.append(bot.guild_config.get_guild_cfg(msg.guild.id).prefix)
     except:
-        return fetch_json()['def_prefix']
+        prefixes.append(bot.config.def_prefix)
+    return prefixes
 
 
-def localization(guild_id: int | str = None, lang: str = None) -> dict:
+def localization(bot: Bot, guild_id: int | str = None, lang: str = None) -> dict:
     if guild_id is not None:
         if isinstance(guild_id, int):
             guild_id = str(guild_id)
-        lang = fetch_json('server_cfg')[guild_id]['lang']
+        lang = bot.guild_config.get_guild_cfg(guild_id).lang
     return fetch_json('jsons/langs/'+lang)
