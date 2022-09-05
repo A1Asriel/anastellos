@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import nextcord
 from nextcord.ext import commands
 
@@ -11,32 +12,39 @@ class Privacy(AnastellosInternalCog):
         return self.bot.config.demand_agreement
 
     class AgreementView(nextcord.ui.View):
-        def __init__(self, l10n):
+        def __init__(self, l10n, author):
             super().__init__(timeout=300)
             self.l10n = l10n
-            self.add_item(self.AgreeButton(self.l10n))
-            self.add_item(self.DeclineButton(self.l10n))
+            self.add_item(self.AgreeButton(self.l10n, author))
+            self.add_item(self.DeclineButton(self.l10n, author))
 
         class AgreeButton(nextcord.ui.Button):
-            def __init__(self, l10n):
+            def __init__(self, l10n, author):
                 super().__init__(
                     label=l10n['agree'], emoji='✅', style=nextcord.ButtonStyle.green)
+                self.author = author
 
             async def callback(self, interaction: nextcord.Interaction):
+                if self.author.id != interaction.user.id:
+                    return
                 bot: AnastellosBot = interaction.client
                 guild_cfg = bot.guild_config.create_guild_cfg(
                     interaction.guild.id)
                 guild_cfg.is_eula_accepted = True
-                guild_cfg.lang = interaction.guild.preferred_locale[:2] if interaction.guild.preferred_locale is not None else guild_cfg.lang
+                guild_cfg.lang = interaction.guild.preferred_locale[
+                    :2] if interaction.guild.preferred_locale is not None else guild_cfg.lang
                 guild_cfg.save()
                 await interaction.message.edit(view=None)
 
         class DeclineButton(nextcord.ui.Button):
-            def __init__(self, l10n):
+            def __init__(self, l10n, author):
                 super().__init__(
                     label=l10n['decline'], emoji='❎', style=nextcord.ButtonStyle.red)
+                self.author = author
 
             async def callback(self, interaction: nextcord.Interaction):
+                if self.author.id != interaction.user.id:
+                    return
                 try:
                     await interaction.delete_original_message()
                 except:
@@ -63,8 +71,11 @@ class Privacy(AnastellosInternalCog):
                         url=url,
                         timestamp=datetime.fromtimestamp(l10n['timestamp']))
 
-        if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
-            await ctx.send(embed=embed, view=self.AgreementView(l10n))
+        if (
+            (self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted) and
+            nextcord.Permissions.manage_guild in ctx.author.guild_permissions
+        ):
+            await ctx.send(embed=embed, view=self.AgreementView(l10n, ctx.author))
         else:
             await ctx.send(embed=embed)
 
