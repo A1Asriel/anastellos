@@ -60,8 +60,8 @@ class Listeners(AnastellosInternalCog):
  """
     @commands.Cog.listener('on_command_error')
     async def error_handler(self, ctx: commands.Context, error):
-        l10n_code: str
-        console_msg: str
+        l10n_code = ''
+        console_msg = ''
         await reply_or_send(ctx)
         delete_after = 10
 
