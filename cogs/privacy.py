@@ -73,7 +73,7 @@ class Privacy(AnastellosInternalCog):
 
         if (
             (self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted) and
-            nextcord.Permissions.manage_guild in ctx.author.guild_permissions
+            ctx.author.guild_permissions.manage_guild
         ):
             await ctx.send(embed=embed, view=self.AgreementView(l10n, ctx.author))
         else:
