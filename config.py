@@ -76,7 +76,7 @@ class Config(SimpleConfig):
         self.mode = 'normal'
         self.version = '1.0'
         self.def_prefix = 'ae!'
-        self.owner = 0
+        self.owner = None
         self.demand_agreement = False
 
         self._def_schema = {name: self.__getattribute__(
@@ -126,7 +126,7 @@ class GuildConfigFile(SimpleConfig):
 
         self.__settings = ('__revision__', 'guilds')
 
-        self.__revision__ = 0
+        self.__revision__ = self.__currev__
         self.guilds = {}
 
         self._def_schema = {name: self.__getattribute__(
@@ -136,14 +136,12 @@ class GuildConfigFile(SimpleConfig):
         self.bot = bot
         self.additional_guild_params = additional_guild_params
 
-        try:
-            self._file = fetch_json(filename)
-            while self.__revision__ < self.__currev__:
-                self.__upgrade(self._file.get(
-                    '__revision__', 0), self.__currev__)
-        except FileNotFoundError:
-            self.__assignattrs__()
-            self.__compileschema__()
+        self._file = SimpleConfig.get_config(filename, self._def_schema)
+        while self._file['__revision__'] < self.__currev__:
+            self.__upgrade(self._file.get(
+                '__revision__', 0), self.__currev__)
+        self.__assignattrs__()
+        self.__compileschema__()
 
     def get_guild_cfg(self, guild_id):
         try:

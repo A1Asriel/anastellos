@@ -60,7 +60,7 @@ class Privacy(AnastellosInternalCog):
             'anastellos']['privacy']['privacy']
         title = l10n['title']
         desc = l10n['desc']
-        creator = await self.bot.fetch_user(296735247213789215)
+        creator = await self.bot.fetch_user(self.bot.owner_id)
         footer_title = l10n['footer'].format(creator=creator)
         url = l10n.get(
             '_url', 'https://a1asriel.github.io/AsrielBot-site/privacy.html')

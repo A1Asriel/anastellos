@@ -1,4 +1,4 @@
-__build__ = '2.0.22233.8'
+__build__ = '2.0.22233.9'
 
 import nextcord
 
@@ -48,7 +48,6 @@ class AnastellosEngine:
         self.guild_config = GuildConfigFile(
             self.bot, additional_guild_params=additional_guild_params)
         self.bot.guild_config = self.guild_config
-        self.bot.owner_id = self.config.owner
 
         @self.bot.event
         async def on_ready():
@@ -62,6 +61,7 @@ class AnastellosEngine:
             print('_______\n')
             if self.bot.user.avatar is not None:
                 self.config.self_avatar_url = self.bot.user.avatar.url
+            self.bot.owner_id = self.config.owner if self.config.owner is not None else (await self.bot.application_info()).owner.id
 
     def load_cogs(self):
         loadcog(self.bot, 'anastellos/cogs', 'internal ')
