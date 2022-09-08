@@ -30,7 +30,7 @@ class SimpleConfig:
         self._schema = self._def_schema
 
     def save(self):
-        with open(self._filename+'.json', 'w', encoding="utf-8") as f:
+        with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
 
     @staticmethod
@@ -57,9 +57,12 @@ class SimpleConfig:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
                     return schema
         except json.JSONDecodeError as e:
-            if schema:
-                print('[WARN] Using the default config.')
-                return schema
+            if schema is not None:
+                print(
+                    f'[WARN] Overwriting the file at {filename}.json and using the default config.')
+                with open(f'{filename}.json', mode='x', encoding='utf8') as f:
+                    json.dump(schema, f, indent=4, ensure_ascii=False)
+                    return schema
             raise e
 
 
