@@ -2,9 +2,9 @@ import nextcord
 from nextcord.ext import commands
 
 from ..checks import reply_or_send
-from ..classes import AEEmbed, AnastellosInternalCog
+from ..classes import AnastellosInternalCog
 from ..config import GuildConfigEntry
-from ..utils import fetch_json, localization, write_config
+from ..utils import localization
 
 
 class Listeners(AnastellosInternalCog):
@@ -15,23 +15,18 @@ class Listeners(AnastellosInternalCog):
         if self.bot.guild_config.get_guild_cfg(guild.id) is not None:
             print('Already existing.')
             return None
+        if not self.bot.config.demand_agreement:
+            print('None existing, creating a new one.')
+            entry: GuildConfigEntry = self.bot.guild_config.create_guild_cfg(self.bot.guild_config, guild.id)
+            pref_locale = guild.preferred_locale
+            if pref_locale and pref_locale in self.bot.config.lang_names:
+                entry.lang = guild.preferred_locale[:2]
+                entry.save()
+            return None
         new_cfg = self.bot.config._def_guild_config
-        pref_locale = guild.preferred_locale
         if pref_locale and pref_locale in self.bot.config.lang_names:
             new_cfg['lang'] = guild.preferred_locale[:2]
         print('None existing, waiting for a user to accept the agreement.')
-        try:
-            channels = await guild.fetch_channels()
-            for c in channels:
-                perms = c.permissions_for(guild.me)
-                if str(c.type) == 'text' and perms.send_messages:
-                    if perms.embed_links:
-                        embed = AEEmbed
-        except:
-            pass
-        GuildConfigEntry(self.bot.guild_config, guild.id)
-        write_config(new_cfg, guild.id, filename='server_cfg')
-
         return None
 
     @commands.Cog.listener(name='on_guild_remove')
@@ -39,25 +34,20 @@ class Listeners(AnastellosInternalCog):
         print(f'[INFO] Left a guild. Name: {guild.name}, ID: {guild.id}.')
         return None
 
-    # Disabled due to the Privacy Policy.
-    """ @commands.Cog.listener(name='on_ready')
+    @commands.Cog.listener(name='on_ready')
     async def new_server_check_cfg(self):
-        new_cfg = self.bot.config._def_guild_config
-        try:
-            cfg = fetch_json('server_cfg')['guilds']
-        except FileNotFoundError:
-            write_config(new_cfg, 0, filename='server_cfg')
+        if self.bot.config.demand_agreement:
             return None
         for guild in self.bot.guilds:
-            new_cfg = self.bot.config._def_guild_config
-            if str(guild.id) not in cfg:
+            entry = self.bot.guild_config.get_guild_cfg(guild.id)
+            if entry is None:
+                entry = self.bot.guild_config.create_guild_cfg(guild.id)
                 pref_locale = guild.preferred_locale
                 if pref_locale and pref_locale in self.bot.config.lang_names:
-                    new_cfg['lang'] = guild.preferred_locale[:2]
-                write_config(new_cfg, guild.id, filename='server_cfg')
-                return None
+                    entry.lang = guild.preferred_locale[:2]
+                    entry.save()
         return None
- """
+
     @commands.Cog.listener('on_command_error')
     async def error_handler(self, ctx: commands.Context, error):
         l10n_code = ''
