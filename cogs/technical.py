@@ -4,9 +4,8 @@ from timeit import default_timer
 import nextcord
 from nextcord.ext import commands
 
-from ..checks import reply_or_send
 from ..classes import AEEmbed, AnastellosInternalCog
-from ..utils import *
+from ..utils import localization
 
 
 class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
@@ -46,12 +45,12 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                 print(f'[INFO] Reloading {i}...')
                 try:
                     self.bot.reload_extension(i)
-                except ExtensionFailed as e:
+                except commands.ExtensionFailed as e:
                     # FIXME: Workaround to avoid exception during the custom commands reload.
                     if not isinstance(e.original, commands.CommandRegistrationError):
                         raise e
                     print(f'[ERROR] Couldn\'t reload the cog {i}, skipping.')
-        except ExtensionFailed:
+        except commands.ExtensionFailed:
             print(f'[ERROR Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
         await msg.edit(content=l10n['success'], delete_after=5)
@@ -116,9 +115,6 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
             class LeaveButton(BaseLeaveButton):
                 async def callback(self, interaction: nextcord.Interaction):
-                    append = {'telemetry': 0}
-                    write_config(
-                        append=append, guildid=interaction.guild.id, filename='server_cfg')
                     guild = interaction.guild
                     await super().callback(interaction)
                     print(
@@ -128,7 +124,8 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
             class PurgeLeaveButton(BaseLeaveButton):
                 async def callback(self, interaction: nextcord.Interaction):
-                    delete_guild_config(interaction.guild.id, 'server_cfg')
+                    interaction.client.guild_config.delete_guild_entry(
+                        interaction.guild.id)
                     guild = interaction.guild
                     await super().callback(interaction)
                     print(
