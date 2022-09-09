@@ -250,7 +250,9 @@ class GuildConfigEntry(SimpleConfig):
         return self._guild_id
 
     def save(self) -> None:
+        self.__compileschema__()
         self._guildConfigFile._save_guild_cfg(self._guild_id, self._schema)
+        self.__assignattrs__()
         return None
 
     def delete(self) -> None:
