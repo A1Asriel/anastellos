@@ -1,4 +1,4 @@
-__build__ = '2.0.22252.3'
+__build__ = '2.0.22252.4'
 
 import nextcord
 
