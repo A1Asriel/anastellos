@@ -14,26 +14,19 @@ class AEHelpCommand(commands.HelpCommand):
         super().__init__(**options)
 
     def copy(self):  # This fixes the check disappearance.
-        obj = self.__class__(*self.__original_args__, **
-                             self.__original_kwargs__)  # type: ignore
-        obj._command_impl = self._command_impl
         self.add_check(is_eula_accepted)
-        return obj
+        return super().copy()
 
     def get_command_signature(self, command: commands.Command):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']['commands'].get(command.name, dict())
-        if command.parent:
-            alias = self.context.clean_prefix + command.full_parent_name + ' ' + command.name
-        else:
-            alias = self.context.clean_prefix + command.name
+        alias = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""}{command.name}'
         if command.aliases:
             if command.parent:
                 aliases = command.aliases
             else:
-                aliases = [self.context.clean_prefix +
-                           i for i in command.aliases]
-            alias += ' | ' + ' | '.join(aliases)
+                aliases = [f'{self.context.clean_prefix}{i}' for i in command.aliases]
+            alias += f' | {" | ".join(aliases)}'
 
         out = alias
 
@@ -68,13 +61,9 @@ class AEHelpCommand(commands.HelpCommand):
             'anastellos']['info']['help']
         if not await command.can_run(self.context):
             raise commands.MissingPermissions
-        signature = '`' + self.get_command_signature(command) + '`'
+        signature = f'`{self.get_command_signature(command)}`'
         description = self.get_command_description(command, detailed=True)
-        if command.parent:
-            embed_title = self.context.clean_prefix + \
-                command.full_parent_name + ' ' + command.name
-        else:
-            embed_title = self.context.clean_prefix + command.name
+        embed_title = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""} {command.name}'
         embed_desc = f'{l10n["usage"]}\n{signature}'
         if description[0]:
             embed_desc += f'\n{l10n["description"]}\n{description[0]}'
@@ -104,12 +93,7 @@ class AEHelpCommand(commands.HelpCommand):
     async def send_group_help(self, group: commands.Group):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']
-        embed_title = l10n['title']
-        if group.parent:
-            embed_title = self.context.clean_prefix + \
-                group.full_parent_name + ' ' + group.name
-        else:
-            embed_title = self.context.clean_prefix + group.name
+        embed_title = f'{self.context.clean_prefix}{group.full_parent_name+" " if group.parent is not None else ""}{group.name}'
         embed_fields = []
         commandlist = await self.filter_commands(group.commands, sort=True)
         for command in commandlist:
@@ -121,6 +105,9 @@ class AEHelpCommand(commands.HelpCommand):
         embed = AEEmbed(self.context.bot, title=embed_title,
                         fields=embed_fields)
         await self.context.reply(embed=embed)
+
+    async def send_cog_help(self, cog):
+        ...  # TODO:
 
     async def command_not_found(self, string):
         raise commands.CommandNotFound(string)
