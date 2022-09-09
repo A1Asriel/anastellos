@@ -35,47 +35,6 @@ def fetch_json(filename: str) -> dict:
         raise exception
 
 
-def write_config(append: dict, guildid: int | str, filename: str = 'server_cfg'):
-    """Modify the specified servers config file.
-
-    Args:
-        append: New data that needs to be inserted into the config file. Overwrites the existing data.
-        guildid: The ID of the guild whose config needs to be modified.
-        filename: JSON file name without extension.
-
-    Raises:
-        JSONDecodeError: If the file is not valid JSON.
-    """
-    mode = 'w'
-    try:
-        cfg = fetch_json(filename)
-    except JSONDecodeError as exception:
-        print('[ERROR] JSON file is corrupted, cannot modify it.')
-        raise exception
-
-    if isinstance(guildid, int):
-        guildid = str(guildid)
-    try:
-        cfg['guilds'][guildid].update(append)
-    except KeyError:
-        cfg['guilds'][guildid] = {}
-        cfg['guilds'][guildid].update(append)
-    try:
-        with open(f'{filename}.json', encoding='utf8', mode=mode) as out:
-            json.dump(cfg, out, indent=4)
-    except:
-        print('[WARN] JSON file can\'t be written.')
-
-
-def delete_guild_config(guild_id: int | str, filename: str):
-    if isinstance(guild_id, int):
-        guild_id = str(guild_id)
-    cfg = fetch_json(filename)['guilds']
-    cfg.pop(guild_id)
-    with open(f'{filename}.json', encoding='utf8', mode='w') as out:
-        json.dump(cfg, out, indent=4)
-
-
 def loadcog(bot: Bot, path: str, type: str = ''):
     for cog in os.listdir(path):
         path = path.replace('/', '.')
