@@ -33,9 +33,10 @@ class SimpleConfig:
         return None
 
     def save(self) -> None:
-        self.__compileschema__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
+        self.__assignattrs__()
+        self.__compileschema__()
         return None
 
     @staticmethod
@@ -204,8 +205,6 @@ class GuildConfigFile(SimpleConfig):
             old_rev += 1
         self._schema = self._file.copy()
         self.save()
-        self.__assignattrs__()
-        self.__compileschema__()
         return None
 
 
@@ -251,7 +250,6 @@ class GuildConfigEntry(SimpleConfig):
         return self._guild_id
 
     def save(self) -> None:
-        self.__compileschema__()
         self._guildConfigFile._save_guild_cfg(self._guild_id, self._schema)
         return None
 
