@@ -13,7 +13,7 @@ class SimpleConfig:
         for arg, value in kwargs.items():
             self.__setattr__(arg, value)
 
-    def __assignattrs__(self):
+    def __assignattrs__(self) -> None:
         try:
             cfg = self.get_config(filename=self._filename, schema=self._schema)
         except json.JSONDecodeError:
@@ -21,17 +21,22 @@ class SimpleConfig:
             print('[WARN] Using the default config.')
         for key in self._def_schema.keys():
             self.__setattr__(key, cfg[key])
+        return None
 
-    def __compileschema__(self):
+    def __compileschema__(self) -> None:
         self._schema = {key: self.__getattribute__(
             key) for key in self._def_schema.keys()}
+        return None
 
-    def __resetschema__(self):
+    def __resetschema__(self) -> None:
         self._schema = self._def_schema
+        return None
 
-    def save(self):
+    def save(self) -> None:
+        self.__compileschema__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
+        return None
 
     @staticmethod
     def get_config(filename: str = 'cfg', schema: dict = {}) -> dict:
@@ -45,17 +50,19 @@ class SimpleConfig:
             Config in the form of dictionary.
 
         Raises:
+            FileNotFoundError: If file is not found and no schema was defined.
             JSONDecodeError: If the file is not valid JSON and the schema is not defined.
         """
         try:
             return fetch_json(filename)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
             if schema is not None:
                 print(
                     f'[WARN] Creating a new file at {filename}.json and using the default config.')
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
                     return schema
+            raise e
         except json.JSONDecodeError as e:
             if schema is not None:
                 print(
@@ -117,7 +124,7 @@ class Config(SimpleConfig):
             self.__setattr__(arg, value)
 
     @property
-    def full_version(self):
+    def full_version(self) -> str:
         return f'{self.stage+" " if self.stage.lower() != "release" else ""}{self.version} [AE {self.build}]'
 
 
@@ -140,9 +147,9 @@ class GuildConfigFile(SimpleConfig):
         self.additional_guild_params = additional_guild_params
 
         self._file = SimpleConfig.get_config(filename, self._def_schema)
-        while self._file['__revision__'] < self.__currev__:
-            self.__upgrade(self._file.get(
-                '__revision__', 0), self.__currev__)
+        self.__revision__ = self._file.get('__revision__', 0)
+        if self.__revision__ < self.__currev__:
+            self.__upgrade(self.__revision__, self.__currev__)
         self.__assignattrs__()
         self.__compileschema__()
 
@@ -156,12 +163,17 @@ class GuildConfigFile(SimpleConfig):
     def create_guild_cfg(self, guild_id):
         return GuildConfigEntry(self, guild_id, additional_guild_params=self.additional_guild_params, try_create=True)
 
-    def _save_guild_cfg(self, guild_id: int, data: dict):
+    def _save_guild_cfg(self, guild_id: int, data: dict) -> None:
         self.guilds[str(guild_id)].update(data)
-        self.__compileschema__()
         self.save()
+        return None
 
-    def __upgrade(self, old_rev: int, new_rev: int | None = None):
+    def delete_guild_entry(self, guild_id: int) -> bool:
+        entry = self.guilds.pop(str(guild_id), False)
+        self.save()
+        return bool(entry)
+
+    def __upgrade(self, old_rev: int, new_rev: int | None = None) -> None:
         def to1():
             self._file = {
                 '__revision__': 1,
@@ -170,11 +182,9 @@ class GuildConfigFile(SimpleConfig):
 
         def to2():
             for guildid in self._file['guilds'].keys():
-                self._file['guilds'][guildid].update(
-                    {
-                        'is_eula_accepted': False
-                    }
-                )
+                self._file['guilds'][guildid] = {
+                    'is_eula_accepted': False
+                } | self._file['guilds'][guildid]
             self._file['__revision__'] = 2
 
         if new_rev is not None and new_rev < old_rev:
@@ -196,6 +206,7 @@ class GuildConfigFile(SimpleConfig):
         self.save()
         self.__assignattrs__()
         self.__compileschema__()
+        return None
 
 
 class GuildConfigEntry(SimpleConfig):
@@ -219,7 +230,7 @@ class GuildConfigEntry(SimpleConfig):
         self.__assignattrs__()
         self.__compileschema__()
 
-    def __assignattrs__(self):
+    def __assignattrs__(self) -> None:
         if self.try_create:
             cfg = self._guildConfigFile._schema['guilds']
             try:
@@ -232,14 +243,21 @@ class GuildConfigEntry(SimpleConfig):
         else:
             cfg = self._guildConfigFile._schema['guilds'][str(self._guild_id)]
         for key in self._def_schema.keys():
-            self.__setattr__(key, cfg.get(key, self.additional_guild_params.get(key, (None, None))[1]))
+            self.__setattr__(key, cfg.get(
+                key, self.additional_guild_params.get(key, (None, None))[1]))
+        return None
 
-    def __int__(self):
+    def __int__(self) -> int:
         return self._guild_id
 
-    def save(self):
+    def save(self) -> None:
         self.__compileschema__()
         self._guildConfigFile._save_guild_cfg(self._guild_id, self._schema)
+        return None
+
+    def delete(self) -> None:
+        self._guildConfigFile.delete_guild_entry(self._guild_id)
+        return None
 
     @property
     def id(self) -> int:
