@@ -23,10 +23,7 @@ class Listeners(AnastellosInternalCog):
                 entry.lang = guild.preferred_locale[:2]
                 entry.save()
             return None
-        new_cfg = self.bot.config._def_guild_config
-        if pref_locale and pref_locale in self.bot.config.lang_names:
-            new_cfg['lang'] = guild.preferred_locale[:2]
-        print('None existing, waiting for a user to accept the agreement.')
+        print('None existing, waiting for an admin to accept the agreement.')
         return None
 
     @commands.Cog.listener(name='on_guild_remove')
@@ -65,7 +62,7 @@ class Listeners(AnastellosInternalCog):
         elif isinstance(error, commands.MissingRequiredArgument):
             l10n_code = 'missing_required_argument'
             console_msg = f'[WARN] {ctx.author} missed the argument "{error.param.name}" while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
-        elif isinstance(error, commands.BadArgument):
+        elif isinstance(error, (commands.BadArgument, commands.BadUnionArgument)):
             l10n_code = 'bad_argument'
             console_msg = f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild}).'
         elif isinstance(error, commands.MaxConcurrencyReached):
