@@ -171,8 +171,8 @@ class AEEmbed(Embed):
         self.author_icon = author_icon
         if self.author_name is AEEmbedDefault:
             self.author_name = f'{bot.config.name} {bot.config.full_version}'
-            if bot.config.mode == 'indev':
-                self.author_name += ' | INDEV'
+            if bot.config.mode == 2:
+                self.author_name += ' | DEBUG'
         if self.author_icon is AEEmbedDefault:
             self.author_icon = bot.config.self_avatar_url
         self.set_author(name=self.author_name,

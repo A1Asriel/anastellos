@@ -1,5 +1,6 @@
 import json
 from os import listdir
+from typing import Any
 
 from .exceptions import AnastellosException, AnastellosInitError
 from .utils import fetch_json
@@ -20,7 +21,11 @@ class SimpleConfig:
             cfg = self._schema
             print('[WARN] Using the default config.')
         for key in self._def_schema.keys():
-            self.__setattr__(key, cfg[key])
+            try:
+                self.__setattr__(key, cfg[key])
+            except KeyError as e:
+                print(f'[FATAL] Global configuration entry "{key}" wasn\'t found.')
+                raise AnastellosInitError(__stage__='config') from e
         return None
 
     def __compileschema__(self) -> None:
@@ -75,20 +80,23 @@ class SimpleConfig:
 
 
 class Config(SimpleConfig):
-    def __init__(self, filename: str = 'cfg', *, additional_guild_params: dict[str] = {}, **kwargs):
+    def __init__(self, filename: str = 'cfg', *, additional_guild_params: dict[str, tuple[str, Any]] = {}, additional_global_params: dict[str] = {}, **kwargs):
         super().__init__(filename, **kwargs)
 
         # Settings that go into cfg.json.
-        self.__settings = ('name', 'stage', 'mode', 'version',
-                           'def_prefix', 'owner', 'demand_agreement')
+        self.__settings = ['name', 'stage', 'mode', 'version',
+                           'def_prefix', 'owner', 'demand_agreement']
+        for k, default in additional_global_params.items():
+            self.__settings.append(k)
+            self.__setattr__(k, default)
 
         self.name: str = 'Anastellos Engine'
-        self.stage = 'Release'
-        self.mode = 'normal'
-        self.version = '1.0'
-        self.def_prefix = 'ae!'
+        self.stage: str = 'Release'
+        self.mode: int = 0
+        self.version: str = '1.0'
+        self.def_prefix: str = 'ae!'
         self.owner = None
-        self.demand_agreement = False
+        self.demand_agreement: bool = False
 
         self._def_schema = {name: self.__getattribute__(
             name) for name in self.__settings}

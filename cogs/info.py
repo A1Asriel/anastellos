@@ -12,7 +12,7 @@ class Info(AnastellosInternalCog):
             'anastellos']['info']['about']
         title = f'{self.bot.config.name} {self.bot.config.full_version}'
         desc = l10n['desc'].format(prefix=ctx.clean_prefix)
-        if self.bot.config.mode == 'indev':
+        if self.bot.config.mode == 2:
             desc += l10n['indev']
         creator = await self.bot.fetch_user(self.bot.owner_id)
         footer_title = l10n['creator'].format(creator=creator)
