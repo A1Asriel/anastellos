@@ -24,7 +24,7 @@
         "info": {
             "about": {
                 "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the information about most commands.*",
-                "indev": "\n\nThe bot is operating in INDEV mode that means some bugs may appear. We recommend you to refrain from using it until the maintainance is complete.",
+                "indev": "\n\nThe bot is operating in DEBUG mode that means some bugs may appear. We recommend you to refrain from using it until the maintainance is complete.",
                 "anastellos": "Powered by Anastellos Engine",
                 "creator": "<> with ❤ by {creator}"
             },
@@ -76,14 +76,14 @@
             "stop": "*Stopping the bot...*",
             "shutdown": {
                 "msg": "*Stopping the bot and shutting down the host...*",
-                "error_indev": "*The bot is operating in INDEV mode. Host shutdown is unavailable.*"
+                "error_indev": "*The bot is operating in DEBUG mode. Host shutdown is unavailable.*"
             },
             "reload": {
                 "start": "*Reinitializing started...*",
                 "error": "*An exception occurred while loading {i} module.*",
                 "success": "*Reinitializing complete.*"
             },
-            "indev_notif": "\n> **WARNING! The bot is operating in INDEV mode. Please refrain from using this mode if there are no tests running.**"
+            "indev_notif": "\n> **WARNING! The bot is operating in DEBUG mode. Please refrain from using this mode if there are no tests running.**"
         },
         "settings": {
             "list": {

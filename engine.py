@@ -1,4 +1,4 @@
-__build__ = '2.0.22254.2'
+__build__ = '2.0.22256.1'
 
 import nextcord
 
@@ -10,20 +10,20 @@ from .utils import *
 
 
 class AnastellosEngine:
-    def __init__(self, *, additional_guild_params={}):
+    def __init__(self, *, additional_guild_params={}, additional_global_params={}):
         self.config = Config(
-            additional_guild_params=additional_guild_params, build=__build__)
+            additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
 
         print(f'- {self.config.name} {self.config.full_version} -', end='')
-        if self.config.mode == 'indev':
-            print(' INDEV', end='')
+        if self.config.mode == 2:
+            print(' DEBUG', end='')
         print('\n')
 
-        if self.config.mode == 'indev':
+        if self.config.mode == 2:
             activity = nextcord.Game(
-                f'INDEV mode. The bot may operate unstable. | {self.config.full_version}')
+                f'DEBUG mode. The bot may operate unstable. | {self.config.full_version}')
             status = nextcord.Status.dnd
-        elif self.config.mode == 'preview':
+        elif self.config.mode == 1:
             activity = nextcord.Game(
                 f'{self.config.full_version} | Some bugs may occur.')
             status = nextcord.Status.idle
@@ -56,8 +56,8 @@ class AnastellosEngine:
                 ['"' + j.name + '"' for j in self.bot.guilds])
             print(
                 f'[INFO] Logged in as {self.bot.user.name}#{self.bot.user.discriminator} ({self.bot.user.id}).\nBot is running on servers: {guildlist}.')
-            if self.config.mode == 'indev':
-                print('[WARN] The bot is running in INDEV mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
+            if self.config.mode == 2:
+                print('[WARN] The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
             print('_______\n')
             if self.bot.user.avatar is not None:
                 self.config.self_avatar_url = self.bot.user.avatar.url

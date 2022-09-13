@@ -24,7 +24,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
     @commands.is_owner()
     async def shutdown(self, ctx: commands.Context):
         l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['technical']['shutdown']
-        if self.bot.config.mode == 'indev':
+        if self.bot.config.mode == 2:
             return await ctx.reply(l10n['error_indev'], delete_after=5)
         # if not self.bot.config.can_shutdown:
         #     return await ctx.reply(l10n['cant_shutdown'], delete_after=5)
