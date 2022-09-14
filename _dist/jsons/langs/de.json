@@ -83,7 +83,18 @@
                 "error": "*Beim Laden des {i} Moduls ist eine Ausnahme aufgetreten.*",
                 "success": "*Neuinitialisierung abgeschlossen.*"
             },
-            "indev_notif": "\n> **WARNUNG! Der Bot opperiert in DEBUG Mode. Bitte verwende diesen Modus nicht, wenn keine Tests laufen.**"
+            "indev_notif": "\n> **WARNUNG! Der Bot opperiert in DEBUG Mode. Bitte verwende diesen Modus nicht, wenn keine Tests laufen.**",
+            "host_info": {
+                "title": "Host info [TRANSLATE ME]",
+                "memory": "{used} of {total} GB ({used_percent}%) [TRANSLATE ME]",
+                "day": "day [TRANSLATE ME]",
+                "days": "days [TRANSLATE ME]",
+                "os": "Operating system [TRANSLATE ME]",
+                "mem": "RAM usage [TRANSLATE ME]",
+                "python_ver": "Python interpreter version [TRANSLATE ME]",
+                "nextcord_ver": "Nextcord library version [TRANSLATE ME]",
+                "bot_uptime": "Bot uptime [TRANSLATE ME]"
+            }
         },
         "settings": {
             "list": {
