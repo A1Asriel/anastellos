@@ -69,7 +69,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         mem_str = l10n['memory'].format(total=round(mem.total/(2**30), 1), used=round(mem.used/(2**30), 1), used_percent=round(mem.used/mem.total*100))
 
         sys_info = platform.uname()
-        sys_str = f'{sys_info.system}{" NT" if psutil.WINDOWS else ""} {sys_info.version} {sys_info.machine}'
+        sys_str = f'{sys_info.system}{" NT" if psutil.WINDOWS else " "+sys_info.release} {sys_info.version} {sys_info.machine}'
 
         uptime = time.gmtime(time.time() - self.bot.startup_time)
         uptime_str = f'{uptime.tm_hour}:{uptime.tm_min:02d}:{uptime.tm_sec:02d}'
