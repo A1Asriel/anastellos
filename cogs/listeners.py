@@ -1,3 +1,4 @@
+import logging
 import nextcord
 from nextcord.ext import commands
 
@@ -6,29 +7,30 @@ from ..classes import AnastellosInternalCog
 from ..config import GuildConfigEntry
 from ..utils import localization
 
+_log = logging.getLogger(__name__)
+
 
 class Listeners(AnastellosInternalCog):
     @commands.Cog.listener(name='on_guild_join')
     async def new_server_cfg(self, guild: nextcord.Guild):
-        print(
-            f'[INFO] Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ', end='')
+        _log.info(f'Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ')
         if self.bot.guild_config.get_guild_cfg(guild.id) is not None:
-            print('Already existing.')
+            _log.info('Already existing.')
             return None
         if not self.bot.config.demand_agreement:
-            print('None existing, creating a new one.')
+            _log.info('None existing, creating a new one.')
             entry: GuildConfigEntry = self.bot.guild_config.create_guild_cfg(self.bot.guild_config, guild.id)
             pref_locale = guild.preferred_locale
             if pref_locale and pref_locale in self.bot.config.lang_names:
                 entry.lang = guild.preferred_locale[:2]
                 entry.save()
             return None
-        print('None existing, waiting for an admin to accept the agreement.')
+        _log.info('None existing, waiting for an admin to accept the agreement.')
         return None
 
     @commands.Cog.listener(name='on_guild_remove')
     async def on_guild_leave(self, guild: nextcord.Guild):
-        print(f'[INFO] Left a guild. Name: {guild.name}, ID: {guild.id}.')
+        _log.info(f'Left a guild. Name: {guild.name}, ID: {guild.id}.')
         return None
 
     @commands.Cog.listener(name='on_ready')
@@ -46,43 +48,43 @@ class Listeners(AnastellosInternalCog):
         return None
 
     @commands.Cog.listener('on_command_error')
-    async def error_handler(self, ctx: commands.Context, error):
+    async def error_handler(self, ctx: commands.Context, exception):
         l10n_code = ''
         console_msg = ''
         await reply_or_send(ctx)
         delete_after = 10
 
-        if isinstance(error, commands.MissingPermissions):
+        if isinstance(exception, commands.MissingPermissions):
             l10n_code = 'insufficient_perms'
-        elif isinstance(error, commands.BotMissingPermissions):
+        elif isinstance(exception, commands.BotMissingPermissions):
             l10n_code = 'bot_insufficient_perms'
-        elif isinstance(error, commands.ChannelNotFound):
+        elif isinstance(exception, commands.ChannelNotFound):
             l10n_code = 'channel_not_found'
-            console_msg = f'[WARN] {ctx.author} entered a non-existing channel {error.argument} while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
-        elif isinstance(error, commands.MissingRequiredArgument):
+            console_msg = f'[WARN] {ctx.author} entered a non-existing channel {exception.argument} while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
+        elif isinstance(exception, commands.MissingRequiredArgument):
             l10n_code = 'missing_required_argument'
-            console_msg = f'[WARN] {ctx.author} missed the argument "{error.param.name}" while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
-        elif isinstance(error, (commands.BadArgument, commands.BadUnionArgument)):
+            console_msg = f'[WARN] {ctx.author} missed the argument "{exception.param.name}" while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
+        elif isinstance(exception, (commands.BadArgument, commands.BadUnionArgument)):
             l10n_code = 'bad_argument'
             console_msg = f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild}).'
-        elif isinstance(error, commands.MaxConcurrencyReached):
+        elif isinstance(exception, commands.MaxConcurrencyReached):
             l10n_code = 'max_concurrency'
             console_msg = f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
-        elif isinstance(error, commands.NotOwner):
+        elif isinstance(exception, commands.NotOwner):
             l10n_code = 'not_owner'
-        elif isinstance(error, commands.CommandNotFound):
+        elif isinstance(exception, commands.CommandNotFound):
             l10n_code = 'command_not_found'
-        elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, nextcord.Forbidden):
-            if error.original.code == 160002:
+        elif isinstance(exception, commands.CommandInvokeError) and isinstance(exception.original, nextcord.Forbidden):
+            if exception.original.code == 160002:
                 # Typically, this is avoided by using `reply_or_send` fix.
                 l10n_code = 'no_history_access'
             else:
                 l10n_code = 'forbidden'
                 console_msg = f'[WARN] {ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
-        elif isinstance(error, commands.CheckFailure) and (ctx.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted):
+        elif isinstance(exception, commands.CheckFailure) and (ctx.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted):
             pass
         else:
-            raise error
+            raise exception
 
         if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
             l10n_code = ''
@@ -94,7 +96,7 @@ class Listeners(AnastellosInternalCog):
             await ctx.reply(l10n[l10n_code], delete_after=delete_after)
 
         if console_msg:
-            print(console_msg)
+            _log.error(console_msg)
 
 
 def setup(bot):

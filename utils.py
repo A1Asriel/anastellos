@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from json.decoder import JSONDecodeError
 
@@ -7,6 +8,8 @@ from nextcord.ext.commands import Bot
 from nextcord.ext.commands.errors import ExtensionFailed
 
 # from anastellos.classes import AnastellosBot  Won't fix: cannot import.
+
+_log = logging.getLogger(__name__)
 
 
 def fetch_json(filename: str) -> dict:
@@ -26,12 +29,12 @@ def fetch_json(filename: str) -> dict:
         with open(f'{filename}.json', encoding='utf8') as data:
             return json.load(data)
     except FileNotFoundError as exception:
-        print(f'[ERROR] JSON file at {filename}.json wasn\'t found.')
+        _log.error(f'JSON file at {filename}.json wasn\'t found.')
         raise exception
     except JSONDecodeError as exception:
-        print(f'[ERROR] JSON file at {filename} couldn\'t be read.')
+        _log.error(f'JSON file at {filename} couldn\'t be read.')
         if exception.args[0] == 'Expecting value: line 1 column 1 (char 0)':
-            print('[ERROR] Maybe the entry brackets are missing?')
+            _log.error('Maybe the entry brackets are missing?')
         raise exception
 
 
@@ -39,17 +42,20 @@ def loadcog(bot: Bot, path: str, type: str = ''):
     for cog in os.listdir(path):
         path = path.replace('/', '.')
         if cog.endswith('.py') and cog[-7:-3] != '_dis' and not cog.startswith('__'):
-            print(f'[INFO] Initializing {type}cog {cog}...')
+            _log.info(f'Initializing {type}cog {cog}...')
             try:
                 bot.load_extension(f'{path}.{cog[:-3]}')
             except ExtensionFailed as exception:
-                print(f'[ERROR] Failed to initialize extension {cog}!')
-                inp = input('Skip it? YES/No/Raise: ').lower()
-                if inp == 'n' or inp == 'no':
-                    input('[FATAL] Bot initializing halted.\nPress Enter to close.')
+                _log.error(f'Failed to initialize extension {cog}!')
+                inp = input('Skip it? Y/n: ').lower()
+                if 'no'.startswith(inp):
+                    incl_trace = True if bot.config.mode == 2 else False
+                    _log.fatal('Bot initializing halted.', exc_info=incl_trace)
+                    # input()
                     exit()
-                elif inp == 'r' or inp == 'raise':
-                    raise exception
+                # elif inp == 'r' or inp == 'raise':
+                #     _log.fatal(exception)
+                #     raise exception
 
 
 def get_prefix(bot: Bot, msg: Message):

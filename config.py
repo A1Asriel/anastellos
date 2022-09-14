@@ -1,9 +1,12 @@
 import json
+import logging
 from os import listdir
 from typing import Any
 
 from .exceptions import AnastellosException, AnastellosInitError
 from .utils import fetch_json
+
+_log = logging.getLogger(__name__)
 
 
 class SimpleConfig:
@@ -19,12 +22,12 @@ class SimpleConfig:
             cfg = self.get_config(filename=self._filename, schema=self._schema)
         except json.JSONDecodeError:
             cfg = self._schema
-            print('[WARN] Using the default config.')
+            _log.warn('Using the default config.')
         for key in self._def_schema.keys():
             try:
                 self.__setattr__(key, cfg[key])
             except KeyError as e:
-                print(f'[FATAL] Global configuration entry "{key}" wasn\'t found.')
+                _log.fatal(f'Global configuration entry "{key}" wasn\'t found.', exc_info=True)
                 raise AnastellosInitError(__stage__='config') from e
         return None
 
@@ -63,16 +66,14 @@ class SimpleConfig:
             return fetch_json(filename)
         except FileNotFoundError as e:
             if schema is not None:
-                print(
-                    f'[WARN] Creating a new file at {filename}.json and using the default config.')
+                _log.warn(f'Creating a new file at {filename}.json and using the default config.')
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
                     return schema
             raise e
         except json.JSONDecodeError as e:
             if schema is not None:
-                print(
-                    f'[WARN] Overwriting the file at {filename}.json and using the default config.')
+                _log.warn(f'Overwriting the file at {filename}.json and using the default config.')
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
                     return schema
@@ -125,8 +126,7 @@ class Config(SimpleConfig):
                 continue
             self.lang_names.add(langn.removesuffix('.json'))
         if not self.lang_names:
-            print(
-                '[FATAL] No localization files found. The bot is unable to initialize.')
+            _log.fatal('No localization files found. The bot is unable to initialize.')
             raise AnastellosInitError(__stage__='config')
 
         for arg, value in kwargs.items():
@@ -202,12 +202,10 @@ class GuildConfigFile(SimpleConfig):
         while new_rev is None or old_rev < new_rev:
             if old_rev == 0:
                 to1()
-                print(
-                    '[INFO] The guild config file was upgraded to revision 1 successfully.')
+                _log.info('The guild config file was upgraded to revision 1 successfully.')
             elif old_rev == 1:
                 to2()
-                print(
-                    '[INFO] The guild config file was upgraded to revision 2 successfully.')
+                _log.info('The guild config file was upgraded to revision 2 successfully.')
             else:
                 break
             old_rev += 1

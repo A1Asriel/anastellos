@@ -1,4 +1,5 @@
 # import os
+import logging
 from timeit import default_timer
 
 import nextcord
@@ -6,6 +7,8 @@ from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosInternalCog
 from ..utils import localization
+
+_log = logging.getLogger(__name__)
 
 
 class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
@@ -42,16 +45,16 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         i = '$modulename'
         try:
             for i in list(self.bot.extensions):
-                print(f'[INFO] Reloading {i}...')
+                _log.info(f'Reloading {i}...')
                 try:
                     self.bot.reload_extension(i)
                 except commands.ExtensionFailed as e:
                     # FIXME: Workaround to avoid exception during the custom commands reload.
                     if not isinstance(e.original, commands.CommandRegistrationError):
                         raise e
-                    print(f'[ERROR] Couldn\'t reload the cog {i}, skipping.')
+                    _log.error(f'Couldn\'t reload the cog {i}, skipping.')
         except commands.ExtensionFailed:
-            print(f'[ERROR Couldn\'t reload the cog {i}.]')
+            _log.error(f'Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
         await msg.edit(content=l10n['success'], delete_after=5)
 
@@ -65,8 +68,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         latency = round((time2 - time1)*1000)
         msg2 = f'Pong! | {latency}ms'
         await msg.edit(content=msg2)
-        print(
-            f'[DEBUG] {ctx.author} pinged the bot @ #{ctx.channel} ({ctx.guild}). Latency: {latency}ms.')
+        _log.debug(f'{ctx.author} pinged the bot @ #{ctx.channel} ({ctx.guild}). Latency: {latency}ms.')
 
     @commands.command()
     @commands.check_any(
@@ -117,8 +119,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                 async def callback(self, interaction: nextcord.Interaction):
                     guild = interaction.guild
                     await super().callback(interaction)
-                    print(
-                        f'[DEBUG] {interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave a guild.')
+                    _log.debug(f'{interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave a guild.')
                     await guild.leave()
                     return
 
@@ -128,8 +129,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                         interaction.guild.id)
                     guild = interaction.guild
                     await super().callback(interaction)
-                    print(
-                        f'[DEBUG] {interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave and forget a guild.')
+                    _log.debug(f'{interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave and forget a guild.')
                     await guild.leave()
                     return
 

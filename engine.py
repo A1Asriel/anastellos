@@ -1,4 +1,6 @@
-__build__ = '2.0.22256.1'
+__build__ = '2.1.22257.1'
+
+import logging
 
 import nextcord
 
@@ -8,16 +10,21 @@ from .exceptions import *
 from .help import AEHelpCommand
 from .utils import *
 
+_log = logging.getLogger(__name__)
+
 
 class AnastellosEngine:
     def __init__(self, *, additional_guild_params={}, additional_global_params={}):
         self.config = Config(
             additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
 
-        print(f'- {self.config.name} {self.config.full_version} -', end='')
         if self.config.mode == 2:
-            print(' DEBUG', end='')
-        print('\n')
+            logging.getLogger().setLevel(10)
+            logging.getLogger('nextcord').setLevel(20)
+        else:
+            logging.getLogger('nextcord').propagate = False
+
+        _log.info(f'Starting {self.config.name} {self.config.full_version}')
 
         if self.config.mode == 2:
             activity = nextcord.Game(
@@ -51,14 +58,12 @@ class AnastellosEngine:
 
         @self.bot.event
         async def on_ready():
-            print()
             guildlist = ', '.join(
                 ['"' + j.name + '"' for j in self.bot.guilds])
-            print(
-                f'[INFO] Logged in as {self.bot.user.name}#{self.bot.user.discriminator} ({self.bot.user.id}).\nBot is running on servers: {guildlist}.')
+            _log.info(
+                f'Logged in as {self.bot.user.name}#{self.bot.user.discriminator} ({self.bot.user.id}).\nBot is running on servers: {guildlist}.')
             if self.config.mode == 2:
-                print('[WARN] The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
-            print('_______\n')
+                _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
             if self.bot.user.avatar is not None:
                 self.config.self_avatar_url = self.bot.user.avatar.url
             self.bot.owner_id = self.config.owner if self.config.owner is not None else (await self.bot.application_info()).owner.id
@@ -67,8 +72,7 @@ class AnastellosEngine:
         loadcog(self.bot, 'anastellos/cogs', 'internal ')
         loadcog(self.bot, 'cogs')
         if not self.bot.get_cog('Settings'):
-            print(
-                '[WARN] No custom settings cog found, falling back to the default one.')
+            _log.warn('No custom settings cog found, falling back to the default one.')
             from .classes import Settings
             self.bot.add_cog(Settings(self.bot))
 
@@ -76,8 +80,7 @@ class AnastellosEngine:
         try:
             with open('token.txt') as f:
                 TOKEN = f.read()
-        except FileNotFoundError:
-            print(
-                '[FATAL] Cannot access the token file. The bot is unable to initialize.')
-            raise AnastellosInitError(__stage__='token')
+        except FileNotFoundError as e:
+            _log.fatal('Cannot access the token file. The bot is unable to start.')
+            raise AnastellosInitError(__stage__='token') from e
         self.bot.run(TOKEN, reconnect=True)
