@@ -1,6 +1,7 @@
-__build__ = '2.1.22257.1'
+__build__ = '2.1.22257.2'
 
 import logging
+import time
 
 import nextcord
 
@@ -58,6 +59,7 @@ class AnastellosEngine:
 
         @self.bot.event
         async def on_ready():
+            self.bot.startup_time = time.time()
             guildlist = ', '.join(
                 ['"' + j.name + '"' for j in self.bot.guilds])
             _log.info(

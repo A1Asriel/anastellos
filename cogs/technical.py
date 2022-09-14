@@ -1,8 +1,12 @@
 # import os
 import logging
+import platform
+import sys
+import time
 from timeit import default_timer
 
 import nextcord
+import psutil
 from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosInternalCog
@@ -57,6 +61,36 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             _log.error(f'Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
         await msg.edit(content=l10n['success'], delete_after=5)
+
+    @commands.command(hidden=True)
+    async def host_info(self, ctx: commands.Context):
+        l10n = localization(self.bot, ctx.guild.id)['anastellos']['technical']['host_info']
+        mem = psutil.virtual_memory()
+        mem_str = l10n['memory'].format(total=round(mem.total/(2**30), 1), used=round(mem.used/(2**30), 1), used_percent=round(mem.used/mem.total*100))
+
+        sys_info = platform.uname()
+        sys_str = f'{sys_info.system}{" NT" if psutil.WINDOWS else ""} {sys_info.version} {sys_info.machine}'
+
+        uptime = time.gmtime(time.time() - self.bot.startup_time)
+        uptime_str = f'{uptime.tm_hour}:{uptime.tm_min:02d}:{uptime.tm_sec:02d}'
+        if uptime.tm_yday == 2:
+            uptime_str = f'{uptime.tm_yday-1} {l10n["day"]} {uptime_str}'
+        elif uptime.tm_yday > 2:
+            uptime_str = f'{uptime.tm_yday-1} {l10n["days"]} {uptime_str}'
+
+        fields = [
+            (l10n['os'], sys_str),
+            (l10n['mem'], mem_str),
+            (l10n['python_ver'], sys.version),
+            (l10n['nextcord_ver'], nextcord.__version__),
+            (l10n['bot_uptime'], uptime_str)
+        ]
+
+        embed = AEEmbed(self.bot,
+                        title=l10n['title'],
+                        fields=fields)
+
+        await ctx.reply(embed=embed)
 
     @commands.command(aliases=('latency',))
     @commands.guild_only()

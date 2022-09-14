@@ -83,7 +83,18 @@
                 "error": "*An exception occurred while loading {i} module.*",
                 "success": "*Reinitializing complete.*"
             },
-            "indev_notif": "\n> **WARNING! The bot is operating in DEBUG mode. Please refrain from using this mode if there are no tests running.**"
+            "indev_notif": "\n> **WARNING! The bot is operating in DEBUG mode. Please refrain from using this mode if there are no tests running.**",
+            "host_info": {
+                "title": "Host info",
+                "memory": "{used} of {total} GB ({used_percent}%)",
+                "day": "day",
+                "days": "days",
+                "os": "Operating system",
+                "mem": "RAM usage",
+                "python_ver": "Python interpreter version",
+                "nextcord_ver": "Nextcord library version",
+                "bot_uptime": "Bot uptime"
+            }
         },
         "settings": {
             "list": {
