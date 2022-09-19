@@ -102,7 +102,11 @@
                 "prefix": "Prefix",
                 "lang": "Sprache",
                 "enabled": "**Aktiviert**",
-                "disabled": "**Deaktiviert**"
+                "disabled": "**Deaktiviert**",
+                "enabled_responses": "Antworten",
+                "telemetry": "Log Channel",
+                "verbose_random": "Verbose RNG [TRANSLATE ME]",
+                "multilevel": "*multi-level* [TRANSLATE ME]"
             },
             "prefix": {
                 "title": "Prefix erfolgreich geändert",

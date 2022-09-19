@@ -62,8 +62,8 @@ class Settings(AnastellosInternalCog):
                 'anastellos']['settings']['list']
             cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id).get_dict
             fields = [
-                [l10n['prefix'], '`'+cfg['prefix']+'`'],
-                [l10n['lang'], cfg['lang']]
+                [l10n['prefix'], '`'+cfg['prefix']+'`', True],
+                [l10n['lang'], cfg['lang'], True]
             ]
             for name, value in self.bot.config.additional_guild_params.items():
                 if value[0] == 'str':
@@ -73,7 +73,9 @@ class Settings(AnastellosInternalCog):
                 elif value[0] == 'channel':
                     second_field = self.bot.get_channel(
                         cfg[name]).mention if cfg[name] != 0 else l10n['disabled']
-                fields += [[l10n[name], second_field]]
+                elif value[0] == 'dict':
+                    second_field = l10n['multilevel']
+                fields += [[l10n.get(name, name), second_field, True]]
             await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], fields=fields))
 
     @settings.command(name='prefix', aliases=('set_prefix',))
