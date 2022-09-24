@@ -1,11 +1,11 @@
-__build__ = '2.1.22257.3'
+__build__ = '2.1.22267.1'
 
 import logging
 import time
 
 import nextcord
 
-from .classes import AnastellosBot
+from .classes import AESnowflake, AnastellosBot
 from .config import Config, GuildConfigFile
 from .exceptions import *
 from .help import AEHelpCommand
@@ -56,6 +56,7 @@ class AnastellosEngine:
         self.guild_config = GuildConfigFile(
             self.bot, additional_guild_params=additional_guild_params)
         self.bot.guild_config = self.guild_config
+        self.bot.aesnowflake = AESnowflake(self.bot.shard_id)
 
         @self.bot.event
         async def on_ready():

@@ -12,10 +12,11 @@ _log = logging.getLogger(__name__)
 class SimpleConfig:
     def __init__(self, filename: str, **kwargs):
         self._def_schema = {}
-        self._schema = self._def_schema
-        self._filename = filename
         for arg, value in kwargs.items():
             self.__setattr__(arg, value)
+            self._def_schema[arg] = value
+        self._schema = self._def_schema
+        self._filename = filename
 
     def __assignattrs__(self) -> None:
         try:
@@ -41,10 +42,10 @@ class SimpleConfig:
         return None
 
     def save(self) -> None:
+        self.__compileschema__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
         self.__assignattrs__()
-        self.__compileschema__()
         return None
 
     @staticmethod
