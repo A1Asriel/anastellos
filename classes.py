@@ -1,9 +1,12 @@
 from datetime import datetime
 from os import listdir
+from time import time
 
 from nextcord import Colour, Embed
 from nextcord.ext import commands
 from nextcord.ext.commands import Bot, Cog
+
+from anastellos.exceptions import AnastellosException
 
 from .checks import reply_or_send, is_eula_accepted
 from .config import Config, GuildConfigFile
@@ -15,6 +18,7 @@ class AnastellosBot(Bot):
         super().__init__(**kwargs)
         self.config: Config = config
         self.guild_config: GuildConfigFile
+        self.aesnowflake: AESnowflake
 
 
 class AnastellosCog(Cog):
@@ -201,3 +205,30 @@ class AEEmbed(Embed):
                     self.add_field(name=i[0], value=i[1], inline=i[2])
                 elif len(i) == 2:
                     self.add_field(name=i[0], value=i[1], inline=False)
+
+
+class AESnowflake:
+    AE_EPOCH = 1664037145000
+
+    def __init__(self, shard_id: int = 0):
+        self.shard_id = shard_id if shard_id else 0
+        self.last_timestamp = 0
+        self.incr = 0
+
+    def generate(self) -> int:
+        milliseconds = round(time() * 1000) - self.AE_EPOCH
+        if milliseconds < self.last_timestamp:
+            raise AnastellosException
+        if milliseconds > self.last_timestamp:
+            self.last_timestamp = milliseconds
+            self.incr = 0
+        else:
+            self.incr += 1
+        snowflake = (milliseconds << 22) + (self.shard_id << 17) + self.incr
+        return snowflake
+
+    def __int__(self) -> int:
+        return self.generate()
+
+    def __str__(self) -> str:
+        return str(self.generate())
