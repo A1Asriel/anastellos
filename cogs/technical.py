@@ -5,9 +5,9 @@ import sys
 import time
 from timeit import default_timer
 
-import nextcord
+import guilded
 import psutil
-from nextcord.ext import commands
+from guilded.ext import commands
 
 from ..classes import AEEmbed, AnastellosInternalCog
 from ..utils import localization
@@ -60,7 +60,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         except commands.ExtensionFailed:
             _log.error(f'Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
-        await msg.edit(content=l10n['success'], delete_after=5)
+        await msg.edit(content=l10n['success'])
 
     @commands.command(hidden=True)
     async def host_info(self, ctx: commands.Context):
@@ -82,7 +82,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             (l10n['os'], sys_str),
             (l10n['mem'], mem_str),
             (l10n['python_ver'], sys.version),
-            (l10n['nextcord_ver'], nextcord.__version__),
+            (l10n['nextcord_ver'], guilded.__version__),
             (l10n['bot_uptime'], uptime_str)
         ]
 
@@ -104,7 +104,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         await msg.edit(content=msg2)
         _log.debug(f'{ctx.author} pinged the bot @ #{ctx.channel} ({ctx.guild}). Latency: {latency}ms.')
 
-    @commands.command()
+"""     @commands.command()
     @commands.check_any(
         commands.is_owner(),
         commands.has_guild_permissions(manage_guild=True)
@@ -173,7 +173,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             name=self.bot.config.name), desc=l10n['desc_msg'], colour=nextcord.Color.brand_red())
         _LeaveMessageUI = LeaveMessageUI(ctx, l10n['ui'])
         msg = await ctx.reply(embed=emb1, view=_LeaveMessageUI)
-        _LeaveMessageUI.message = msg
+        _LeaveMessageUI.message = msg """
 
 
 def setup(bot):

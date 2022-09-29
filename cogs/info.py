@@ -1,4 +1,5 @@
-from nextcord.ext import commands
+from guilded import Embed
+from guilded.ext import commands
 
 from ..classes import AEEmbed, AnastellosInternalCog
 from ..utils import *
@@ -17,7 +18,7 @@ class Info(AnastellosInternalCog):
         creator = await self.bot.fetch_user(self.bot.owner_id)
         footer_title = l10n['creator'].format(creator=creator)
         footer_icon = creator.display_avatar.url
-        thumbnail = self.bot.config.self_avatar_url
+        thumbnail = self.bot.config.self_avatar_url if self.bot.config.self_avatar_url else Embed.Empty
         author_name = l10n['anastellos']
         author_icon = 'https://cdn.discordapp.com/attachments/713481949896900622/992450921852313640/anastellos_engine_logo.png'
         author_url = 'https://github.com/A1Asriel/anastellos/'

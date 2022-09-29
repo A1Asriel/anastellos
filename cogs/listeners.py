@@ -1,6 +1,6 @@
 import logging
-import nextcord
-from nextcord.ext import commands
+import guilded
+from guilded.ext import commands
 
 from ..checks import reply_or_send
 from ..classes import AnastellosInternalCog
@@ -11,27 +11,34 @@ _log = logging.getLogger(__name__)
 
 
 class Listeners(AnastellosInternalCog):
-    @commands.Cog.listener(name='on_guild_join')
-    async def new_server_cfg(self, guild: nextcord.Guild):
-        _log.info(
-            f'Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ')
-        if self.bot.guild_config.get_guild_cfg(guild.id) is not None:
-            _log.info('Already existing.')
+    def create_server_cfg(self, server_id):
+        if self.bot.guild_config.get_guild_cfg(server_id) is not None:
+            # _log.info('Already existing.')
             return None
         if not self.bot.config.demand_agreement:
             _log.info('None existing, creating a new one.')
-            entry: GuildConfigEntry = self.bot.guild_config.create_guild_cfg(
-                self.bot.guild_config, guild.id)
-            pref_locale = guild.preferred_locale
-            if pref_locale and pref_locale in self.bot.config.lang_names:
-                entry.lang = guild.preferred_locale[:2]
-                entry.save()
+            entry: GuildConfigEntry = self.bot.guild_config.create_guild_cfg(server_id)
+            # pref_locale = server.preferred_locale
+            # if pref_locale and pref_locale in self.bot.config.lang_names:
+            #     entry.lang = server.preferred_locale[:2]
+            #     entry.save()
+            entry.save()
             return None
-        _log.info('None existing, waiting for an admin to accept the agreement.')
+
+    @commands.Cog.listener(name='on_message')
+    async def unknown_server_cfg(self, message: guilded.Message):
+        self.create_server_cfg(message.server.id)
+
+    @commands.Cog.listener(name='on_server_join')
+    async def new_server_cfg(self, server: guilded.Server):
+        _log.info(
+            f'Joined a server. Name: {server.name}, ID: {server.id}. Checking for a config... ')
+        self.create_server_cfg(server.id)
+        # _log.info('None existing, waiting for an admin to accept the agreement.')
         return None
 
     @commands.Cog.listener(name='on_guild_remove')
-    async def on_guild_leave(self, guild: nextcord.Guild):
+    async def on_guild_leave(self, guild: guilded.Guild):
         _log.info(f'Left a guild. Name: {guild.name}, ID: {guild.id}.')
         return None
 
@@ -76,7 +83,7 @@ class Listeners(AnastellosInternalCog):
             l10n_code = 'not_owner'
         elif isinstance(exception, commands.CommandNotFound):
             l10n_code = 'command_not_found'
-        elif isinstance(exception, commands.CommandInvokeError) and isinstance(exception.original, nextcord.Forbidden):
+        elif isinstance(exception, commands.CommandInvokeError) and isinstance(exception.original, guilded.Forbidden):
             if exception.original.code == 160002:
                 # Typically, this is avoided by using `reply_or_send` fix.
                 l10n_code = 'no_history_access'
@@ -100,7 +107,7 @@ class Listeners(AnastellosInternalCog):
                 'anastellos']['global_errors']
             try:
                 await ctx.reply(l10n[l10n_code], delete_after=delete_after)
-            except nextcord.Forbidden:
+            except guilded.Forbidden:
                 _log.error(
                     f'Couldn\'t send an error message to {ctx.channel.name}.')
 

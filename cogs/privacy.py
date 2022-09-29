@@ -1,7 +1,7 @@
 from datetime import datetime
 
-import nextcord
-from nextcord.ext import commands
+import guilded
+from guilded.ext import commands
 
 from ..classes import AEEmbed, AnastellosBot, AnastellosInternalCog
 from ..utils import *
@@ -11,7 +11,7 @@ class Privacy(AnastellosInternalCog):
     def cog_check(self, ctx):
         return self.bot.config.demand_agreement
 
-    class AgreementView(nextcord.ui.View):
+    """ class AgreementView(nextcord.ui.View):
         def __init__(self, l10n, author):
             super().__init__(timeout=300)
             self.l10n = l10n
@@ -77,7 +77,7 @@ class Privacy(AnastellosInternalCog):
         ):
             await ctx.send(embed=embed, view=self.AgreementView(l10n, ctx.author))
         else:
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed) """
 
 
 def setup(bot):

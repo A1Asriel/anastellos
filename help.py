@@ -1,7 +1,7 @@
 from inspect import Parameter
 from itertools import zip_longest
 
-from nextcord.ext import commands
+from guilded.ext import commands
 
 from anastellos.checks import is_eula_accepted
 
@@ -13,9 +13,9 @@ class AEHelpCommand(commands.HelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
 
-    def copy(self):  # This fixes the check disappearance.
-        self.add_check(is_eula_accepted)
-        return super().copy()
+    # def copy(self):  # This fixes the check disappearance.
+    #     self.add_check(is_eula_accepted)
+    #     return super().copy()
 
     def get_command_signature(self, command: commands.Command):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[

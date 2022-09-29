@@ -108,7 +108,7 @@ class Config(SimpleConfig):
         self.__compileschema__()
 
         # Settings that stay in the memory.
-        self.self_avatar_url = ''
+        self.self_avatar_url = None
         self._langfiles_path = 'jsons/langs/'
         self._def_guild_config = {  # Revision 2
             "is_eula_accepted": False,

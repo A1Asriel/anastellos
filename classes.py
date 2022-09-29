@@ -2,9 +2,9 @@ from datetime import datetime
 from os import listdir
 from time import time
 
-from nextcord import Colour, Embed
-from nextcord.ext import commands
-from nextcord.ext.commands import Bot, Cog
+from guilded import Colour, Embed
+from guilded.ext import commands
+from guilded.ext.commands import Bot, Cog
 
 from anastellos.exceptions import AnastellosException
 
@@ -29,7 +29,8 @@ class AnastellosCog(Cog):
         await reply_or_send(ctx)
 
     def cog_check(self, ctx: commands.Context) -> bool:
-        return is_eula_accepted(ctx)
+        # return is_eula_accepted(ctx)
+        return True
 
 
 class AnastellosInternalCog(AnastellosCog):
@@ -59,7 +60,7 @@ class Settings(AnastellosInternalCog):
         return yes, no
 
     @commands.group()
-    @commands.has_guild_permissions(manage_guild=True)
+    # @commands.has_guild_permissions(manage_guild=True)
     async def settings(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             l10n = localization(self.bot, guild_id=ctx.guild.id)[
@@ -91,7 +92,7 @@ class Settings(AnastellosInternalCog):
         cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
         cfg.prefix = new_prefix
         cfg.save()
-        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'].format(new_prefix=new_prefix), colour=Colour.brand_green()))
+        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'].format(new_prefix=new_prefix), colour=Colour.green()))
 
     @settings.command(name='language', aliases=('lang', 'set_language', 'set_lang'))
     async def set_lang(self, ctx: commands.Context, new_lang: str):
@@ -120,7 +121,7 @@ class Settings(AnastellosInternalCog):
         cfg.save()
         l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['settings']['lang']
-        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.brand_green()))
+        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.green()))
 
 
 class AEEmbed(Embed):
@@ -150,7 +151,7 @@ class AEEmbed(Embed):
         title: str = Embed.Empty,
         url: str = Embed.Empty,
         desc: str = Embed.Empty,
-        colour: Colour | int = Colour.blurple(),
+        colour: Colour | int = Colour.purple(),
         author_name: str = AEEmbedDefault,
         author_url: str = Embed.Empty,
         author_icon: str = AEEmbedDefault,
@@ -159,7 +160,7 @@ class AEEmbed(Embed):
         fields: list | tuple | None = None,
         image_url: str = Embed.Empty,
         thumbnail_url: str = Embed.Empty,
-        timestamp: datetime | None = None
+        timestamp: datetime | None = Embed.Empty
     ):
         if isinstance(self.colour, int):
             self.colour = Colour(self.colour)
@@ -186,13 +187,14 @@ class AEEmbed(Embed):
 
         self.footer_title = footer_title
         self.footer_icon = footer_icon
-        self.set_footer(text=self.footer_title, icon_url=self.footer_icon)
+        if self.footer_title is not Embed.Empty:
+            self.set_footer(text=self.footer_title, icon_url=self.footer_icon)
 
         self.image_url = image_url
-        self.set_image(self.image_url)
+        self.set_image(url=self.image_url)
 
         self.thumbnail_url = thumbnail_url
-        self.set_thumbnail(self.thumbnail_url)
+        self.set_thumbnail(url=self.thumbnail_url)
 
         self.auto_fields = fields
         if isinstance(self.auto_fields, (list, tuple)):
