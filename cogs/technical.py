@@ -39,7 +39,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         os.system('shutdown -s -t 10')
         return await self.bot.close() """
 
-    @commands.command(hidden=True)
+    @commands.command()
     @commands.guild_only()
     @commands.is_owner()
     async def reload(self, ctx: commands.Context):
@@ -62,7 +62,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
         await msg.edit(content=l10n['success'], delete_after=5)
 
-    @commands.command(hidden=True)
+    @commands.command()
     async def host_info(self, ctx: commands.Context):
         l10n = localization(self.bot, ctx.guild.id)['anastellos']['technical']['host_info']
         mem = psutil.virtual_memory()
@@ -92,7 +92,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
         await ctx.reply(embed=embed)
 
-    @commands.command(aliases=('latency',))
+    @commands.command(aliases=('latency',), hidden=False)
     @commands.guild_only()
     async def ping(self, ctx: commands.Context):
         msg1 = 'Ping...'
@@ -104,7 +104,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         await msg.edit(content=msg2)
         _log.debug(f'{ctx.author} pinged the bot @ #{ctx.channel} ({ctx.guild}). Latency: {latency}ms.')
 
-    @commands.command()
+    @commands.command(hidden=False)
     @commands.check_any(
         commands.is_owner(),
         commands.has_guild_permissions(manage_guild=True)
