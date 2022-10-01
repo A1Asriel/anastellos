@@ -39,7 +39,11 @@ def fetch_json(filename: str) -> dict:
 
 
 def loadcog(bot: Bot, path: str, type: str = ''):
-    for cog in os.listdir(path):
+    try:
+        files = os.listdir(path)
+    except FileNotFoundError as e:
+        _log.error(f'Failed to find directory named {path}. Skipping it.')
+    for cog in files:
         path = path.replace('/', '.')
         if cog.endswith('.py') and cog[-7:-3] != '_dis' and not cog.startswith('__'):
             _log.info(f'Initializing {type}cog {cog}...')
