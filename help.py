@@ -63,7 +63,7 @@ class AEHelpCommand(commands.HelpCommand):
             raise commands.MissingPermissions
         signature = f'`{self.get_command_signature(command)}`'
         description = self.get_command_description(command, detailed=True)
-        embed_title = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""} {command.name}'
+        embed_title = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""}{command.name}'
         embed_desc = f'{l10n["usage"]}\n{signature}'
         if description[0]:
             embed_desc += f'\n{l10n["description"]}\n{description[0]}'
@@ -76,19 +76,45 @@ class AEHelpCommand(commands.HelpCommand):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']
         bot: commands.Bot = self.context.bot
-        embed_title = l10n['title']
-        embed_description = l10n['desc']
-        embed_fields = []
-        commandlist = await self.filter_commands(bot.commands, sort=True)
+        embeds = []
+        embed_commands_title = l10n['title']
+        embed_commands_description = l10n['desc']
+
+        commandlist = []
+        grouplist = []
+        for c in bot.walk_commands():
+            if isinstance(c, commands.Group):
+                grouplist.append(c)
+            else:
+                commandlist.append(c)
+        commandlist = await self.filter_commands(commandlist, sort=True)
+        grouplist = await self.filter_commands(grouplist, sort=True)
+
+        embed_commands_fields = []
         for command in commandlist:
             if not command.enabled or command.parent:
                 continue
-            field = [
-                f'`{self.get_command_signature(command)}`', self.get_command_description(command)]
-            embed_fields.append(field)
-        embed = AEEmbed(self.context.bot, title=embed_title,
-                        desc=embed_description, fields=embed_fields)
-        await self.context.reply(embed=embed)
+            field = [f'`{self.get_command_signature(command)}`', self.get_command_description(command)]
+            embed_commands_fields.append(field)
+        embed_commands = AEEmbed(self.context.bot, title=embed_commands_title,
+                                 desc=embed_commands_description, fields=embed_commands_fields)
+        embeds.append(embed_commands)
+
+        if grouplist:
+            embed_groups_title = l10n['title_groups']
+            embed_groups_description = l10n['desc_groups'].format(prefix=self.context.clean_prefix)
+            embed_groups_fields = []
+            for group in grouplist:
+                if not group.enabled or group.parent:
+                    continue
+                field = [f'`{self.get_command_signature(group)}`', self.get_command_description(group)]
+                embed_groups_fields.append(field)
+            embed_groups = AEEmbed(bot, title=embed_groups_title,
+                                   desc=embed_groups_description, fields=embed_groups_fields,
+                                   author_name=None, author_icon=None)
+            embeds.append(embed_groups)
+
+        await self.context.reply(embeds=embeds)
 
     async def send_group_help(self, group: commands.Group):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[

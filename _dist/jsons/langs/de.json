@@ -30,7 +30,9 @@
             },
             "help": {
                 "title": "Verfügbare Befehle",
+                "title_groups": "Command groups [TRANSLATE ME]",
                 "desc": "*`[argument=X]` - ein optionales Argument. wenn es nicht von dir gegeben wurde - wird es standartmäßing X sein.*\n*`<argument>` heißst das es benötigt wird.*",
+                "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.* [TRANSLATE ME]",
                 "usage": "**Befehlverwendung:**",
                 "description": "**Beschreibung:**",
                 "extra": "**Extra:**",

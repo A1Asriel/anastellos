@@ -30,7 +30,9 @@
             },
             "help": {
                 "title": "Available commands",
+                "title_groups": "Command groups",
                 "desc": "*`[argument=X]` - an optional argument. If it wasn't stated by you - it'll default to X.*\n*`<argument>` means that it is required.*",
+                "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.*",
                 "usage": "**Command usage:**",
                 "description": "**Description:**",
                 "extra": "**Extra:**",
