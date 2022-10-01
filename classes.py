@@ -181,12 +181,14 @@ class AEEmbed(Embed):
                 self.author_name += ' | DEBUG'
         if self.author_icon is AEEmbedDefault:
             self.author_icon = bot.config.self_avatar_url
-        self.set_author(name=self.author_name,
-                        url=self.author_url, icon_url=self.author_icon)
+        if self.author_name is not None:
+            self.set_author(name=self.author_name,
+                            url=self.author_url, icon_url=self.author_icon)
 
         self.footer_title = footer_title
         self.footer_icon = footer_icon
-        self.set_footer(text=self.footer_title, icon_url=self.footer_icon)
+        if self.footer_title is not None:
+            self.set_footer(text=self.footer_title, icon_url=self.footer_icon)
 
         self.image_url = image_url
         self.set_image(self.image_url)
