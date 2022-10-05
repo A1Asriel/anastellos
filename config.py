@@ -1,7 +1,7 @@
 import json
 import logging
 from os import listdir
-from typing import Any
+from typing import Any, Optional
 
 from .exceptions import AnastellosException, AnastellosInitError
 from .utils import fetch_json
@@ -183,7 +183,7 @@ class GuildConfigFile(SimpleConfig):
         self.save()
         return bool(entry)
 
-    def __upgrade(self, old_rev: int, new_rev: int | None = None) -> None:
+    def __upgrade(self, old_rev: int, new_rev: Optional[int] = None) -> None:
         def to1():
             self._file = {
                 '__revision__': 1,

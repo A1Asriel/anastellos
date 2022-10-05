@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from json.decoder import JSONDecodeError
+from typing import Union
 
 from nextcord import Message
 from nextcord.ext.commands import Bot
@@ -71,7 +72,7 @@ def get_prefix(bot: Bot, msg: Message):
     return prefixes
 
 
-def localization(bot: Bot, guild_id: int | str = None, lang: str = None) -> dict:
+def localization(bot: Bot, guild_id: Union[int, str] = None, lang: str = None) -> dict:
     if guild_id is not None:
         if isinstance(guild_id, int):
             guild_id = str(guild_id)
