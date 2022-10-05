@@ -1,6 +1,7 @@
 from datetime import datetime
 from os import listdir
 from time import time
+from typing import Optional, Union
 
 from nextcord import Colour, Embed
 from nextcord.ext import commands
@@ -8,7 +9,7 @@ from nextcord.ext.commands import Bot, Cog
 
 from anastellos.exceptions import AnastellosException
 
-from .checks import reply_or_send, is_eula_accepted
+from .checks import is_eula_accepted, reply_or_send
 from .config import Config, GuildConfigFile
 from .utils import fetch_json, localization
 
@@ -150,16 +151,16 @@ class AEEmbed(Embed):
         title: str = None,
         url: str = None,
         desc: str = None,
-        colour: Colour | int = Colour.blurple(),
+        colour: Union[Colour, int] = Colour.blurple(),
         author_name: str = AEEmbedDefault,
         author_url: str = None,
         author_icon: str = AEEmbedDefault,
         footer_title: str = None,
         footer_icon: str = None,
-        fields: list | tuple | None = None,
+        fields: Optional[Union[list, tuple]] = None,
         image_url: str = None,
         thumbnail_url: str = None,
-        timestamp: datetime | None = None
+        timestamp: Optional[datetime] = None
     ):
         if isinstance(self.colour, int):
             self.colour = Colour(self.colour)
