@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 from os import listdir
@@ -125,7 +127,7 @@ class Config(SimpleConfig):
         for langn in langfiles:
             if langn.startswith(('ign_', '__')):
                 continue
-            self.lang_names.add(langn.removesuffix('.json'))
+            self.lang_names.add(langn[:-5] if langn.endswith('.json') else langn)
         if not self.lang_names:
             _log.fatal('No localization files found. The bot is unable to initialize.')
             raise AnastellosInitError(__stage__='config')
@@ -216,7 +218,7 @@ class GuildConfigFile(SimpleConfig):
 
 
 class GuildConfigEntry(SimpleConfig):
-    def __init__(self, guildConfigFile: GuildConfigFile, guild_id: int, *, try_create=False, additional_guild_params={}):
+    def __init__(self, guildConfigFile: GuildConfigFile, guild_id: int, *, try_create: bool = False, additional_guild_params: dict = {}):
         super().__init__('_')
         del self._filename
 

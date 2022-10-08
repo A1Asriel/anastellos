@@ -102,7 +102,7 @@ class Settings(AnastellosInternalCog):
         for lang in langfiles:
             if lang.startswith(('ign_', '__')):
                 continue
-            lang_name = lang.removesuffix('.json')
+            lang_name = lang[:-5] if lang.endswith('.json') else lang
             lang_aliases = fetch_json(
                 langfiles_path + lang_name)['__meta__']['aliases']
             langs[lang_name] = lang_aliases
