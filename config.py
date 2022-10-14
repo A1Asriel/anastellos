@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 import logging
-from os import listdir
+from os import listdir, makedirs
+from os.path import dirname
 from typing import Any, Optional
 
 from .exceptions import AnastellosException, AnastellosInitError
@@ -70,6 +71,9 @@ class SimpleConfig:
         except FileNotFoundError as e:
             if schema is not None:
                 _log.warn(f'Creating a new file at {filename}.json and using the default config.')
+                path = dirname(filename)
+                if path:
+                    makedirs(path, exist_ok=True)
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
                     return schema
@@ -77,6 +81,9 @@ class SimpleConfig:
         except json.JSONDecodeError as e:
             if schema is not None:
                 _log.warn(f'Overwriting the file at {filename}.json and using the default config.')
+                path = dirname(filename)
+                if path:
+                    makedirs(path, exist_ok=True)
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
                     return schema
