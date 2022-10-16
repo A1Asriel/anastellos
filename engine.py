@@ -1,4 +1,4 @@
-__build__ = '2.1.22289.3'
+__build__ = '2.1.22289.4'
 
 import logging
 import time
@@ -69,7 +69,7 @@ class AnastellosEngine:
                 try:
                     bot_repo_prefix = '.git/'
                     bot_commit_details = get_commit_details(bot_repo_prefix)
-                    self.config.version += f' {bot_commit_details[0]}-{bot_commit_details[1][:6]}'
+                    self.config.version += f' {bot_commit_details[0]}:{bot_commit_details[1][:7]}'
                 except Exception as e:
                     _log.debug(f'Couldn\'t retrieve bot repository info while starting up.', exc_info=1)
                 _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
