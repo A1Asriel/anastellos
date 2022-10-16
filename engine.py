@@ -1,4 +1,4 @@
-__build__ = '2.1.22289.4'
+__build__ = '2.1.22289.5'
 
 import logging
 import time
@@ -77,9 +77,29 @@ class AnastellosEngine:
                 self.config.self_avatar_url = self.bot.user.avatar.url
             self.bot.owner_id = self.config.owner if self.config.owner is not None else (await self.bot.application_info()).owner.id
 
+    def load_cog(self, path: str, *, type: str = ''):
+        try:
+            files = os.listdir(path)
+        except FileNotFoundError as e:
+            _log.error(f'Failed to find directory named {path}. Skipping it.')
+            return None
+        for cog in files:
+            path = path.replace('/', '.')
+            if cog.endswith('.py') and cog[-7:-3] != '_dis' and not cog.startswith('__'):
+                _log.info(f'Initializing {type}cog {cog}...')
+                try:
+                    self.bot.load_extension(f'{path}.{cog[:-3]}')
+                except ExtensionFailed as exception:
+                    _log.error(f'Failed to initialize extension {cog}!')
+                    inp = input('Skip it? Y/n: ').lower()
+                    if 'no'.startswith(inp):
+                        incl_trace = self.bot.config.mode == 2
+                        _log.fatal('Bot initializing halted.', exc_info=incl_trace)
+                        exit(1)
+
     def load_cogs(self):
-        loadcog(self.bot, 'anastellos/cogs', 'internal ')
-        loadcog(self.bot, 'cogs')
+        self.load_cog('anastellos/cogs', type='internal ')
+        self.load_cog('cogs')
         if not self.bot.get_cog('Settings'):
             _log.warn('No custom settings cog found, falling back to the default one.')
             from .classes import Settings

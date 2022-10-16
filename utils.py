@@ -39,30 +39,6 @@ def fetch_json(filename: str) -> dict:
         raise exception
 
 
-def loadcog(bot: Bot, path: str, type: str = ''):
-    try:
-        files = os.listdir(path)
-    except FileNotFoundError as e:
-        _log.error(f'Failed to find directory named {path}. Skipping it.')
-    for cog in files:
-        path = path.replace('/', '.')
-        if cog.endswith('.py') and cog[-7:-3] != '_dis' and not cog.startswith('__'):
-            _log.info(f'Initializing {type}cog {cog}...')
-            try:
-                bot.load_extension(f'{path}.{cog[:-3]}')
-            except ExtensionFailed as exception:
-                _log.error(f'Failed to initialize extension {cog}!')
-                inp = input('Skip it? Y/n: ').lower()
-                if 'no'.startswith(inp):
-                    incl_trace = True if bot.config.mode == 2 else False
-                    _log.fatal('Bot initializing halted.', exc_info=incl_trace)
-                    # input()
-                    exit()
-                # elif inp == 'r' or inp == 'raise':
-                #     _log.fatal(exception)
-                #     raise exception
-
-
 def get_prefix(bot: Bot, msg: Message):
     prefixes = [f'{bot.user.mention} ']
     try:
