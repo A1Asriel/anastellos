@@ -92,7 +92,11 @@
                 "mem": "Использование ОЗУ",
                 "python_ver": "Версия интерпретатора Python",
                 "nextcord_ver": "Версия библиотеки Nextcord",
-                "bot_uptime": "Время работы бота"
+                "bot_uptime": "Время работы бота",
+                "bot_repo": "Сборка бота",
+                "engine_repo": "Сборка движка",
+                "revision": "Текущая ревизия",
+                "timestamp": "Время создания"
             }
         },
         "settings": {

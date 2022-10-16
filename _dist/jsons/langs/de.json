@@ -95,7 +95,11 @@
                 "mem": "RAM usage [TRANSLATE ME]",
                 "python_ver": "Python interpreter version [TRANSLATE ME]",
                 "nextcord_ver": "Nextcord library version [TRANSLATE ME]",
-                "bot_uptime": "Bot uptime [TRANSLATE ME]"
+                "bot_uptime": "Bot uptime [TRANSLATE ME]",
+                "bot_repo": "Bot build info [TRANSLATE ME]",
+                "engine_repo": "Engine build info [TRANSLATE ME]",
+                "revision": "Current revision [TRANSLATE ME]",
+                "timestamp": "Committed at [TRANSLATE ME]"
             }
         },
         "settings": {

@@ -1,5 +1,5 @@
-# import os
 import logging
+import os
 import platform
 import sys
 import time
@@ -85,6 +85,45 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             (l10n['nextcord_ver'], nextcord.__version__),
             (l10n['bot_uptime'], uptime_str)
         ]
+
+        def get_commit_details(repo_prefix: str):
+            repo_string_format = '{l10n_revision}: `{branch}-{commit_sha}`\n{l10n_timestamp}: {timestamp}'
+            with open(f'{repo_prefix}HEAD', 'r', encoding='utf8') as f:
+                branch = f.readline().strip()
+                branch = branch[16:] if branch.startswith('ref: refs/heads/') else branch
+            with open(f'{repo_prefix}refs/heads/{branch}', 'r', encoding='ansi') as f:
+                commit_sha = f.readline().strip()
+            with open(f'{repo_prefix}logs/refs/heads/{branch}', 'r', encoding='utf8') as f:
+                for l in f.readlines():
+                    elems = l.split()
+                    if elems[1] != commit_sha:
+                        continue
+                    timestamp = f'<t:{elems[4]}:f>'
+                    break
+            repo_string = repo_string_format.format(
+                l10n_revision = l10n["revision"],
+                branch = branch,
+                commit_sha = commit_sha[:6],
+                l10n_timestamp = l10n["timestamp"],
+                timestamp = timestamp
+                )
+            return repo_string
+
+        try:
+            bot_repo_prefix = '.git/'
+            bot_repo_string = get_commit_details(bot_repo_prefix)
+            fields.append((l10n['bot_repo'], bot_repo_string))
+        except Exception as e:
+            _log.debug(f'{ctx.command.name} couldn\'t retrieve bot repository info.', exc_info=1)
+
+        try:
+            if os.path.exists('.git/modules/anastellos/'): engine_repo_prefix = '.git/modules/anastellos/'
+            elif os.path.exists('anastellos/.git/'): engine_repo_prefix = 'anastellos/.git/'
+            else: engine_repo_prefix = '.git/'
+            engine_repo_string = get_commit_details(engine_repo_prefix)
+            fields.append((l10n['engine_repo'], engine_repo_string))
+        except Exception as e:
+            _log.debug(f'{ctx.command.name} couldn\'t retrieve engine repository info.', exc_info=1)
 
         embed = AEEmbed(self.bot,
                         title=l10n['title'],
