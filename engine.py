@@ -1,4 +1,4 @@
-__build__ = '2.1.22289.2'
+__build__ = '2.1.22289.3'
 
 import logging
 import time
@@ -66,6 +66,12 @@ class AnastellosEngine:
             _log.info(
                 f'Logged in as {self.bot.user.name}#{self.bot.user.discriminator} ({self.bot.user.id}).\nBot is running on servers: {guildlist}.')
             if self.config.mode == 2:
+                try:
+                    bot_repo_prefix = '.git/'
+                    bot_commit_details = get_commit_details(bot_repo_prefix)
+                    self.config.version += f' {bot_commit_details[0]}-{bot_commit_details[1][:6]}'
+                except Exception as e:
+                    _log.debug(f'Couldn\'t retrieve bot repository info while starting up.', exc_info=1)
                 _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
             if self.bot.user.avatar is not None:
                 self.config.self_avatar_url = self.bot.user.avatar.url

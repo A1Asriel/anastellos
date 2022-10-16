@@ -98,8 +98,9 @@
                 "bot_uptime": "Bot uptime",
                 "bot_repo": "Bot build info",
                 "engine_repo": "Engine build info",
-                "revision": "Current revision",
-                "timestamp": "Committed at"
+                "timestamp": "Committed at",
+                "branch": "Current branch",
+                "commit_sha": "Revision hash"
             }
         },
         "settings": {
