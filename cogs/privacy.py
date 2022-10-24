@@ -15,7 +15,7 @@ def accept_agreement(bot: AnastellosBot, guild: nextcord.Guild, lang: str = 'en'
     guild_cfg.is_eula_accepted = True
     guild_cfg.lang = lang
     guild_cfg.save()
-    _log.info(f'And admin of {guild.name} has accepted the agreement.')
+    _log.info(f'An admin of {guild.name} has accepted the agreement.')
     return None
 
 

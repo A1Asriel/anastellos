@@ -1,6 +1,6 @@
 # Anastellos Engine
 
-![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/A1Asriel/anastellos?label=Latest%20release&logo=Python&logoColor=DDDDDD&style=plastic)
+[![Latest release](https://img.shields.io/github/v/release/A1Asriel/anastellos?label=Latest%20release&logo=Python&logoColor=DDDDDD&style=plastic)](https://github.com/A1Asriel/anastellos/releases/latest/)
 
 Formerly the AsrielBot's soul, now is used as a modular universal Discord bot engine. It provides easy methods to manage the internals of any bot, as well as some predefined basic commands.
 

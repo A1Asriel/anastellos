@@ -1,4 +1,4 @@
-__build__ = '2.1.22297.1'
+__build__ = '2.1.22297.2'
 
 import logging
 import time
@@ -25,7 +25,7 @@ class AnastellosEngine:
         else:
             logging.getLogger('nextcord').propagate = False
 
-        _log.info(f'Starting {self.config.name} {self.config.full_version}')
+        _log.info(f'Starting {self.config.name} {self.config.full_version}...')
 
         if self.config.mode == 2:
             activity = nextcord.Game(
@@ -61,10 +61,10 @@ class AnastellosEngine:
         @self.bot.event
         async def on_ready():
             self.bot.startup_time = time.time()
-            guildlist = ', '.join(
-                ['"' + j.name + '"' for j in self.bot.guilds])
-            _log.info(
-                f'Logged in as {self.bot.user.name}#{self.bot.user.discriminator} ({self.bot.user.id}).\nBot is running on servers: {guildlist}.')
+            _log.info(f'Logged in as {self.bot.user.name}#{self.bot.user.discriminator} - {self.bot.user.id}.')
+            _log.info(f'The bot is running on {len(self.bot.guilds)} guilds.')
+            guildlist = '\n'.join([f'{guild.id} - {guild.name}' for guild in self.bot.guilds])
+            _log.debug(f'Current guilds:\n{guildlist}')
             if self.config.mode == 2:
                 try:
                     bot_repo_prefix = '.git/'
