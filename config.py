@@ -183,6 +183,7 @@ class GuildConfigFile(SimpleConfig):
         return GuildConfigEntry(self, guild_id, additional_guild_params=self.additional_guild_params, try_create=True)
 
     def _save_guild_cfg(self, guild_id: int, data: dict) -> None:
+        self.guilds[str(guild_id)] = self.guilds.get(str(guild_id), {})
         self.guilds[str(guild_id)].update(data)
         self.save()
         return None
