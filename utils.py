@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from json.decoder import JSONDecodeError
-from typing import Union
+from typing import Union, Tuple
 
 from nextcord import Message
 from nextcord.ext.commands import Bot
@@ -56,18 +56,10 @@ def localization(bot: Bot, guild_id: Union[int, str] = None, lang: str = None) -
     return fetch_json('jsons/langs/'+lang)
 
 
-def get_commit_details(repo_prefix: str):
+def get_commit_details(repo_prefix: str) -> Tuple[str, str]:
     with open(f'{repo_prefix}HEAD', 'r', encoding='utf8') as f:
         branch = f.readline().strip()
         branch = branch[16:] if branch.startswith('ref: refs/heads/') else branch
     with open(f'{repo_prefix}refs/heads/{branch}', 'r', encoding='ansi') as f:
         commit_sha = f.readline().strip()
-    with open(f'{repo_prefix}logs/refs/heads/{branch}', 'r', encoding='utf8') as f:
-        timestamp = 0
-        for l in f.readlines():
-            elems = l.split()
-            if elems[1] != commit_sha:
-                continue
-            timestamp = int(elems[4])
-            break
-    return branch, commit_sha, timestamp
+    return branch, commit_sha

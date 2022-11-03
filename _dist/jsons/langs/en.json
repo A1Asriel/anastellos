@@ -98,7 +98,6 @@
                 "bot_uptime": "Bot uptime",
                 "bot_repo": "Bot build info",
                 "engine_repo": "Engine build info",
-                "timestamp": "Committed at",
                 "branch": "Current branch",
                 "commit_sha": "Revision hash"
             }

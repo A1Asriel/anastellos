@@ -64,15 +64,13 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
     @commands.command()
     async def host_info(self, ctx: commands.Context):
-        def get_commit_string(branch: str, commit_sha: str, timestamp: int):
-            repo_string_format = '{l10n_branch}: `{branch}`\n{l10n_commit_sha}: `{commit_sha}`\n{l10n_timestamp}: {timestamp}'
+        def get_commit_string(branch: str, commit_sha: str):
+            repo_string_format = '{l10n_branch}: `{branch}`\n{l10n_commit_sha}: `{commit_sha}`'
             bot_commit_string = repo_string_format.format(
                 l10n_branch = l10n["branch"],
                 branch = branch,
                 l10n_commit_sha = l10n["commit_sha"],
-                commit_sha = commit_sha,
-                l10n_timestamp = l10n["timestamp"],
-                timestamp = f'<t:{timestamp}:f>'
+                commit_sha = commit_sha
                 )
             return bot_commit_string
 
