@@ -1,4 +1,6 @@
 import logging
+from traceback import format_exception
+
 import nextcord
 from nextcord.ext import commands
 
@@ -51,6 +53,8 @@ class Listeners(AnastellosInternalCog):
 
     @commands.Cog.listener('on_command_error')
     async def error_handler(self, ctx: commands.Context, exception):
+        is_debug = self.bot.config.mode == 2
+        exc_text = '\n```py\n' + ''.join(format_exception(None, exception, exception.__traceback__)) + '\n```'
         l10n_code = ''
         console_msg = ''
         await reply_or_send(ctx)
@@ -62,16 +66,16 @@ class Listeners(AnastellosInternalCog):
             l10n_code = 'bot_insufficient_perms'
         elif isinstance(exception, commands.ChannelNotFound):
             l10n_code = 'channel_not_found'
-            console_msg = f'[WARN] {ctx.author} entered a non-existing channel {exception.argument} while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
+            console_msg = f'{ctx.author} entered a non-existing channel {exception.argument} while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
         elif isinstance(exception, commands.MissingRequiredArgument):
             l10n_code = 'missing_required_argument'
-            console_msg = f'[WARN] {ctx.author} missed the argument "{exception.param.name}" while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
+            console_msg = f'{ctx.author} missed the argument "{exception.param.name}" while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
         elif isinstance(exception, (commands.BadArgument, commands.BadUnionArgument)):
             l10n_code = 'bad_argument'
-            console_msg = f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild}).'
+            console_msg = f'{ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild}).'
         elif isinstance(exception, commands.MaxConcurrencyReached):
             l10n_code = 'max_concurrency'
-            console_msg = f'[WARN] {ctx.author} entered the invalid arguments while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
+            console_msg = f'{ctx.author} tried to use {ctx.command.name} more times in a row than allowed @ #{ctx.channel.name} ({ctx.guild.name}).'
         elif isinstance(exception, commands.NotOwner):
             l10n_code = 'not_owner'
         elif isinstance(exception, commands.CommandNotFound):
@@ -82,7 +86,7 @@ class Listeners(AnastellosInternalCog):
                 l10n_code = 'no_history_access'
             else:
                 l10n_code = 'forbidden'
-                console_msg = f'[WARN] {ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
+                console_msg = f'{ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
         elif isinstance(exception, commands.CheckFailure) and (ctx.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted):
             pass
         else:
@@ -93,13 +97,13 @@ class Listeners(AnastellosInternalCog):
             console_msg = ''
 
         if console_msg:
-            _log.error(console_msg)
+            _log.error(console_msg, exc_info=exception if is_debug else None)
 
         if l10n_code:
             l10n = localization(self.bot, guild_id=ctx.guild.id)[
                 'anastellos']['global_errors']
             try:
-                await ctx.reply(l10n[l10n_code], delete_after=delete_after)
+                await ctx.reply(f'{l10n[l10n_code]}{exc_text if is_debug else ""}', delete_after=delete_after if not is_debug else None)
             except nextcord.Forbidden:
                 _log.error(
                     f'Couldn\'t send an error message to {ctx.channel.name}.')
