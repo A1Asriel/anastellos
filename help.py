@@ -50,8 +50,8 @@ class AEHelpCommand(commands.HelpCommand):
     def get_command_description(self, command: commands.Command, *, detailed=False):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']['commands'].get(command.name, dict())
-        out = l10n.get('desc')
-        extra = l10n.get('extra')
+        out = l10n.get('desc', '').format(def_prefix=self.context.bot.config.def_prefix)
+        extra = l10n.get('extra', '').format(lang_names='`, `'.join(self.context.bot.config.lang_names))
         if detailed:
             return out, extra
         return out
