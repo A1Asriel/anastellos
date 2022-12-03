@@ -63,6 +63,8 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         await msg.edit(content=l10n['success'], delete_after=5)
 
     @commands.command()
+    @commands.guild_only()
+    @commands.is_owner()
     async def host_info(self, ctx: commands.Context):
         def get_commit_string(branch: str, commit_sha: str):
             repo_string_format = '{l10n_branch}: `{branch}`\n{l10n_commit_sha}: `{commit_sha}`'

@@ -24,21 +24,21 @@
         "info": {
             "about": {
                 "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the information about most commands.*",
-                "indev": "\n\nThe bot is operating in DEBUG mode that means some bugs may appear. We recommend you to refrain from using it until the maintainance is complete.",
+                "indev": "\n\nThe bot is running in DEBUG mode and its stable operation is not guaranteered. It is recommended to refrain from using the bot until the maintainance is finished.",
                 "anastellos": "Powered by Anastellos Engine",
                 "creator": "<> with ❤ by {creator}"
             },
             "help": {
                 "title": "Available commands",
                 "title_groups": "Command groups",
-                "desc": "*`[argument=X]` - an optional argument. If it wasn't stated by you - it'll default to X.*\n*`<argument>` means that it is required.*",
+                "desc": "*`[argument=X]` is an optional argument (empty defaults to X).*\n*`<argument>` requires the explicit input.*",
                 "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.*",
                 "usage": "**Command usage:**",
                 "description": "**Description:**",
                 "extra": "**Extra:**",
                 "commands": {
                     "help": {
-                        "desc": "Prints this message."
+                        "desc": "Print this message."
                     },
                     "privacy": {
                         "desc": "Show the Privacy Policy document.",
@@ -47,23 +47,23 @@
                         }
                     },
                     "about": {
-                        "desc": "Prints the info about the bot."
+                        "desc": "Print the info about the bot."
                     },
                     "ping": {
-                        "desc": "Returns the latency time. You may want to use that to check the bot working."
+                        "desc": "Return latency time between the server and the bot."
                     },
                     "settings": {
-                        "desc": "Prints the current server configuration. Only admins are allowed to use this command and every subcommand."
+                        "desc": "Print the current local server configuration. Only admins are allowed to use this group and subcommands."
                     },
                     "prefix": {
-                        "desc": "Changes the bot prefix for this server. Empty argument resets the setting to `!`.",
+                        "desc": "Change the bot prefix for this server. Empty argument resets the setting to `{def_prefix}`.",
                         "args": {
                             "new_prefix": "new prefix"
                         }
                     },
                     "language": {
-                        "desc": "Changes the bot language for this server.",
-                        "extra": "Available languages: `en`, `ru`, `de` (maintained by Zero), `qps-ploc`",
+                        "desc": "Change the bot language for this server.",
+                        "extra": "Available languages: `{lang_names}`.",
                         "args": {
                             "new_lang": "new language"
                         }
@@ -76,13 +76,9 @@
         },
         "technical": {
             "stop": "*Stopping the bot...*",
-            "shutdown": {
-                "msg": "*Stopping the bot and shutting down the host...*",
-                "error_indev": "*The bot is operating in DEBUG mode. Host shutdown is unavailable.*"
-            },
             "reload": {
-                "start": "*Reinitializing started...*",
-                "error": "*An exception occurred while loading {i} module.*",
+                "start": "*Modules reinitializing started...*",
+                "error": "*An exception occurred while loading {i} module.*{traceback}",
                 "success": "*Reinitializing complete.*"
             },
             "indev_notif": "\n> **WARNING! The bot is operating in DEBUG mode. Please refrain from using this mode if there are no tests running.**",
@@ -116,7 +112,7 @@
             },
             "prefix": {
                 "title": "Prefix changed successfully",
-                "desc": "The new prefix: `{new_prefix}`."
+                "desc": "New prefix: `{new_prefix}`."
             },
             "lang": {
                 "title": "Bot language changed successfully",
@@ -155,7 +151,8 @@
             "command_not_found": "*The specified command not found.*",
             "forbidden": "*Something won't let me do this, sorry.*",
             "not_owner": "*Only bot owner is allowed to do that.*",
-            "no_history_access": "*The bot cannot access the message history and therefore unable to complete this action.*"
+            "no_history_access": "*The bot cannot access the message history and therefore unable to complete this action.*",
+            "l10n_unsupported": "*This command is not supported by the current language.*"
         },
         "privacy": {
             "privacy": {

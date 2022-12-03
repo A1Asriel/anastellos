@@ -7,6 +7,7 @@ from nextcord.ext import commands
 from ..checks import reply_or_send
 from ..classes import AnastellosInternalCog
 from ..config import GuildConfigEntry
+from ..exceptions import L10nUnsupported
 from ..utils import localization
 
 _log = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ class Listeners(AnastellosInternalCog):
         return None
 
     @commands.Cog.listener('on_command_error')
-    async def error_handler(self, ctx: commands.Context, exception):
+    async def error_handler(self, ctx: commands.Context, exception: commands.CommandError):
         is_debug = self.bot.config.mode == 2
         exc_text = '\n```py\n' + ''.join(format_exception(None, exception, exception.__traceback__)) + '\n```'
         l10n_code = ''
@@ -80,6 +81,8 @@ class Listeners(AnastellosInternalCog):
             l10n_code = 'not_owner'
         elif isinstance(exception, commands.CommandNotFound):
             l10n_code = 'command_not_found'
+        elif isinstance(exception, L10nUnsupported):
+            l10n_code = 'l10n_unsupported'
         elif isinstance(exception, commands.CommandInvokeError) and isinstance(exception.original, nextcord.Forbidden):
             if exception.original.code == 160002:
                 # Typically, this is avoided by using `reply_or_send` fix.
@@ -87,12 +90,18 @@ class Listeners(AnastellosInternalCog):
             else:
                 l10n_code = 'forbidden'
                 console_msg = f'{ctx.author} provoked an access violation while trying to use {ctx.command.name} @ #{ctx.channel.name} ({ctx.guild.name}).'
-        elif isinstance(exception, commands.CheckFailure) and (ctx.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted):
+        elif (
+            isinstance(exception, commands.CheckFailure) and
+            (self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or
+             not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted)
+        ):
             pass
         else:
-            raise exception
+            console_msg = 'Internal error'
+            if is_debug:
+                l10n_code = 'internal_error'
 
-        if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not ctx.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
+        if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
             l10n_code = ''
             console_msg = ''
 
@@ -103,7 +112,7 @@ class Listeners(AnastellosInternalCog):
             l10n = localization(self.bot, guild_id=ctx.guild.id)[
                 'anastellos']['global_errors']
             try:
-                await ctx.reply(f'{l10n[l10n_code]}{exc_text if is_debug else ""}', delete_after=delete_after if not is_debug else None)
+                await ctx.reply(f'{l10n.get(l10n_code, "`"+l10n_code+"`")}{exc_text if is_debug else ""}', delete_after=delete_after if not is_debug else None)
             except nextcord.Forbidden:
                 _log.error(
                     f'Couldn\'t send an error message to {ctx.channel.name}.')
