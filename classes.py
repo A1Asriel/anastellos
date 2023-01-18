@@ -9,7 +9,7 @@ from nextcord.ext.commands import Bot, Cog
 
 from anastellos.exceptions import AnastellosException
 
-from .checks import is_eula_accepted, reply_or_send
+from .checks import is_cog_enabled, is_eula_accepted, reply_or_send
 from .config import Config, GuildConfigFile
 from .utils import fetch_json, localization
 
@@ -30,13 +30,16 @@ class AnastellosCog(Cog):
         await reply_or_send(ctx)
 
     def cog_check(self, ctx: commands.Context) -> bool:
-        return is_eula_accepted(ctx)
+        return is_eula_accepted(ctx) and is_cog_enabled(ctx)
 
 
 class AnastellosInternalCog(AnastellosCog):
     def __init__(self, bot: AnastellosBot):
         super().__init__(bot)
         self.__type__ = 'internal'
+
+    def cog_check(self, ctx: commands.Context) -> bool:
+        return is_eula_accepted(ctx)
 
 
 class _AEEmbedDefault:
@@ -68,7 +71,8 @@ class Settings(AnastellosInternalCog):
             cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id).get_dict
             fields = [
                 [l10n['prefix'], '`'+cfg['prefix']+'`', True],
-                [l10n['lang'], cfg['lang'], True]
+                [l10n['lang'], cfg['lang'], True],
+                [l10n['toggle_cog'], l10n['list'], True]
             ]
             for name, value in self.bot.config.additional_guild_params.items():
                 if value[0] == 'str':
@@ -80,6 +84,8 @@ class Settings(AnastellosInternalCog):
                         cfg[name]).mention if cfg[name] != 0 else l10n['disabled']
                 elif value[0] == 'dict':
                     second_field = l10n['multilevel']
+                elif value[0] == 'list':
+                    second_field = l10n['list']
                 fields += [[l10n.get(name, name), second_field, True]]
             await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], fields=fields))
 
@@ -122,6 +128,44 @@ class Settings(AnastellosInternalCog):
         l10n = localization(self.bot, guild_id=ctx.guild.id)[
             'anastellos']['settings']['lang']
         return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.brand_green()))
+
+    @settings.command(name='toggle_cog', aliases=('cog',))
+    async def toggle_cog(self, ctx: commands.Context, cog_name: str, status: Optional[Union[bool, str]] = None):
+        def valid_cog(cog: Union[AnastellosCog, str]) -> bool:
+            if isinstance(cog, str):
+                cog = self.context.bot.get_cog(cog)
+            for cmd in cog.walk_commands():
+                if cmd.enabled and not cmd.hidden:
+                    return True
+            return False
+        cog = self.bot.get_cog(cog_name)
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['settings']['toggle_cog']
+        if not (cog and valid_cog(cog)):
+            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['nocog_error'], colour=Colour.brand_red()))
+        if isinstance(cog, AnastellosInternalCog):
+            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['intcog_error'], colour=Colour.brand_red()))
+        guild_config = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
+        if status is None:
+            status = 'disabled' if cog_name in guild_config.disabled_cogs else 'enabled'
+            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['status_desc'].format(cog_name=cog_name, status=status)))
+
+        if isinstance(status, str):
+            flags = self.get_flags()
+            if status.lower() in ('1', '+') + flags[0]:
+                status = True
+            elif status.lower() in ('0', '-') + flags[1]:
+                status = False
+            else:
+                raise commands.BadArgument
+
+        if not status:
+            if cog_name in guild_config.disabled_cogs:
+                guild_config.disabled_cogs.remove(cog_name)
+            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['enable_desc'].format(cog_name=cog_name, status=status)))
+
+        if cog_name not in guild_config.disabled_cogs:
+            guild_config.disabled_cogs.append(cog_name)
+        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['disable_desc'].format(cog_name=cog_name, status=status)))
 
 
 class AEEmbed(Embed):

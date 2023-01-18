@@ -36,8 +36,9 @@ class SimpleConfig:
         return None
 
     def __compileschema__(self) -> None:
-        self._schema = {key: self.__getattribute__(
-            key) for key in self._def_schema.keys()}
+        self._schema = {
+            key: self.__getattribute__(key) for key in self._def_schema.keys()
+        }
         return None
 
     def __resetschema__(self) -> None:
@@ -45,10 +46,10 @@ class SimpleConfig:
         return None
 
     def save(self) -> None:
-        self.__compileschema__()
+        self.__assignattrs__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
-        self.__assignattrs__()
+        self.__compileschema__()
         return None
 
     @staticmethod
@@ -119,10 +120,11 @@ class Config(SimpleConfig):
         # Settings that stay in the memory.
         self.self_avatar_url = ''
         self._langfiles_path = 'jsons/langs/'
-        self._def_guild_config = {  # Revision 2
-            "is_eula_accepted": False,
+        self._def_guild_config = {  # Revision 3
             "prefix": self.def_prefix,
-            "lang": "en"
+            "lang": "en",
+            "is_eula_accepted": False,
+            "disabled_cogs": []
         }
         self.build = '1.0.0.1'
         self.additional_guild_params = additional_guild_params
@@ -151,7 +153,8 @@ class GuildConfigFile(SimpleConfig):
     def __init__(self, bot, filename='server_cfg', *, additional_guild_params={}):
         super().__init__(filename)
 
-        self.__currev__ = 2  # Revision 2
+        ### CURRENT CONFIG REVISION ###
+        self.__currev__ = 3
 
         self.__settings = ('__revision__', 'guilds')
 
@@ -207,19 +210,27 @@ class GuildConfigFile(SimpleConfig):
                 } | self._file['guilds'][guildid]
             self._file['__revision__'] = 2
 
+        def to3():
+            for guildid in self._file['guilds'].keys():
+                self._file['guilds'][guildid] = {
+                    'disabled_cogs': []
+                } | self._file['guilds'][guildid]
+            self._file['__revision__'] = 3
+
         if new_rev is not None and new_rev < old_rev:
             raise AnastellosException('Can\t downgrade a config file.')
 
         while new_rev is None or old_rev < new_rev:
             if old_rev == 0:
                 to1()
-                _log.info('The guild config file was upgraded to revision 1 successfully.')
             elif old_rev == 1:
                 to2()
-                _log.info('The guild config file was upgraded to revision 2 successfully.')
+            elif old_rev == 2:
+                to3()
             else:
                 break
             old_rev += 1
+            _log.info(f'The guild config file was upgraded to revision {old_rev} successfully.')
         self._schema = self._file.copy()
         self.save()
         return None
@@ -231,10 +242,11 @@ class GuildConfigEntry(SimpleConfig):
         del self._filename
 
         self.try_create = try_create
-        self._def_schema = {  # Revision 2
+        self._def_schema = {  # Revision 3
             "prefix": guildConfigFile.bot.config.def_prefix,
             "lang": "en",
-            "is_eula_accepted": False
+            "is_eula_accepted": False,
+            "disabled_cogs": []
         }
         self.additional_guild_params = additional_guild_params
         for name, value in self.additional_guild_params.items():

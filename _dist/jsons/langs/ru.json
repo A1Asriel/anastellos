@@ -102,10 +102,9 @@
                 "lang": "Язык",
                 "enabled": "**включено**",
                 "disabled": "**выключено**",
-                "enabled_responses": "Триггеры",
-                "telemetry": "Канал-аудит",
-                "verbose_random": "Подробные результаты рандома",
-                "multilevel": "*структурная опция*"
+                "multilevel": "*структурная опция*",
+                "toggle_cog": "Disable/enable cogs [TRANSLATE ME]",
+                "list": "*list* [TRANSLATE ME]"
             },
             "prefix": {
                 "title": "Префикс успешно изменён",
@@ -146,6 +145,14 @@
                 "desc_on": "Действия будут записываться в {channel}.",
                 "desc_off": "Действия больше не будут записываться.",
                 "error_desc": "Нет доступа к вебхукам. Пожалуйста, проверьте права бота."
+            },
+            "toggle_cog": {
+                "title": "Cog status [TRANSLATE ME]",
+                "nocog_error": "There is no cog with such name. [TRANSLATE ME]",
+                "intcog_error": "This cog is essential for the bot and cannot be disabled. [TRANSLATE ME]",
+                "status_desc": "\"{cog_name}\" cog is currently {status} on this server. [TRANSLATE ME]",
+                "enable_desc": "\"{cog_name}\" cog has been enabled. [TRANSLATE ME]",
+                "disable_desc": "\"{cog_name}\" cog has been disabled. [TRANSLATE ME]"
             }
         },
         "global_errors": {

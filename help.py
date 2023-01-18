@@ -1,11 +1,12 @@
 from inspect import Parameter
 from itertools import zip_longest
+from typing import Union
 
 from nextcord.ext import commands
 
 from anastellos.checks import is_eula_accepted
 
-from .classes import AEEmbed
+from .classes import AEEmbed, AnastellosCog
 from .utils import localization
 
 
@@ -72,17 +73,17 @@ class AEHelpCommand(commands.HelpCommand):
         embed = AEEmbed(self.context.bot, title=embed_title, desc=embed_desc)
         await self.context.reply(embed=embed)
 
-    async def send_bot_help(self, mapping):
+    async def send_cog_help(self, cog: AnastellosCog):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']
         bot: commands.Bot = self.context.bot
         embeds = []
-        embed_commands_title = l10n['title']
+        embed_commands_title = cog.qualified_name
         embed_commands_description = l10n['desc']
 
         commandlist = []
         grouplist = []
-        for c in bot.walk_commands():
+        for c in cog.walk_commands():
             if isinstance(c, commands.Group):
                 grouplist.append(c)
             else:
@@ -132,8 +133,17 @@ class AEHelpCommand(commands.HelpCommand):
                         fields=embed_fields)
         await self.context.reply(embed=embed)
 
-    async def send_cog_help(self, cog):
-        ...  # TODO:
+    async def send_bot_help(self, mapping):
+        def valid_cog(cog: Union[AnastellosCog, str]) -> bool:
+            if isinstance(cog, str):
+                cog = self.context.bot.get_cog(cog)
+            for cmd in cog.walk_commands():
+                if cmd.enabled and not cmd.hidden:
+                    return True
+            return False
+        cog_names = [cog_name for cog_name in self.context.bot.cogs if valid_cog(cog_name)]
+        embed = AEEmbed(self.context.bot, title='Cogs', desc='\n'.join(cog_names))
+        await self.context.reply(embed=embed)
 
     async def command_not_found(self, string):
         raise commands.CommandNotFound(string)

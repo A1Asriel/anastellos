@@ -105,10 +105,9 @@
                 "lang": "Language",
                 "enabled": "**enabled**",
                 "disabled": "**disabled**",
-                "enabled_responses": "Responses",
-                "telemetry": "Log channel",
-                "verbose_random": "Verbose RNG",
-                "multilevel": "*multi-level*"
+                "multilevel": "*multi-level*",
+                "toggle_cog": "Disable/enable cogs",
+                "list": "*list*"
             },
             "prefix": {
                 "title": "Prefix changed successfully",
@@ -138,6 +137,14 @@
                         "desc": "The bot is staying on the server. We won't disappoint you."
                     }
                 }
+            },
+            "toggle_cog": {
+                "title": "Cog status",
+                "nocog_error": "There is no cog with such name.",
+                "intcog_error": "This cog is essential for the bot and cannot be disabled.",
+                "status_desc": "\"{cog_name}\" cog is currently {status} on this server.",
+                "enable_desc": "\"{cog_name}\" cog has been enabled.",
+                "disable_desc": "\"{cog_name}\" cog has been disabled."
             }
         },
         "global_errors": {

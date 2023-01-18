@@ -13,3 +13,9 @@ def is_eula_accepted(ctx: commands.Context):
     if guild_cfg is None:
         return False
     return guild_cfg.is_eula_accepted
+
+def is_cog_enabled(ctx: commands.Context):
+    guild_cfg = ctx.bot.guild_config.get_guild_cfg(ctx.guild.id)
+    if guild_cfg is None:
+        return True
+    return ctx.cog.qualified_name not in guild_cfg.disabled_cogs
