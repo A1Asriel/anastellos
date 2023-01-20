@@ -46,10 +46,10 @@ class SimpleConfig:
         return None
 
     def save(self) -> None:
-        self.__assignattrs__()
+        self.__compileschema__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
-        self.__compileschema__()
+        self.__assignattrs__()
         return None
 
     @staticmethod
@@ -232,7 +232,11 @@ class GuildConfigFile(SimpleConfig):
             old_rev += 1
             _log.info(f'The guild config file was upgraded to revision {old_rev} successfully.')
         self._schema = self._file.copy()
-        self.save()
+        # self.save()  # This method doesn't work for some reason, so it has to be saved manually
+        self.__assignattrs__()
+        with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
+            json.dump(self._schema, f, indent=4, ensure_ascii=False)
+        self.__compileschema__()
         return None
 
 

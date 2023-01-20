@@ -29,8 +29,8 @@ class AnastellosCog(Cog):
     async def cog_before_invoke(self, ctx):
         await reply_or_send(ctx)
 
-    def cog_check(self, ctx: commands.Context) -> bool:
-        return is_eula_accepted(ctx) and is_cog_enabled(ctx)
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return (await is_eula_accepted(ctx)) and is_cog_enabled(ctx)
 
 
 class AnastellosInternalCog(AnastellosCog):
@@ -38,8 +38,8 @@ class AnastellosInternalCog(AnastellosCog):
         super().__init__(bot)
         self.__type__ = 'internal'
 
-    def cog_check(self, ctx: commands.Context) -> bool:
-        return is_eula_accepted(ctx)
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await is_eula_accepted(ctx)
 
 
 class _AEEmbedDefault:
