@@ -25,6 +25,7 @@ class AnastellosBot(Bot):
 class AnastellosCog(Cog):
     def __init__(self, bot: AnastellosBot):
         self.bot = bot
+        self.__type__ = None
 
     async def cog_before_invoke(self, ctx):
         await reply_or_send(ctx)
@@ -146,8 +147,8 @@ class Settings(AnastellosInternalCog):
             return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['intcog_error'], colour=Colour.brand_red()))
         guild_config = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
         if status is None:
-            status = 'disabled' if cog_name in guild_config.disabled_cogs else 'enabled'
-            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['status_desc'].format(cog_name=cog_name, status=status)))
+            status = l10n['inactive'] if cog_name in guild_config.disabled_cogs else l10n['active']
+            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['status_desc'].format(cog_name=cog_name, status=status), colour=Colour.blurple() if cog_name not in guild_config.disabled_cogs else None))
 
         if isinstance(status, str):
             flags = self.get_flags()
@@ -158,14 +159,15 @@ class Settings(AnastellosInternalCog):
             else:
                 raise commands.BadArgument
 
-        if not status:
+        if status:
             if cog_name in guild_config.disabled_cogs:
                 guild_config.disabled_cogs.remove(cog_name)
-            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['enable_desc'].format(cog_name=cog_name, status=status)))
+            return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['enable_desc'].format(cog_name=cog_name, status=status), colour=Colour.brand_green()))
 
         if cog_name not in guild_config.disabled_cogs:
             guild_config.disabled_cogs.append(cog_name)
-        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['disable_desc'].format(cog_name=cog_name, status=status)))
+        guild_config.save()
+        return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['disable_desc'].format(cog_name=cog_name, status=status), colour=Colour.brand_red()))
 
 
 class AEEmbed(Embed):

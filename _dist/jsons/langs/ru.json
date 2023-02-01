@@ -33,7 +33,9 @@
             },
             "help": {
                 "title": "Доступные команды",
-                "title_groups": "Группы команд",
+                "active_cogs": "Активные модули",
+                "inactive_cogs": "Неактивные модули",
+                "internal_cogs": "Внутренние модули",
                 "desc": "*`[аргумент=X]` - необязательный аргумент (значение приравнивается к X).*\n*`<аргумент>` - требует прямого ввода аргумента.*",
                 "desc_groups": "*Используйте `{prefix}help <имя группы>`, чтобы увидеть её подкоманды.*",
                 "usage": "**Использование команды:**",
@@ -100,11 +102,11 @@
                 "title": "Настройки сервера",
                 "prefix": "Префикс",
                 "lang": "Язык",
+                "toggle_cog": "Активные/неактивные модули",
                 "enabled": "**включено**",
                 "disabled": "**выключено**",
                 "multilevel": "*структурная опция*",
-                "toggle_cog": "Disable/enable cogs [TRANSLATE ME]",
-                "list": "*list* [TRANSLATE ME]"
+                "list": "*список*"
             },
             "prefix": {
                 "title": "Префикс успешно изменён",
@@ -147,12 +149,14 @@
                 "error_desc": "Нет доступа к вебхукам. Пожалуйста, проверьте права бота."
             },
             "toggle_cog": {
-                "title": "Cog status [TRANSLATE ME]",
-                "nocog_error": "There is no cog with such name. [TRANSLATE ME]",
-                "intcog_error": "This cog is essential for the bot and cannot be disabled. [TRANSLATE ME]",
-                "status_desc": "\"{cog_name}\" cog is currently {status} on this server. [TRANSLATE ME]",
-                "enable_desc": "\"{cog_name}\" cog has been enabled. [TRANSLATE ME]",
-                "disable_desc": "\"{cog_name}\" cog has been disabled. [TRANSLATE ME]"
+                "title": "Статус модуля",
+                "active": "активен",
+                "inactive": "неактивен",
+                "nocog_error": "Модуля с таким именем не существует.",
+                "intcog_error": "Этот модуль является внутренним и не может быть деактивирован.",
+                "status_desc": "Модуль \"{cog_name}\" в данный момент имеет статус \"{status}\" на данном сервере.",
+                "enable_desc": "Модуль \"{cog_name}\" была активирован.",
+                "disable_desc": "Модуль \"{cog_name}\" была деактивирован."
             }
         },
         "global_errors": {

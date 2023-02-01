@@ -2,6 +2,7 @@ from inspect import Parameter
 from itertools import zip_longest
 from typing import Union
 
+from nextcord import Colour
 from nextcord.ext import commands
 
 from anastellos.checks import is_eula_accepted
@@ -141,9 +142,28 @@ class AEHelpCommand(commands.HelpCommand):
                 if cmd.enabled and not cmd.hidden:
                     return True
             return False
-        cog_names = [cog_name for cog_name in self.context.bot.cogs if valid_cog(cog_name)]
-        embed = AEEmbed(self.context.bot, title='Cogs', desc='\n'.join(cog_names))
-        await self.context.reply(embed=embed)
+
+        l10n: dict = localization(self.context.bot, self.context.guild.id)[
+            'anastellos']['info']['help']
+        guild_config = self.context.bot.guild_config.get_guild_cfg(self.context.guild.id)
+        active_cogs = []
+        inactive_cogs = []
+        internal_cogs = []
+        for cog_name in self.context.bot.cogs:
+            cog = self.context.bot.get_cog(cog_name)
+            if not valid_cog(cog):
+                continue
+            if '__type__' in cog.__dict__ and cog.__type__ == 'internal':
+                internal_cogs.append(cog_name)
+            elif cog_name not in guild_config.disabled_cogs:
+                active_cogs.append(cog_name)
+            else:
+                inactive_cogs.append(cog_name)
+        embeds = []
+        embeds.append(AEEmbed(self.context.bot, title=l10n['internal_cogs'], desc='\n'.join(internal_cogs)))
+        if active_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['active_cogs'], desc='\n'.join(active_cogs), colour=Colour.brand_green()))
+        if inactive_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['inactive_cogs'], desc='\n'.join(inactive_cogs), colour=None))
+        await self.context.reply(embeds=embeds)
 
     async def command_not_found(self, string):
         raise commands.CommandNotFound(string)

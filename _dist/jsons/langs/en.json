@@ -30,7 +30,9 @@
             },
             "help": {
                 "title": "Available commands",
-                "title_groups": "Command groups",
+                "active_cogs": "Active cogs",
+                "inactive_cogs": "Inactive cogs",
+                "internal_cogs": "Internal cogs",
                 "desc": "*`[argument=X]` is an optional argument (empty defaults to X).*\n*`<argument>` requires the explicit input.*",
                 "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.*",
                 "usage": "**Command usage:**",
@@ -103,10 +105,10 @@
                 "title": "Server preferences",
                 "prefix": "Prefix",
                 "lang": "Language",
-                "enabled": "**enabled**",
-                "disabled": "**disabled**",
+                "toggle_cog": "Active/inactive cogs",
+                "enabled": "**active**",
+                "disabled": "**inactive**",
                 "multilevel": "*multi-level*",
-                "toggle_cog": "Disable/enable cogs",
                 "list": "*list*"
             },
             "prefix": {
@@ -140,11 +142,13 @@
             },
             "toggle_cog": {
                 "title": "Cog status",
+                "active": "active",
+                "inactive": "inactive",
                 "nocog_error": "There is no cog with such name.",
-                "intcog_error": "This cog is essential for the bot and cannot be disabled.",
+                "intcog_error": "This cog is essential for the bot and cannot be deactivated.",
                 "status_desc": "\"{cog_name}\" cog is currently {status} on this server.",
-                "enable_desc": "\"{cog_name}\" cog has been enabled.",
-                "disable_desc": "\"{cog_name}\" cog has been disabled."
+                "enable_desc": "\"{cog_name}\" cog has been activated.",
+                "disable_desc": "\"{cog_name}\" cog has been deactivated."
             }
         },
         "global_errors": {
