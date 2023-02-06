@@ -161,8 +161,8 @@ class AEHelpCommand(commands.HelpCommand):
                 inactive_cogs.append(cog_name)
         embeds = []
         embeds.append(AEEmbed(self.context.bot, title=l10n['internal_cogs'], desc='\n'.join(internal_cogs)))
-        if active_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['active_cogs'], desc='\n'.join(active_cogs), colour=Colour.brand_green()))
-        if inactive_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['inactive_cogs'], desc='\n'.join(inactive_cogs), colour=None))
+        if active_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['active_cogs'], desc='\n'.join(active_cogs), author_name=None, author_icon=None, colour=Colour.brand_green()))
+        if inactive_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['inactive_cogs'], desc='\n'.join(inactive_cogs), author_name=None, author_icon=None, colour=None))
         await self.context.reply(embeds=embeds)
 
     async def command_not_found(self, string):
