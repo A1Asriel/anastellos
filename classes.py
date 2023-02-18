@@ -57,8 +57,8 @@ class Settings(AnastellosInternalCog):
             return lang['__meta__']['yes'], lang['__meta__']['no']
         yes = ()
         no = ()
-        for lang_name in self.bot.config.lang_names:
-            lang = fetch_json(self.bot.config._langfiles_path + lang_name)
+        for lang_name in self.bot.l10n.lang_list:
+            lang = self.bot.l10n.getlang(lang_name)
             yes += tuple(lang['__meta__']['yes'])
             no += tuple(lang['__meta__']['no'])
         return yes, no

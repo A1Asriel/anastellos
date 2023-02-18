@@ -119,7 +119,6 @@ class Config(SimpleConfig):
 
         # Settings that stay in the memory.
         self.self_avatar_url = ''
-        self._langfiles_path = 'jsons/langs/'
         self._def_guild_config = {  # Revision 3
             "prefix": self.def_prefix,
             "lang": "en",
@@ -130,16 +129,6 @@ class Config(SimpleConfig):
         self.additional_guild_params = additional_guild_params
         for name, value in self.additional_guild_params.items():
             self._def_guild_config[name] = value[1]
-
-        langfiles = listdir(self._langfiles_path)
-        self.lang_names = set()  # Set of loaded language codes.
-        for langn in langfiles:
-            if langn.startswith(('ign_', '__')):
-                continue
-            self.lang_names.add(langn[:-5] if langn.endswith('.json') else langn)
-        if not self.lang_names:
-            _log.fatal('No localization files found. The bot is unable to initialize.')
-            raise AnastellosInitError(__stage__='config')
 
         for arg, value in kwargs.items():
             self.__setattr__(arg, value)
