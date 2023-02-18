@@ -1,14 +1,11 @@
 import json
 import logging
-import os
 from json.decoder import JSONDecodeError
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 from nextcord import Message
 from nextcord.ext.commands import Bot
-from nextcord.ext.commands.errors import ExtensionFailed
-
-# from anastellos.classes import AnastellosBot  Won't fix: cannot import.
+# from anastellos.classes import AnastellosBot  # Won't fix: cannot import.
 
 _log = logging.getLogger(__name__)
 

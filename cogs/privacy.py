@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Optional
 
@@ -5,7 +6,7 @@ import nextcord
 from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosBot, AnastellosInternalCog
-from ..utils import *
+from ..utils import localization
 
 _log = logging.getLogger(__name__)
 

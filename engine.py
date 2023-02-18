@@ -1,15 +1,17 @@
-__build__ = '2.1.23032.2'
+__build__ = '2.1.23032.3'
 
 import logging
+import os
 import time
 
 import nextcord
+from nextcord.ext.commands.errors import ExtensionFailed
 
 from .classes import AESnowflake, AnastellosBot
 from .config import Config, GuildConfigFile
-from .exceptions import *
+from .exceptions import AnastellosInitError
 from .help import AEHelpCommand
-from .utils import *
+from .utils import get_commit_details, get_prefix
 
 _log = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosInternalCog
-from ..utils import *
+from ..utils import localization
 
 
 class Info(AnastellosInternalCog):
