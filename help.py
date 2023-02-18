@@ -53,7 +53,7 @@ class AEHelpCommand(commands.HelpCommand):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['info']['help']['commands'].get(command.name, dict())
         out = l10n.get('desc', '').format(def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
-        extra = l10n.get('extra', '').format(lang_names='`, `'.join(self.context.bot.config.lang_names))
+        extra = l10n.get('extra', '').format(lang_names='`, `'.join(self.context.bot.l10n.lang_list))
         if detailed:
             return out, extra
         return out

@@ -25,7 +25,7 @@ class Listeners(AnastellosInternalCog):
             _log.info('None existing, creating a new one.')
             entry: GuildConfigEntry = self.bot.guild_config.create_guild_cfg(guild.id)
             pref_locale = guild.preferred_locale
-            if pref_locale and pref_locale in self.bot.config.lang_names:
+            if pref_locale and pref_locale in self.bot.l10n.lang_list:
                 entry.lang = guild.preferred_locale[:2]
                 entry.save()
             return None
@@ -46,7 +46,7 @@ class Listeners(AnastellosInternalCog):
             if entry is None:
                 entry = self.bot.guild_config.create_guild_cfg(guild.id)
                 pref_locale = guild.preferred_locale
-                if pref_locale and pref_locale in self.bot.config.lang_names:
+                if pref_locale and pref_locale in self.bot.l10n.lang_list:
                     entry.lang = guild.preferred_locale[:2]
                     entry.save()
         return None
