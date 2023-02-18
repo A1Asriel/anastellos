@@ -23,7 +23,7 @@
     "anastellos": {
         "info": {
             "about": {
-                "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the information about most commands.*",
+                "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the info about the available modules and commands.*",
                 "indev": "\n\nThe bot is running in DEBUG mode and its stable operation is not guaranteered. It is recommended to refrain from using the bot until the maintainance is finished.",
                 "anastellos": "Powered by Anastellos Engine",
                 "creator": "<> with ❤ by {creator}"
@@ -164,18 +164,15 @@
             "not_owner": "*Only bot owner is allowed to do that.*",
             "no_history_access": "*The bot cannot access the message history and therefore unable to complete this action.*",
             "l10n_unsupported": "*This command is not supported by the current language.*"
-        },
-        "privacy": {
-            "privacy": {
-                "title": "Anastellos Engine Example Privacy Policy",
-                "desc": "> __THIS IS A PLACEHOLDER VERSION OF PRIVACY POLICY, MAKE YOUR CHANGES BEFORE USING IT__\n\nThis document (\"Privacy Policy\") only applies to the instance of Bot Name hosted by the bot account `<@your_bot_id>` (\"Bot\"). The use of the Bot in a server (guild) requires the processing and/or storing of some specific user data (\"Data\").\n*To use the Bot, you are required to agree to the terms of Privacy Policy. If you decline them, the Bot will leave the server automatically.*\n\n**Processing of Data:**\nThe Bot may log the guild ID and its name as soon as it is invited to a server.\nThe Bot may log IDs and usernames of the users who typed any valid commands into any channel, accessible by the Bot, sent a direct message to the Bot, or directly mentioned the Bot in any channel.\nThe Bot processes and/or caches almost all the accessible Data including but not limited to: message IDs, message content, message attachments, member IDs, member usernames, member server nicknames, member avatar URLs, member custom statuses with the purpose of operating properly, although it cannot be accessed by the developer directly.\n\n**Storing of Data:**\nThe Bot saves all logged Data to a text file for the purpose of diagnostics.\nThe Bot does not store personal user Data until the person managing an account grants permission to do so for reasons including but not limited to: attribution for help in developing/translating the Bot.\nAfter a member with the permission to Manage Server accepts the terms of Privacy Policy, the Bot writes the guild ID into the local database to store the server configuration. It also stores Data including but not limited to: text, integer or boolean values for remembering the guild preferences, such as prefix, language, technical channel IDs, etc.\n\n**Access to Data:**\nThe mentioned Data is stored on a personal computer of the Bot developer. Only they are able to access and/or modify the Data at any given time.\n\n**Removal of Data:**\nThe Bot is able to delete the server preferences alongside with its ID from the database by using the option \"Leave and forget\", provided by using the command `ae!leave`.\nIn case if you want to remove all your user information (considering you gave your permission to store it before), you can request the removal manually by contacting the Bot developer in the direct messages or in the support server.\n\n> The developer reserves the right to modify this document at any given time, with or without noticing the users.",
-                "footer": "Developer: {creator} | Last updated:",
-                "timestamp": 1663184011,
-                "_url": "https://example.com/",
-                "agree": "Agree",
-                "decline": "Decline"
-            }
         }
     },
-    "cmds": {}
+    "privacy": {
+        "title": "Anastellos Engine Example Privacy Policy",
+        "desc": "> __THIS IS A PLACEHOLDER VERSION OF PRIVACY POLICY, MAKE YOUR CHANGES BEFORE USING IT__\n\nThis document (\"Privacy Policy\") only applies to the instance of Bot Name hosted by the bot account `<@your_bot_id>` (\"Bot\"). The use of the Bot in a server (guild) requires the processing and/or storing of some specific user data (\"Data\").\n*To use the Bot, you are required to agree to the terms of Privacy Policy. If you decline them, the Bot will leave the server automatically.*\n\n**Processing of Data:**\nThe Bot may log the guild ID and its name as soon as it is invited to a server.\nThe Bot may log IDs and usernames of the users who typed any valid commands into any channel, accessible by the Bot, sent a direct message to the Bot, or directly mentioned the Bot in any channel.\nThe Bot processes and/or caches almost all the accessible Data including but not limited to: message IDs, message content, message attachments, member IDs, member usernames, member server nicknames, member avatar URLs, member custom statuses with the purpose of operating properly, although it cannot be accessed by the developer directly.\n\n**Storing of Data:**\nThe Bot saves all logged Data to a text file for the purpose of diagnostics.\nThe Bot does not store personal user Data until the person managing an account grants permission to do so for reasons including but not limited to: attribution for help in developing/translating the Bot.\nAfter a member with the permission to Manage Server accepts the terms of Privacy Policy, the Bot writes the guild ID into the local database to store the server configuration. It also stores Data including but not limited to: text, integer or boolean values for remembering the guild preferences, such as prefix, language, technical channel IDs, etc.\n\n**Access to Data:**\nThe mentioned Data is stored on a personal computer of the Bot developer. Only they are able to access and/or modify the Data at any given time.\n\n**Removal of Data:**\nThe Bot is able to delete the server preferences alongside with its ID from the database by using the option \"Leave and forget\", provided by using the command `ae!leave`.\nIn case if you want to remove all your user information (considering you gave your permission to store it before), you can request the removal manually by contacting the Bot developer in the direct messages or in the support server.\n\n> The developer reserves the right to modify this document at any given time, with or without noticing the users.",
+        "footer": "Developer: {creator} | Last updated:",
+        "timestamp": 1663184011,
+        "_url": "https://example.com/",
+        "agree": "Agree",
+        "decline": "Decline"
+    }
 }

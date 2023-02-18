@@ -1,5 +1,4 @@
 from datetime import datetime
-from os import listdir
 from time import time
 from typing import Optional, Union
 
@@ -7,10 +6,10 @@ from nextcord import Colour, Embed
 from nextcord.ext import commands
 from nextcord.ext.commands import Bot, Cog
 
-from anastellos.exceptions import AnastellosException
-
 from .checks import is_cog_enabled, is_eula_accepted, reply_or_send
 from .config import Config, GuildConfigFile
+from .exceptions import AnastellosException
+from .l10n import Localization
 from .utils import fetch_json, localization
 
 
@@ -20,6 +19,7 @@ class AnastellosBot(Bot):
         self.config: Config = config
         self.guild_config: GuildConfigFile
         self.aesnowflake: AESnowflake
+        self.l10n: Localization
 
 
 class AnastellosCog(Cog):
@@ -104,15 +104,10 @@ class Settings(AnastellosInternalCog):
     @settings.command(name='language', aliases=('lang', 'set_language', 'set_lang'))
     async def set_lang(self, ctx: commands.Context, new_lang: str):
         langs = {}
-        langfiles_path = 'jsons/langs/'
-        langfiles = listdir(langfiles_path)
+        langfiles = self.bot.l10n.lang_list
         for lang in langfiles:
-            if lang.startswith(('ign_', '__')):
-                continue
-            lang_name = lang[:-5] if lang.endswith('.json') else lang
-            lang_aliases = fetch_json(
-                langfiles_path + lang_name)['__meta__']['aliases']
-            langs[lang_name] = lang_aliases
+            lang_aliases = self.bot.l10n.getlang(lang)['__meta__']['aliases']
+            langs[lang] = lang_aliases
 
         found = False
         for lang in langs:
@@ -162,6 +157,7 @@ class Settings(AnastellosInternalCog):
         if status:
             if cog_name in guild_config.disabled_cogs:
                 guild_config.disabled_cogs.remove(cog_name)
+            guild_config.save()
             return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['enable_desc'].format(cog_name=cog_name, status=status), colour=Colour.brand_green()))
 
         if cog_name not in guild_config.disabled_cogs:

@@ -63,16 +63,14 @@ class Privacy(AnastellosInternalCog):
     @commands.command()
     @commands.guild_only()
     async def privacy(self, ctx: commands.Context, lang: str = 'en', confirmation: Optional[str] = None):
-        if lang not in self.bot.config.lang_names or localization(self.bot, lang=lang)['anastellos'].get('privacy', {}).get('privacy') is None:
+        if lang not in self.bot.l10n.lang_list or localization(self.bot, lang=lang)['anastellos'].get('privacy') is None:
             lang = 'en'
-        l10n = localization(self.bot, lang=lang)[
-            'anastellos']['privacy']['privacy']
+        l10n = localization(self.bot, lang=lang)['privacy']
         title = l10n['title']
         desc = l10n['desc']
         creator = await self.bot.fetch_user(self.bot.owner_id)
         footer_title = l10n['footer'].format(creator=creator)
-        url = l10n.get(
-            '_url', 'https://a1asriel.github.io/AsrielBot-site/privacy.html')
+        url = l10n.get('_url', 'https://a1asriel.github.io/AsrielBot-site/privacy.html')
         embed = AEEmbed(self.bot,
                         title=title,
                         desc=desc,

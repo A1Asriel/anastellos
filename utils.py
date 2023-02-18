@@ -5,6 +5,7 @@ from typing import Tuple, Union
 
 from nextcord import Message
 from nextcord.ext.commands import Bot
+
 # from anastellos.classes import AnastellosBot  # Won't fix: cannot import.
 
 _log = logging.getLogger(__name__)
@@ -50,7 +51,7 @@ def localization(bot: Bot, guild_id: Union[int, str] = None, lang: str = None) -
         if isinstance(guild_id, int):
             guild_id = str(guild_id)
         lang = bot.guild_config.get_guild_cfg(guild_id).lang
-    return fetch_json('jsons/langs/'+lang)
+    return bot.l10n.getlang(lang)
 
 
 def get_commit_details(repo_prefix: str) -> Tuple[str, str]:

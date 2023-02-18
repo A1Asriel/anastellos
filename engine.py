@@ -1,4 +1,4 @@
-__build__ = '2.1.23032.3'
+__build__ = '2.1.23049.1'
 
 import logging
 import os
@@ -11,6 +11,7 @@ from .classes import AESnowflake, AnastellosBot
 from .config import Config, GuildConfigFile
 from .exceptions import AnastellosInitError
 from .help import AEHelpCommand
+from .l10n import Localization
 from .utils import get_commit_details, get_prefix
 
 _log = logging.getLogger(__name__)
@@ -59,6 +60,15 @@ class AnastellosEngine:
             self.bot, additional_guild_params=additional_guild_params)
         self.bot.guild_config = self.guild_config
         self.bot.aesnowflake = AESnowflake(self.bot.shard_id)
+        self.bot.l10n = Localization()
+        if self.config.mode == 2:
+            try:
+                bot_repo_prefix = '.git/'
+                bot_commit_details = get_commit_details(bot_repo_prefix)
+                self.config.version += f' {bot_commit_details[0]}:{bot_commit_details[1][:7]}'
+            except Exception as e:
+                _log.debug(f'Couldn\'t retrieve bot repository info while starting up.', exc_info=1)
+            _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
 
         @self.bot.event
         async def on_ready():
@@ -67,14 +77,7 @@ class AnastellosEngine:
             _log.info(f'The bot is running on {len(self.bot.guilds)} guilds.')
             guildlist = '\n'.join([f'{guild.id} - {guild.name}' for guild in self.bot.guilds])
             _log.debug(f'Current guilds:\n{guildlist}')
-            if self.config.mode == 2:
-                try:
-                    bot_repo_prefix = '.git/'
-                    bot_commit_details = get_commit_details(bot_repo_prefix)
-                    self.config.version += f' {bot_commit_details[0]}:{bot_commit_details[1][:7]}'
-                except Exception as e:
-                    _log.debug(f'Couldn\'t retrieve bot repository info while starting up.', exc_info=1)
-                _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
+            
             if self.bot.user.avatar is not None:
                 self.config.self_avatar_url = self.bot.user.avatar.url
             self.bot.owner_id = self.config.owner if self.config.owner is not None else (await self.bot.application_info()).owner.id
