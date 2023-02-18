@@ -205,20 +205,20 @@ class GuildConfigFile(SimpleConfig):
 
         def to2():
             for guildid in self._file['guilds'].keys():
-                self._file['guilds'][guildid] = {
-                    'is_eula_accepted': False
-                } | self._file['guilds'][guildid]
+                temp_dict = {'is_eula_accepted': False}
+                temp_dict.update(self._file['guilds'][guildid])
+                self._file['guilds'][guildid] = temp_dict
             self._file['__revision__'] = 2
 
         def to3():
             for guildid in self._file['guilds'].keys():
-                self._file['guilds'][guildid] = {
-                    'disabled_cogs': []
-                } | self._file['guilds'][guildid]
+                temp_dict = {'disabled_cogs': []}
+                temp_dict.update(self._file['guilds'][guildid])
+                self._file['guilds'][guildid] = temp_dict
             self._file['__revision__'] = 3
 
         if new_rev is not None and new_rev < old_rev:
-            raise AnastellosException('Can\t downgrade a config file.')
+            raise AnastellosException('Can\'t downgrade a config file.')
 
         while new_rev is None or old_rev < new_rev:
             if old_rev == 0:
@@ -233,9 +233,9 @@ class GuildConfigFile(SimpleConfig):
             _log.info(f'The guild config file was upgraded to revision {old_rev} successfully.')
         self._schema = self._file.copy()
         # self.save()  # This method doesn't work for some reason, so it has to be saved manually
-        self.__assignattrs__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
+        self.__assignattrs__()
         self.__compileschema__()
         return None
 
