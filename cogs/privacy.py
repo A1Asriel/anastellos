@@ -7,6 +7,7 @@ from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosBot, AnastellosInternalCog
 from ..utils import localization
+from ..exceptions import AnastellosCommandError
 
 _log = logging.getLogger(__name__)
 
@@ -65,6 +66,14 @@ class Privacy(AnastellosInternalCog):
     async def privacy(self, ctx: commands.Context, lang: str = 'en', confirmation: Optional[str] = None):
         if lang not in self.bot.l10n.lang_list or localization(self.bot, lang=lang)['anastellos'].get('privacy') is None:
             lang = 'en'
+            if lang not in self.bot.l10n.lang_list or localization(self.bot, lang=lang)['anastellos'].get('privacy') is None:
+                lang = None
+                for lang2 in self.bot.l10n.lang_list:
+                    if localization(self.bot, lang=lang2)['anastellos'].get('privacy') is not None:
+                        lang = lang2
+                        break
+            if lang is None:
+                raise AnastellosCommandError('No privacy file data found')
         l10n = localization(self.bot, lang=lang)['privacy']
         title = l10n['title']
         desc = l10n['desc']
