@@ -51,13 +51,14 @@ def localization(bot: Bot, guild_id: Union[int, str] = None, lang: str = None) -
         if isinstance(guild_id, int):
             guild_id = str(guild_id)
         lang = bot.guild_config.get_guild_cfg(guild_id).lang
-    return bot.l10n.getlang(lang)
+    res = bot.l10n.getlang(lang)
+    return res
 
 
 def get_commit_details(repo_prefix: str) -> Tuple[str, str]:
     with open(f'{repo_prefix}HEAD', 'r', encoding='utf8') as f:
         branch = f.readline().strip()
         branch = branch[16:] if branch.startswith('ref: refs/heads/') else branch
-    with open(f'{repo_prefix}refs/heads/{branch}', 'r', encoding='ansi') as f:
+    with open(f'{repo_prefix}refs/heads/{branch}', 'r', encoding='utf8') as f:
         commit_sha = f.readline().strip()
     return branch, commit_sha

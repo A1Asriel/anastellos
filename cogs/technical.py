@@ -20,31 +20,15 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
     @commands.guild_only()
     @commands.is_owner()
     async def stop(self, ctx: commands.Context):
-        l10n = localization(self.bot, guild_id=ctx.guild.id)[
-            'anastellos']['technical']['stop']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['technical']['commands']['stop']
         await ctx.reply(l10n)
         return await self.bot.close()
-
-    # Unsafe to use, this command is deprecated and to be removed in the future.
-    """ @commands.command(enabled=False)
-    @commands.guild_only()
-    @commands.is_owner()
-    async def shutdown(self, ctx: commands.Context):
-        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['technical']['shutdown']
-        if self.bot.config.mode == 2:
-            return await ctx.reply(l10n['error_indev'], delete_after=5)
-        # if not self.bot.config.can_shutdown:
-        #     return await ctx.reply(l10n['cant_shutdown'], delete_after=5)
-        await ctx.reply(l10n['msg'])
-        os.system('shutdown -s -t 10')
-        return await self.bot.close() """
 
     @commands.command()
     @commands.guild_only()
     @commands.is_owner()
     async def reload(self, ctx: commands.Context):
-        l10n = localization(self.bot, guild_id=ctx.guild.id)[
-            'anastellos']['technical']['reload']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['technical']['commands']['reload']
         msg = await ctx.reply(l10n['start'], delete_after=5)
         i = '$modulename'
         try:
@@ -76,7 +60,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                 )
             return bot_commit_string
 
-        l10n = localization(self.bot, ctx.guild.id)['anastellos']['technical']['host_info']
+        l10n = localization(self.bot, ctx.guild.id)['anastellos']['cogs']['technical']['commands']['host_info']
         mem = psutil.virtual_memory()
         mem_str = l10n['memory'].format(total=round(mem.total/(2**30), 1), used=round(mem.used/(2**30), 1), used_percent=round(mem.used/mem.total*100))
 
@@ -197,8 +181,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                     await guild.leave()
                     return
 
-        l10n = localization(self.bot, guild_id=ctx.guild.id)[
-            'anastellos']['settings']['leave']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['leave']
         emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(
             name=self.bot.config.name), desc=l10n['desc_msg'], colour=nextcord.Color.brand_red())
         _LeaveMessageUI = LeaveMessageUI(ctx, l10n['ui'])

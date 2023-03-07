@@ -109,7 +109,7 @@ class Listeners(AnastellosInternalCog):
 
         if l10n_code:
             l10n = localization(self.bot, guild_id=ctx.guild.id)[
-                'anastellos']['global_errors']
+                'anastellos']['errors']
             try:
                 await ctx.reply(f'{l10n.get(l10n_code, "`"+l10n_code+"`")}{exc_text if is_debug else ""}', delete_after=delete_after if not is_debug else None)
             except nextcord.Forbidden:

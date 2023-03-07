@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from os import listdir, makedirs
+from os import makedirs
 from os.path import dirname
 from typing import Any, Optional
 

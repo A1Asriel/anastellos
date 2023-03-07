@@ -10,7 +10,7 @@ from .checks import is_cog_enabled, is_eula_accepted, reply_or_send
 from .config import Config, GuildConfigFile
 from .exceptions import AnastellosException
 from .l10n import Localization
-from .utils import fetch_json, localization
+from .utils import localization
 
 
 class AnastellosBot(Bot):
@@ -20,6 +20,7 @@ class AnastellosBot(Bot):
         self.guild_config: GuildConfigFile
         self.aesnowflake: AESnowflake
         self.l10n: Localization
+        self.startup_time: float
 
 
 class AnastellosCog(Cog):
@@ -67,8 +68,7 @@ class Settings(AnastellosInternalCog):
     @commands.has_guild_permissions(manage_guild=True)
     async def settings(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            l10n = localization(self.bot, guild_id=ctx.guild.id)[
-                'anastellos']['settings']['list']
+            l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['settings']['list']
             cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id).get_dict
             fields = [
                 [l10n['prefix'], '`'+cfg['prefix']+'`', True],
@@ -106,7 +106,7 @@ class Settings(AnastellosInternalCog):
         langs = {}
         langfiles = self.bot.l10n.lang_list
         for lang in langfiles:
-            lang_aliases = self.bot.l10n.getlang(lang)['__meta__']['aliases']
+            lang_aliases = self.bot.l10n.l10n_dict[lang]['__meta__']['aliases']
             langs[lang] = lang_aliases
 
         found = False

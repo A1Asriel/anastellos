@@ -8,8 +8,7 @@ class Info(AnastellosInternalCog):
     @commands.command(aliases=['info'])
     @commands.guild_only()
     async def about(self, ctx: commands.Context):
-        l10n = localization(self.bot, guild_id=ctx.guild.id)[
-            'anastellos']['info']['about']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['info']['commands']['about']
         title = f'{self.bot.config.name} {self.bot.config.full_version}'
         desc = l10n['desc'].format(prefix=ctx.clean_prefix)
         if self.bot.config.mode == 2:
