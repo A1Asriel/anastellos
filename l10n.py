@@ -38,34 +38,32 @@ class Localization:
                         self.l10n_dict[f]['privacy'] = f_dict
 
     def getlang(self, lang: str):
-        return PartialLocalization(lang, self.l10n_dict[lang])
+        return PartialL10n(lang, self.l10n_dict[lang])
 
     @property
     def lang_list(self) -> Set[str]:
         return set(self.core_lang_list + self.cust_lang_list)
 
 
-# TODO: Add custom classes for lists and strings
-
-class PartialLocalization(MutableMapping):
+class PartialL10n(MutableMapping):
     def __init__(self, part_str: str = "", part_dict: Optional[Union[dict, list, str]] = {}):
         self.store = {}
         if isinstance(part_dict, dict):
             self.update(part_dict)
         elif isinstance(part_dict, list):
             self.store = {'_list': part_dict}
-        elif isinstance(part_dict, str):
+        elif isinstance(part_dict, (str, int)):
             self.store = {'_str': part_dict}
         self.part_str = part_str
 
     def __getitem__(self, key):
         item = None
-        if '_list' in self.store:
+        if '_list' in self.store and isinstance(key, int):
             try:
                 item = self.store['_list'][key]
             except:
                 pass
-        elif '_str' in self.store:
+        elif '_str' in self.store and isinstance(key, int):
             try:
                 item = self.store['_str'][key]
             except:
@@ -73,36 +71,53 @@ class PartialLocalization(MutableMapping):
         else:
             item = self.store.get(key)
         if item is None:
-            item = PartialLocalization(self.part_str + '.' + key)
+            item = PartialL10n(self.part_str + '.' + str(key))
+        # elif isinstance(item, dict):
+        #     item = PartialL10nDict(self.part_str + '.' + key, item)
+        # elif isinstance(item, list):
+        #     item = PartialL10nList()
+        # elif isinstance(item, str):
+        #     item = PartialL10nStr(item, self.part_str)
         else:
-            item = PartialLocalization(self.part_str + '.' + key, item)
+            item = PartialL10n(self.part_str + '.' + str(key), item)
         return item
 
     def get(self, key, default=None):
         return self.__getitem__(key)
 
     def __setitem__(self, key, value):
-        self.store[self._keytransform(key)] = value
+        self.store[key] = value
 
     def __delitem__(self, key):
-        del self.store[self._keytransform(key)]
+        del self.store[key]
 
     def __iter__(self):
         return iter(self.store)
-    
+
     def __len__(self):
         return len(self.store)
 
-    def _keytransform(self, key):
-        return key
-
     def __str__(self) -> str:
         if '_str' in self.store:
-            return self.store['_str']
+            return str(self.store['_str'])
         if not self.store:
             return self.part_str
         else:
             return super().__str__()
+
+    def __int__(self):
+        if '_str' in self.store:
+            return int(self.store['_str'])
+        else:
+            return 0
+    def format(self, *args, **kwargs):
+        return self.__str__().format(*args, **kwargs)
+
+    def __add__(self, other):
+        if isinstance(other, str) and '_str' in self.store:
+            return self.store['_str'] + other
+        else:
+            return self.part_str
 
     # def getstr(self, l10nstr: str) -> Union[dict, str]:
     #     l10ndiv = l10nstr.split('.')
