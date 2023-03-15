@@ -72,18 +72,15 @@ class PartialL10n(MutableMapping):
             item = self.store.get(key)
         if item is None:
             item = PartialL10n(self.part_str + '.' + str(key))
-        # elif isinstance(item, dict):
-        #     item = PartialL10nDict(self.part_str + '.' + key, item)
-        # elif isinstance(item, list):
-        #     item = PartialL10nList()
-        # elif isinstance(item, str):
-        #     item = PartialL10nStr(item, self.part_str)
         else:
             item = PartialL10n(self.part_str + '.' + str(key), item)
         return item
 
     def get(self, key, default=None):
         return self.__getitem__(key)
+
+    def format(self, *args, **kwargs):
+        return self.__str__().format(*args, **kwargs)
 
     def __setitem__(self, key, value):
         self.store[key] = value
@@ -110,19 +107,15 @@ class PartialL10n(MutableMapping):
             return int(self.store['_str'])
         else:
             return 0
-    def format(self, *args, **kwargs):
-        return self.__str__().format(*args, **kwargs)
+    
+    def __bool__(self):
+        if '_str' in self.store:
+            return bool(self.store['_str'])
+        else:
+            return bool(self.store)
 
     def __add__(self, other):
         if isinstance(other, str) and '_str' in self.store:
             return self.store['_str'] + other
         else:
             return self.part_str
-
-    # def getstr(self, l10nstr: str) -> Union[dict, str]:
-    #     l10ndiv = l10nstr.split('.')
-    #     cur_l10n = self.getlang()
-    #     for div in l10ndiv:
-    #         pass
-    #     # self.getstr()
-    #     _log.debug('partloc getstr')

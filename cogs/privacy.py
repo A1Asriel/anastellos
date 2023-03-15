@@ -35,7 +35,7 @@ class Privacy(AnastellosInternalCog):
         class AgreeButton(nextcord.ui.Button):
             def __init__(self, l10n: dict, author: nextcord.Member, lang: str):
                 super().__init__(
-                    label=l10n['agree'], emoji='✅', style=nextcord.ButtonStyle.green)
+                    label=str(l10n['agree']), emoji='✅', style=nextcord.ButtonStyle.green)
                 self.author = author
                 self.lang = lang
 
@@ -49,7 +49,7 @@ class Privacy(AnastellosInternalCog):
         class DeclineButton(nextcord.ui.Button):
             def __init__(self, l10n, author):
                 super().__init__(
-                    label=l10n['decline'], emoji='❎', style=nextcord.ButtonStyle.red)
+                    label=str(l10n['decline']), emoji='❎', style=nextcord.ButtonStyle.red)
                 self.author = author
 
             async def callback(self, interaction: nextcord.Interaction):
@@ -75,17 +75,17 @@ class Privacy(AnastellosInternalCog):
             if lang is None:
                 raise AnastellosCommandError('No privacy file data found')
         l10n = localization(self.bot, lang=lang)['privacy']
-        title = l10n['title']
-        desc = l10n['desc']
+        title = str(l10n['title'])
+        desc = str(l10n['desc'])
         creator = await self.bot.fetch_user(self.bot.owner_id)
         footer_title = l10n['footer'].format(creator=creator)
-        url = l10n.get('_url', 'https://a1asriel.github.io/AsrielBot-site/privacy.html')
+        url = str(l10n.get('_url'))
         embed = AEEmbed(self.bot,
                         title=title,
                         desc=desc,
                         footer_title=footer_title,
                         url=url,
-                        timestamp=datetime.fromtimestamp(l10n['timestamp']))
+                        timestamp=datetime.fromtimestamp(int(l10n['timestamp'])))
 
         if not ctx.author.guild_permissions.manage_guild or self.bot.guild_config.get_guild_cfg(ctx.guild.id) is not None and self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
             await ctx.send(embed=embed)

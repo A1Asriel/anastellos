@@ -1,8 +1,8 @@
-__build__ = '2.1.23067.1'
+__build__ = '2.1.23072.1'
 
-import logging
-import os
-import time
+from logging import getLogger
+from os import listdir
+from time import time
 
 import nextcord
 from nextcord.ext.commands.errors import ExtensionFailed
@@ -14,7 +14,7 @@ from .help import AEHelpCommand
 from .l10n import Localization
 from .utils import get_commit_details, get_prefix
 
-_log = logging.getLogger(__name__)
+_log = getLogger(__name__)
 
 
 class AnastellosEngine:
@@ -23,10 +23,10 @@ class AnastellosEngine:
             additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
 
         if self.config.mode == 2:
-            logging.getLogger().setLevel(10)
-            logging.getLogger('nextcord').setLevel(20)
+            getLogger().setLevel(10)
+            getLogger('nextcord').setLevel(20)
         else:
-            logging.getLogger('nextcord').propagate = False
+            getLogger('nextcord').propagate = False
 
         _log.info(f'Starting {self.config.name} {self.config.full_version}...')
 
@@ -72,7 +72,7 @@ class AnastellosEngine:
 
         @self.bot.event
         async def on_ready():
-            self.bot.startup_time = time.time()
+            self.bot.startup_time = time()
             _log.info(f'Logged in as {self.bot.user.name}#{self.bot.user.discriminator} - {self.bot.user.id}.')
             _log.info(f'The bot is running on {len(self.bot.guilds)} guilds.')
             guildlist = '\n'.join([f'{guild.id} - {guild.name}' for guild in self.bot.guilds])
@@ -84,7 +84,7 @@ class AnastellosEngine:
 
     def load_cog(self, path: str, *, type: str = ''):
         try:
-            files = os.listdir(path)
+            files = listdir(path)
         except FileNotFoundError as e:
             _log.error(f'Failed to find directory named {path}. Skipping it.')
             return None
