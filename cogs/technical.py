@@ -10,6 +10,7 @@ import psutil
 from nextcord.ext import commands
 
 from ..classes import AEEmbed, AnastellosInternalCog
+from ..l10n import Localization
 from ..utils import get_commit_details, localization
 
 _log = logging.getLogger(__name__)
@@ -40,10 +41,14 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                     # FIXME: Workaround to avoid exception during the custom commands reload.
                     if not isinstance(e.original, commands.CommandRegistrationError):
                         raise e
-                    _log.error(f'Couldn\'t reload the cog {i}, skipping.')
+                    _log.error(f'Couldn\'t reload the cog {i}, skipping.', exc_info=self.bot.config.mode==2)
         except commands.ExtensionFailed:
             _log.error(f'Couldn\'t reload the cog {i}.]')
             return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
+        try:
+            self.bot.l10n = Localization()
+        except Exception as e:
+            _log.error('Couldn\'t reinitialize the localization system.')
         await msg.edit(content=l10n['success'], delete_after=5)
 
     @commands.command()
