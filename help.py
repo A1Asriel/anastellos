@@ -21,7 +21,7 @@ class AEHelpCommand(commands.HelpCommand):
 
     def get_command_signature(self, command: commands.Command):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['info']['help']['commands'].get(command.name, dict())
+            'anastellos']['cogs'][command.cog_name.lower()]['commands'][command.name]['help']
         alias = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""}{command.name}'
         if command.aliases:
             if command.parent:
@@ -51,7 +51,7 @@ class AEHelpCommand(commands.HelpCommand):
 
     def get_command_description(self, command: commands.Command, *, detailed=False):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['info']['help']['commands'].get(command.name, dict())
+            'anastellos']['cogs'][command.cog_name.lower()]['commands'].get(command.name, dict()).get('help', dict())
         out = l10n.get('desc', '').format(def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
         extra = l10n.get('extra', '').format(lang_names='`, `'.join(self.context.bot.l10n.lang_list))
         if detailed:
@@ -76,7 +76,7 @@ class AEHelpCommand(commands.HelpCommand):
 
     async def send_cog_help(self, cog: AnastellosCog):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['info']['help']
+            'anastellos']['help']
         bot: commands.Bot = self.context.bot
         embeds = []
         embed_commands_title = cog.qualified_name
@@ -144,7 +144,7 @@ class AEHelpCommand(commands.HelpCommand):
             return False
 
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['info']['help']
+            'anastellos']['help']
         guild_config = self.context.bot.guild_config.get_guild_cfg(self.context.guild.id)
         active_cogs = []
         inactive_cogs = []

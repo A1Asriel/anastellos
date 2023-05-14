@@ -21,137 +21,168 @@
         ]
     },
     "anastellos": {
-        "info": {
-            "about": {
-                "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the info about the available modules and commands.*",
-                "indev": "\n\nThe bot is running in DEBUG mode and its stable operation is not guaranteered. It is recommended to refrain from using the bot until the maintainance is finished.",
-                "anastellos": "Powered by Anastellos Engine",
-                "creator": "<> with ❤ by {creator}"
-            },
-            "help": {
-                "title": "Available commands",
-                "active_cogs": "Active cogs",
-                "inactive_cogs": "Inactive cogs",
-                "internal_cogs": "Internal cogs",
-                "desc": "*`[argument=X]` is an optional argument (empty defaults to X).*\n*`<argument>` requires the explicit input.*",
-                "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.*",
-                "usage": "**Command usage:**",
-                "description": "**Description:**",
-                "extra": "**Extra:**",
+        "help": {
+            "title": "Available commands",
+            "active_cogs": "Active cogs",
+            "inactive_cogs": "Inactive cogs",
+            "internal_cogs": "Internal cogs",
+            "desc": "*`[argument=X]` is an optional argument (empty defaults to X).*\n*`<argument>` requires the explicit input.*",
+            "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.*",
+            "usage": "**Command usage:**",
+            "description": "**Description:**",
+            "extra": "**Extra:**",
+            "commands": {
+                "help": {
+                    "desc": "Print this message."
+                },
+                "settings": {
+                    "desc": "Print the current local server configuration. Only admins are allowed to use this group and subcommands."
+                },
+                "leave": {
+                    "desc": "Properly remove the bot from your server with or without wiping the config. Only admins are allowed to use this command."
+                }
+            }
+        },
+        "cogs": {
+            "info": {
+                "help": {
+
+                },
                 "commands": {
-                    "help": {
-                        "desc": "Print this message."
-                    },
-                    "privacy": {
-                        "desc": "Show the Privacy Policy document.",
-                        "args": {
-                            "lang": "language"
-                        }
-                    },
                     "about": {
-                        "desc": "Print the info about the bot."
+                        "help": {
+                            "desc": "Print the info about the bot."
+                        },
+                        "desc": "[Bot description]\n\n> *Use `{prefix}help` to get the info about the available modules and commands.*",
+                        "indev": "\n\nThe bot is running in DEBUG mode and its stable operation is not guaranteered. It is recommended to refrain from using the bot until the maintainance is finished.",
+                        "anastellos": "Powered by Anastellos Engine",
+                        "creator": "<> with ❤ by {creator}"
+                    }
+                }
+            },
+            "listeners":
+            {
+                "help": {
+
+                }
+            },
+            "privacy": {
+                "help": {
+                    "desc": "Show the Privacy Policy document.",
+                    "args": {
+                        "lang": "language"
+                    }
+                }
+            },
+            "technical": {
+                "help": {
+
+                },
+                "commands": {
+                    "stop": {
+                        "msg": "*Stopping the bot...*"
+                    },
+                    "reload": {
+                        "start": "*Modules reinitializing started...*",
+                        "error": "*An exception occurred while loading {i} module.*{traceback}",
+                        "success": "*Reinitializing complete.*"
+                    },
+                    "host_info": {
+                        "title": "Host info",
+                        "memory": "{used} of {total} GB ({used_percent}%)",
+                        "day": "day",
+                        "days": "days",
+                        "os": "Operating system",
+                        "mem": "RAM usage",
+                        "python_ver": "Python interpreter version",
+                        "nextcord_ver": "Nextcord library version",
+                        "bot_uptime": "Bot uptime",
+                        "bot_repo": "Bot build info",
+                        "engine_repo": "Engine build info",
+                        "branch": "Current branch",
+                        "commit_sha": "Revision hash"
                     },
                     "ping": {
-                        "desc": "Return latency time between the server and the bot."
-                    },
-                    "settings": {
-                        "desc": "Print the current local server configuration. Only admins are allowed to use this group and subcommands."
-                    },
-                    "prefix": {
-                        "desc": "Change the bot prefix for this server. Empty argument resets the setting to `{def_prefix}`.",
-                        "args": {
-                            "new_prefix": "new prefix"
+                        "help": {
+                            "desc": "Return latency time between the server and the bot."
                         }
+                    }
+                }
+            },
+            "settings": {
+                "list": {
+                    "title": "Server preferences",
+                    "prefix": "Prefix",
+                    "lang": "Language",
+                    "toggle_cog": "Active/inactive cogs",
+                    "enabled": "**active**",
+                    "disabled": "**inactive**",
+                    "multilevel": "*multi-level*",
+                    "list": "*list*"
+                },
+                "commands": {
+                    "prefix": {
+                        "help": {
+                            "desc": "Change the bot prefix for this server. Empty argument resets the setting to `{def_prefix}`.",
+                            "args": {
+                                "new_prefix": "new prefix"
+                            }
+                        },
+                        "title": "Prefix changed successfully",
+                        "desc": "New prefix: `{new_prefix}`."
                     },
                     "language": {
-                        "desc": "Change the bot language for this server.",
-                        "extra": "Available languages: `{lang_names}`.",
-                        "args": {
-                            "new_lang": "new language"
+                        "help": {
+                            "desc": "Change the bot language for this server.",
+                            "extra": "Available languages: `{lang_names}`.",
+                            "args": {
+                                "new_lang": "new language"
+                            }
+                        },
+                        "title": "Bot language changed successfully",
+                        "desc": "The bot will speak English from now on."
+                    },
+                    "leave": {
+                        "help": {
+                            "desc": "Properly remove the bot from your server with or without wiping the config. Only admins are allowed to use this command."
+                        },
+                        "title_msg": "{name} is preparing to leave...",
+                        "desc_msg": "Are you sure you want the bot to leave? Choose an option below.\n\nLeave - the bot will leave and remove only its webhooks and deassign log channel.\nLeave and forget - will also remove every trail of the server from the bot databases.\nCancel - keep the bot.",
+                        "ui": {
+                            "leave": {
+                                "label": "Leave",
+                                "title": "{name} left the server. Goodbye!",
+                                "desc": "We hope you enjoyed using our bot! Just in case you change your mind, we kept your configuration, so we can continue working just like before when you decide to let us come back."
+                            },
+                            "purge": {
+                                "label": "Leave and forget",
+                                "title": "{name} left and wiped data",
+                                "desc": "We hope you enjoyed using our bot! All data about your server was wiped from our servers, so you can stay calm and not worry about your privacy. In case if you change your mind about us leaving, you still can get the bot working again, although it may be required to reconfigure it."
+                            },
+                            "cancel": {
+                                "label": "Cancel",
+                                "title": "Leaving cancelled",
+                                "desc": "The bot is staying on the server. We won't disappoint you."
+                            }
                         }
                     },
-                    "leave": {
-                        "desc": "Properly remove the bot from your server with or without wiping the config. Only admins are allowed to use this command."
+                    "toggle_cog": {
+                        "help": {
+
+                        },
+                        "title": "Cog status",
+                        "active": "active",
+                        "inactive": "inactive",
+                        "nocog_error": "There is no cog with such name.",
+                        "intcog_error": "This cog is essential for the bot and cannot be deactivated.",
+                        "status_desc": "\"{cog_name}\" cog is currently {status} on this server.",
+                        "enable_desc": "\"{cog_name}\" cog has been activated.",
+                        "disable_desc": "\"{cog_name}\" cog has been deactivated."
                     }
                 }
             }
         },
-        "technical": {
-            "stop": "*Stopping the bot...*",
-            "reload": {
-                "start": "*Modules reinitializing started...*",
-                "error": "*An exception occurred while loading {i} module.*{traceback}",
-                "success": "*Reinitializing complete.*"
-            },
-            "indev_notif": "\n> **WARNING! The bot is operating in DEBUG mode. Please refrain from using this mode if there are no tests running.**",
-            "host_info": {
-                "title": "Host info",
-                "memory": "{used} of {total} GB ({used_percent}%)",
-                "day": "day",
-                "days": "days",
-                "os": "Operating system",
-                "mem": "RAM usage",
-                "python_ver": "Python interpreter version",
-                "nextcord_ver": "Nextcord library version",
-                "bot_uptime": "Bot uptime",
-                "bot_repo": "Bot build info",
-                "engine_repo": "Engine build info",
-                "branch": "Current branch",
-                "commit_sha": "Revision hash"
-            }
-        },
-        "settings": {
-            "list": {
-                "title": "Server preferences",
-                "prefix": "Prefix",
-                "lang": "Language",
-                "toggle_cog": "Active/inactive cogs",
-                "enabled": "**active**",
-                "disabled": "**inactive**",
-                "multilevel": "*multi-level*",
-                "list": "*list*"
-            },
-            "prefix": {
-                "title": "Prefix changed successfully",
-                "desc": "New prefix: `{new_prefix}`."
-            },
-            "lang": {
-                "title": "Bot language changed successfully",
-                "desc": "The bot will speak English from now on."
-            },
-            "leave": {
-                "title_msg": "{name} is preparing to leave...",
-                "desc_msg": "Are you sure you want the bot to leave? Choose an option below.\n\nLeave - the bot will leave and remove only its webhooks and deassign log channel.\nLeave and forget - will also remove every trail of the server from the bot databases.\nCancel - keep the bot.",
-                "ui": {
-                    "leave": {
-                        "label": "Leave",
-                        "title": "{name} left the server. Goodbye!",
-                        "desc": "We hope you enjoyed using our bot! Just in case you change your mind, we kept your configuration, so we can continue working just like before when you decide to let us come back."
-                    },
-                    "purge": {
-                        "label": "Leave and forget",
-                        "title": "{name} left and wiped data",
-                        "desc": "We hope you enjoyed using our bot! All data about your server was wiped from our servers, so you can stay calm and not worry about your privacy. In case if you change your mind about us leaving, you still can get the bot working again, although it may be required to reconfigure it."
-                    },
-                    "cancel": {
-                        "label": "Cancel",
-                        "title": "Leaving cancelled",
-                        "desc": "The bot is staying on the server. We won't disappoint you."
-                    }
-                }
-            },
-            "toggle_cog": {
-                "title": "Cog status",
-                "active": "active",
-                "inactive": "inactive",
-                "nocog_error": "There is no cog with such name.",
-                "intcog_error": "This cog is essential for the bot and cannot be deactivated.",
-                "status_desc": "\"{cog_name}\" cog is currently {status} on this server.",
-                "enable_desc": "\"{cog_name}\" cog has been activated.",
-                "disable_desc": "\"{cog_name}\" cog has been deactivated."
-            }
-        },
-        "global_errors": {
+        "errors": {
             "max_concurrency": "*The maximum amount of command instances is being processed right now.*",
             "channel_not_found": "*It seems there is no such channel in this server.*",
             "bad_argument": "*Bad arguments provided.*",
