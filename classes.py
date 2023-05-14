@@ -250,6 +250,23 @@ class AEEmbed(Embed):
                     self.add_field(name=i[0], value=i[1], inline=i[2])
                 elif len(i) == 2:
                     self.add_field(name=i[0], value=i[1], inline=False)
+        
+    @classmethod
+    def from_dict(cls, bot: AnastellosBot, data: dict):
+        return cls(bot,
+                   title=data.get('title'),
+                   url=data.get('url'),
+                   desc=data.get('desc'),
+                   colour=data.get('colour', data.get('color', Colour.blurple())),
+                   author_name=data.get('author_name', AEEmbedDefault),
+                   author_url=data.get('author_url'),
+                   author_icon=data.get('author_icon', AEEmbedDefault),
+                   footer_title=data.get('footer_title'),
+                   footer_icon=data.get('footer_icon'),
+                   fields=data.get('fields'),
+                   image_url=data.get('image_url'),
+                   thumbnail_url=data.get('thumbnail_url'),
+                   timestamp=data.get('timestamp'))
 
 
 class AESnowflake:
