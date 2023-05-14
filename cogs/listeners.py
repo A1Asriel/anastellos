@@ -100,7 +100,7 @@ class Listeners(AnastellosInternalCog):
             if is_debug:
                 l10n_code = 'internal_error'
 
-        if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted:
+        if self.bot.guild_config.get_guild_cfg(ctx.guild.id) is None or not self.bot.guild_config.get_guild_cfg(ctx.guild.id).is_eula_accepted and self.bot.config.demand_agreement:
             l10n_code = ''
             console_msg = ''
 
