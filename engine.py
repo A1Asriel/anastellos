@@ -1,4 +1,4 @@
-__build__ = '2.1.23134.1'
+__build__ = '2.1.23143.1'
 
 from logging import getLogger
 from os import listdir
@@ -73,7 +73,7 @@ class AnastellosEngine:
         @self.bot.event
         async def on_ready():
             self.bot.startup_time = time()
-            _log.info(f'Logged in as {self.bot.user.name}#{self.bot.user.discriminator} - {self.bot.user.id}.')
+            _log.info(f'Logged in as {str(self.bot.user)} - {self.bot.user.id}.')
             _log.info(f'The bot is running on {len(self.bot.guilds)} guilds.')
             guildlist = '\n'.join([f'{guild.id} - {guild.name}' for guild in self.bot.guilds])
             _log.debug(f'Current guilds:\n{guildlist}')

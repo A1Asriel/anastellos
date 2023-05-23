@@ -172,7 +172,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                 async def callback(self, interaction: nextcord.Interaction):
                     guild = interaction.guild
                     await super().callback(interaction)
-                    _log.debug(f'{interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave a guild.')
+                    _log.debug(f'{str(interaction.user)} made {interaction.client.config.name} leave a guild.')
                     await guild.leave()
                     return
 
@@ -182,7 +182,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                         interaction.guild.id)
                     guild = interaction.guild
                     await super().callback(interaction)
-                    _log.debug(f'{interaction.user.name}#{interaction.user.discriminator} made {interaction.client.config.name} to leave and forget a guild.')
+                    _log.debug(f'{str(interaction.user)} made {interaction.client.config.name} leave and forget a guild.')
                     await guild.leave()
                     return
 
