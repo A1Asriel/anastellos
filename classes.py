@@ -68,7 +68,7 @@ class Settings(AnastellosInternalCog):
     @commands.has_guild_permissions(manage_guild=True)
     async def settings(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['settings']['list']
+            l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['list']
             cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id).get_dict
             fields = [
                 [l10n['prefix'], '`'+cfg['prefix']+'`', True],
@@ -92,8 +92,7 @@ class Settings(AnastellosInternalCog):
 
     @settings.command(name='prefix', aliases=('set_prefix',))
     async def set_prefix(self, ctx: commands.Context, *, new_prefix: str = None):
-        l10n = localization(self.bot, guild_id=ctx.guild.id)[
-            'anastellos']['settings']['prefix']
+        l10n = localization(self.bot, guild_id=ctx.guild.id['anastellos']['cogs']['settings']['commands']['prefix'])
         if new_prefix == None:
             new_prefix = self.bot.config.def_prefix
         cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
@@ -121,8 +120,7 @@ class Settings(AnastellosInternalCog):
         cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
         cfg.lang = new_lang
         cfg.save()
-        l10n = localization(self.bot, guild_id=ctx.guild.id)[
-            'anastellos']['settings']['lang']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['lang']
         return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.brand_green()))
 
     @settings.command(name='toggle_cog', aliases=('cog',))
@@ -135,7 +133,7 @@ class Settings(AnastellosInternalCog):
                     return True
             return False
         cog = self.bot.get_cog(cog_name)
-        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['settings']['toggle_cog']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['toggle_cog']
         if not (cog and valid_cog(cog)):
             return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['nocog_error'], colour=Colour.brand_red()))
         if isinstance(cog, AnastellosInternalCog):
