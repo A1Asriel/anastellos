@@ -73,7 +73,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         sys_str = f'{sys_info.system}{" NT" if psutil.WINDOWS else " "+sys_info.release} {sys_info.version} {sys_info.machine}'
 
         uptime = time.gmtime(time.time() - self.bot.startup_time)
-        uptime_str = f'{uptime.tm_yday+":" if uptime.tm_yday else ""}{uptime.tm_hour}:{uptime.tm_min:02d}:{uptime.tm_sec:02d}'
+        uptime_str = f'{str(uptime.tm_yday-1)+":" if uptime.tm_yday-1 else ""}{uptime.tm_hour}:{uptime.tm_min:02d}:{uptime.tm_sec:02d}'
         if uptime.tm_yday == 2:
             uptime_str = f'{uptime.tm_yday-1} {l10n["day"]} {uptime_str}'
         elif uptime.tm_yday > 2:
