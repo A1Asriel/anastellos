@@ -1,4 +1,4 @@
-__build__ = '2.1.23143.2'
+__build__ = '2.1.23222.2'
 
 from logging import getLogger
 from os import listdir
@@ -13,20 +13,16 @@ from .exceptions import AnastellosInitError
 from .help import AEHelpCommand
 from .l10n import Localization
 from .utils import get_commit_details, get_prefix
+from .logger import setupLogging
 
 _log = getLogger(__name__)
 
 
 class AnastellosEngine:
     def __init__(self, *, additional_guild_params={}, additional_global_params={}):
-        self.config = Config(
-            additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
+        self.config = Config(additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
 
-        if self.config.mode == 2:
-            getLogger().setLevel(10)
-            getLogger('nextcord').setLevel(20)
-        else:
-            getLogger('nextcord').propagate = False
+        setupLogging(debug=self.config.mode==2)
 
         _log.info(f'Starting {self.config.name} {self.config.full_version}...')
 
