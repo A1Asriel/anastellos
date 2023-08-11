@@ -1,4 +1,4 @@
-__build__ = '2.1.23222.2'
+__build__ = '2.1.23223.1'
 
 from logging import getLogger
 from os import listdir
@@ -21,18 +21,14 @@ _log = getLogger(__name__)
 class AnastellosEngine:
     def __init__(self, *, additional_guild_params={}, additional_global_params={}):
         self.config = Config(additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
-
         setupLogging(debug=self.config.mode==2)
-
         _log.info(f'Starting {self.config.name} {self.config.full_version}...')
 
         if self.config.mode == 2:
-            activity = nextcord.Game(
-                f'DEBUG mode. The bot may operate unstable. | {self.config.full_version}')
+            activity = nextcord.Game(f'DEBUG mode. The bot may operate unstable. | {self.config.full_version}')
             status = nextcord.Status.dnd
         elif self.config.mode == 1:
-            activity = nextcord.Game(
-                f'{self.config.full_version} | Some bugs may occur.')
+            activity = nextcord.Game(f'{self.config.full_version} | Some bugs may occur.')
             status = nextcord.Status.idle
         else:
             activity = nextcord.Game(f'{self.config.full_version}')
@@ -52,8 +48,7 @@ class AnastellosEngine:
                                  help_command=help_command
                                  )
 
-        self.guild_config = GuildConfigFile(
-            self.bot, additional_guild_params=additional_guild_params)
+        self.guild_config = GuildConfigFile(self.bot, additional_guild_params=additional_guild_params)
         self.bot.guild_config = self.guild_config
         self.bot.aesnowflake = AESnowflake(self.bot.shard_id)
         self.bot.l10n = Localization()
@@ -63,7 +58,7 @@ class AnastellosEngine:
                 bot_commit_details = get_commit_details(bot_repo_prefix)
                 self.config.version += f' {bot_commit_details[0]}:{bot_commit_details[1][:7]}'
             except Exception as e:
-                _log.debug(f'Couldn\'t retrieve bot repository info while starting up.', exc_info=1)
+                _log.debug(f'Couldn\'t retrieve bot repository info while starting up.')
             _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
 
         @self.bot.event
@@ -113,4 +108,5 @@ class AnastellosEngine:
         except FileNotFoundError as e:
             _log.fatal('Cannot access the token file. The bot is unable to start.')
             raise AnastellosInitError(__stage__='token') from e
+        self.load_cogs()
         self.bot.run(TOKEN, reconnect=True)
