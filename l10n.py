@@ -56,7 +56,7 @@ class PartialL10n(MutableMapping):
             self.store = {'_str': part_dict}
         self.part_str = part_str
 
-    def __getitem__(self, key):
+    def __getitem__(self, key, default=None):
         item = None
         if '_list' in self.store and isinstance(key, int):
             try:
@@ -71,13 +71,13 @@ class PartialL10n(MutableMapping):
         else:
             item = self.store.get(key)
         if item is None:
-            item = PartialL10n(self.part_str + '.' + str(key))
+            item = default or PartialL10n(self.part_str + '.' + str(key))
         else:
             item = PartialL10n(self.part_str + '.' + str(key), item)
         return item
 
     def get(self, key, default=None):
-        return self.__getitem__(key)
+        return self.__getitem__(key, default)
 
     def format(self, *args, **kwargs):
         return self.__str__().format(*args, **kwargs)
