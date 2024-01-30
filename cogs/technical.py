@@ -32,24 +32,24 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
         l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['technical']['commands']['reload']
         msg = await ctx.reply(l10n['start'], delete_after=5)
         i = '$modulename'
-        try:
-            for i in list(self.bot.extensions):
-                _log.info(f'Reloading {i}...')
-                try:
-                    self.bot.reload_extension(i)
-                except commands.ExtensionFailed as e:
-                    # FIXME: Workaround to avoid exception during the custom commands reload.
-                    if not isinstance(e.original, commands.CommandRegistrationError):
-                        raise e
-                    _log.error(f'Couldn\'t reload the cog {i}, skipping.', exc_info=self.bot.config.mode==2)
-        except commands.ExtensionFailed:
-            _log.error(f'Couldn\'t reload the cog {i}.]')
-            return await ctx.reply(l10n['error'].format(i=i), delete_after=5)
+        errored_cogs = []
+        for i in list(self.bot.extensions):
+            _log.info(f'Reloading {i}...')
+            try:
+                self.bot.reload_extension(i)
+            except commands.ExtensionError:
+                _log.error(f'Couldn\'t reload cog {i}.]', exc_info=self.bot.config.mode==2)
+                errored_cogs.append(f"`{i}`")
         try:
             self.bot.l10n = Localization()
-        except Exception as e:
-            _log.error('Couldn\'t reinitialize the localization system.')
-        await msg.edit(content=l10n['success'], delete_after=5)
+            l10n_error = False
+        except Exception:
+            _log.error('Couldn\'t reload the localization system.', exc_info=self.bot.config.mode==2)
+            l10n_error = True
+        if errored_cogs:
+            errored_cogs = "\n - ".join(errored_cogs)
+        await msg.edit(content=l10n['success'] if not (errored_cogs or l10n_error) else
+                       f"{l10n['error']}{l10n['cogs_error'].format(cogs=errored_cogs) if errored_cogs else ''}{l10n['l10n_error'] if l10n_error else ''}", delete_after=5)
 
     @commands.command()
     @commands.guild_only()
