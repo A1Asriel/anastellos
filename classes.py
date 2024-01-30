@@ -93,7 +93,7 @@ class Settings(AnastellosInternalCog):
     @settings.command(name='prefix', aliases=('set_prefix',))
     async def set_prefix(self, ctx: commands.Context, *, new_prefix: str = None):
         l10n = localization(self.bot, guild_id=ctx.guild.id['anastellos']['cogs']['settings']['commands']['prefix'])
-        if new_prefix == None:
+        if new_prefix is None:
             new_prefix = self.bot.config.def_prefix
         cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
         cfg.prefix = new_prefix
@@ -109,10 +109,10 @@ class Settings(AnastellosInternalCog):
             langs[lang] = lang_aliases
 
         found = False
-        for lang in langs:
-            if new_lang in langs[lang]:
+        for lang_name, lang in langs.items():
+            if new_lang in lang:
                 found = True
-                new_lang = lang
+                new_lang = lang_name
                 break
         if not found:
             raise commands.BadArgument
@@ -120,7 +120,7 @@ class Settings(AnastellosInternalCog):
         cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
         cfg.lang = new_lang
         cfg.save()
-        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['lang']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['language']
         return await ctx.reply(embed=AEEmbed(self.bot, title=l10n['title'], desc=l10n['desc'], colour=Colour.brand_green()))
 
     @settings.command(name='toggle_cog', aliases=('cog',))
