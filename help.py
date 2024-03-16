@@ -5,8 +5,7 @@ from typing import Union
 from nextcord import Colour
 from nextcord.ext import commands
 
-from anastellos.checks import is_eula_accepted
-
+from .checks import is_eula_accepted, reply_or_send
 from .classes import AEEmbed, AnastellosCog
 from .utils import localization
 
@@ -14,6 +13,9 @@ from .utils import localization
 class AEHelpCommand(commands.HelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
+
+    async def prepare_help_command(self, ctx, command=None) -> None:
+        await reply_or_send(ctx)
 
     def copy(self):  # This fixes the check disappearance.
         self.add_check(is_eula_accepted)

@@ -111,7 +111,7 @@ class Listeners(AnastellosInternalCog):
             l10n = localization(self.bot, guild_id=ctx.guild.id)[
                 'anastellos']['errors']
             try:
-                await ctx.reply(f'{l10n.get(l10n_code, "`"+l10n_code+"`")}{exc_text if is_debug else ""}', delete_after=delete_after if not is_debug else None)
+                await ctx.reply(f'{l10n.get(l10n_code, "`"+l10n_code+"`")}{exc_text if is_debug else ""}'[:2000], delete_after=delete_after if not is_debug else None)
             except nextcord.Forbidden:
                 _log.error(
                     f'Couldn\'t send an error message to {ctx.channel.name}.')

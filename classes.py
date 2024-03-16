@@ -92,7 +92,7 @@ class Settings(AnastellosInternalCog):
 
     @settings.command(name='prefix', aliases=('set_prefix',))
     async def set_prefix(self, ctx: commands.Context, *, new_prefix: str = None):
-        l10n = localization(self.bot, guild_id=ctx.guild.id['anastellos']['cogs']['settings']['commands']['prefix'])
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['prefix']
         if new_prefix is None:
             new_prefix = self.bot.config.def_prefix
         cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id)
