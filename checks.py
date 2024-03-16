@@ -1,15 +1,18 @@
+from discord import HTTPException
 from nextcord.ext import commands
 
 
 async def soft_reply(self, content=None, **kwargs):
     try:
         return await self.message.reply(content, **kwargs)
-    except:
+    except HTTPException:
         return await self.channel.send(content, **kwargs)
 
 
 async def reply_or_send(ctx: commands.Context):
     if not ctx.channel.permissions_for(ctx.me).read_message_history:
+        ctx.reply = ctx.send
+    else:
         ctx.reply = soft_reply.__get__(ctx, commands.Context)
 
 
