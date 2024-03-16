@@ -156,13 +156,13 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             class BaseLeaveButton(nextcord.ui.Button):
                 def __init__(self, l10n: dict, style: nextcord.ButtonStyle = nextcord.ButtonStyle.secondary):
                     self.l10n = l10n
-                    super().__init__(label=self.l10n['label'], style=style)
+                    super().__init__(label=str(self.l10n['label']), style=style)
 
                 async def callback(self, interaction: nextcord.Interaction):
                     embed = interaction.message.embeds[0]
                     embed.title = self.l10n['title'].format(
                         name=interaction.client.config.name)
-                    embed.description = self.l10n['desc']
+                    embed.description = str(self.l10n['desc'])
                     _LeaveMessageUI.message = await interaction.message.edit(embed=embed)
                     await interaction.response.defer(ephemeral=True, with_message=False)
                     await self.view.stop()
@@ -188,7 +188,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
         l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['leave']
         emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(
-            name=self.bot.config.name), desc=l10n['desc_msg'], colour=nextcord.Color.brand_red())
+            name=self.bot.config.name), desc=str(l10n['desc_msg']), colour=nextcord.Color.brand_red())
         _LeaveMessageUI = LeaveMessageUI(ctx, l10n['ui'])
         msg = await ctx.reply(embed=emb1, view=_LeaveMessageUI)
         _LeaveMessageUI.message = msg
