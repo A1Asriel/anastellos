@@ -26,34 +26,30 @@ class SimpleConfig:
             cfg = self.get_config(filename=self._filename, schema=self._schema)
         except json.JSONDecodeError:
             cfg = self._schema
-            _log.warn('Using the default config.')
-        for key in self._def_schema.keys():
+            _log.warning('Using the default config.')
+        for key in self._def_schema:
             try:
                 self.__setattr__(key, cfg[key])
             except KeyError as e:
-                _log.fatal(f'Global configuration entry "{key}" wasn\'t found.', exc_info=True)
+                _log.critical('Global configuration entry "%s" wasn\'t found.', key, exc_info=True)
                 raise AnastellosInitError(__stage__='config') from e
-        return None
 
     def __compileschema__(self) -> None:
         self._schema = {
-            key: self.__getattribute__(key) for key in self._def_schema.keys()
+            key: self.__getattribute__(key) for key in self._def_schema
         }
-        return None
 
     def __resetschema__(self) -> None:
         self._schema = self._def_schema
-        return None
 
     def save(self) -> None:
         self.__compileschema__()
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
         self.__assignattrs__()
-        return None
 
     @staticmethod
-    def get_config(filename: str = 'cfg', schema: dict = {}) -> dict:
+    def get_config(filename: str = 'cfg', schema: Optional[dict] = None) -> dict:
         """Fetch or create a config file.
 
         Args:
@@ -67,32 +63,39 @@ class SimpleConfig:
             FileNotFoundError: If file is not found and no schema was defined.
             JSONDecodeError: If the file is not valid JSON and the schema is not defined.
         """
+        if schema is None:
+            schema = {}
         try:
             return fetch_json(filename)
         except FileNotFoundError as e:
-            if schema is not None:
-                _log.warn(f'Creating a new file at {filename}.json and using the default config.')
+            if schema:
+                _log.warning('Creating a new file at %s.json and using the default config.', filename)
                 path = dirname(filename)
                 if path:
                     makedirs(path, exist_ok=True)
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
-                    return schema
+                return schema
             raise e
         except json.JSONDecodeError as e:
-            if schema is not None:
-                _log.warn(f'Overwriting the file at {filename}.json and using the default config.')
+            if schema:
+                _log.warning('Overwriting the file at %s.json and using the default config.', filename)
                 path = dirname(filename)
                 if path:
                     makedirs(path, exist_ok=True)
                 with open(f'{filename}.json', mode='x', encoding='utf8') as f:
                     json.dump(schema, f, indent=4, ensure_ascii=False)
-                    return schema
+                return schema
             raise e
 
 
 class Config(SimpleConfig):
-    def __init__(self, filename: str = 'cfg', *, additional_guild_params: dict[str, tuple[str, Any]] = {}, additional_global_params: dict[str] = {}, **kwargs):
+    def __init__(self, filename: str = 'cfg', *, additional_guild_params: Optional[dict[str, tuple[str, Any]]] = None, additional_global_params: Optional[dict[str]] = None, **kwargs):
+        if additional_global_params is None:
+            additional_global_params = {}
+        if additional_guild_params is None:
+            additional_guild_params = {}
+
         super().__init__(filename, **kwargs)
 
         # Settings that go into cfg.json.
@@ -139,7 +142,10 @@ class Config(SimpleConfig):
 
 
 class GuildConfigFile(SimpleConfig):
-    def __init__(self, bot, filename='server_cfg', *, additional_guild_params={}):
+    def __init__(self, bot, filename: str = 'server_cfg', *, additional_guild_params: Optional[dict[str, tuple[str, Any]]] = None):
+        if additional_guild_params is None:
+            additional_guild_params = {}
+
         super().__init__(filename)
 
         ### CURRENT CONFIG REVISION ###
@@ -178,7 +184,6 @@ class GuildConfigFile(SimpleConfig):
         self.guilds[str(guild_id)] = self.guilds.get(str(guild_id), {})
         self.guilds[str(guild_id)].update(data)
         self.save()
-        return None
 
     def delete_guild_entry(self, guild_id: int) -> bool:
         entry = self.guilds.pop(str(guild_id), False)
@@ -193,14 +198,14 @@ class GuildConfigFile(SimpleConfig):
             }
 
         def to2():
-            for guildid in self._file['guilds'].keys():
+            for guildid in self._file['guilds']:
                 temp_dict = {'is_eula_accepted': False}
                 temp_dict.update(self._file['guilds'][guildid])
                 self._file['guilds'][guildid] = temp_dict
             self._file['__revision__'] = 2
 
         def to3():
-            for guildid in self._file['guilds'].keys():
+            for guildid in self._file['guilds']:
                 temp_dict = {'disabled_cogs': []}
                 temp_dict.update(self._file['guilds'][guildid])
                 self._file['guilds'][guildid] = temp_dict
@@ -219,18 +224,20 @@ class GuildConfigFile(SimpleConfig):
             else:
                 break
             old_rev += 1
-            _log.info(f'The guild config file was upgraded to revision {old_rev} successfully.')
+            _log.info(('The guild config file was upgraded to revision %s successfully.', old_rev))
         self._schema = self._file.copy()
         # self.save()  # This method doesn't work for some reason, so it has to be saved manually
         with open(f'{self._filename}.json', 'w', encoding="utf-8") as f:
             json.dump(self._schema, f, indent=4, ensure_ascii=False)
         self.__assignattrs__()
         self.__compileschema__()
-        return None
 
 
 class GuildConfigEntry(SimpleConfig):
-    def __init__(self, guildConfigFile: GuildConfigFile, guild_id: int, *, try_create: bool = False, additional_guild_params: dict = {}):
+    def __init__(self, guildConfigFile: GuildConfigFile, guild_id: int, *, try_create: bool = False, additional_guild_params: Optional[dict] = None):
+        if additional_guild_params is None:
+            additional_guild_params = {}
+
         super().__init__('_')
         del self._filename
 
@@ -246,40 +253,37 @@ class GuildConfigEntry(SimpleConfig):
             self._def_schema[name] = value[1]
 
         self._schema = self._def_schema
-        self._guildConfigFile = guildConfigFile
+        self._guild_config_file = guildConfigFile
         self._guild_id = guild_id
         self.__assignattrs__()
         self.__compileschema__()
 
     def __assignattrs__(self) -> None:
         if self.try_create:
-            cfg = self._guildConfigFile._schema['guilds']
+            cfg = self._guild_config_file._schema['guilds']
             try:
                 cfg = cfg[str(self._guild_id)]
             except KeyError:
-                self._guildConfigFile._schema['guilds'][str(
+                self._guild_config_file._schema['guilds'][str(
                     self._guild_id)] = self._def_schema.copy()
-                cfg = self._guildConfigFile._schema['guilds'][str(
+                cfg = self._guild_config_file._schema['guilds'][str(
                     self._guild_id)]
         else:
-            cfg = self._guildConfigFile._schema['guilds'][str(self._guild_id)]
-        for key in self._def_schema.keys():
+            cfg = self._guild_config_file._schema['guilds'][str(self._guild_id)]
+        for key in self._def_schema:
             self.__setattr__(key, cfg.get(
                 key, self.additional_guild_params.get(key, (None, None))[1]))
-        return None
 
     def __int__(self) -> int:
         return self._guild_id
 
     def save(self) -> None:
         self.__compileschema__()
-        self._guildConfigFile._save_guild_cfg(self._guild_id, self._schema)
+        self._guild_config_file._save_guild_cfg(self._guild_id, self._schema)
         self.__assignattrs__()
-        return None
 
     def delete(self) -> None:
-        self._guildConfigFile.delete_guild_entry(self._guild_id)
-        return None
+        self._guild_config_file.delete_guild_entry(self._guild_id)
 
     @property
     def id(self) -> int:

@@ -186,7 +186,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                     await guild.leave()
                     return
 
-        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['leave']
+        l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['technical']['commands']['leave']
         emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(
             name=self.bot.config.name), desc=str(l10n['desc_msg']), colour=nextcord.Color.brand_red())
         _LeaveMessageUI = LeaveMessageUI(ctx, l10n['ui'])

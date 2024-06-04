@@ -11,9 +11,6 @@ from .utils import localization
 
 
 class AEHelpCommand(commands.HelpCommand):
-    def __init__(self, **options):
-        super().__init__(**options)
-
     async def prepare_help_command(self, ctx, command=None) -> None:
         await reply_or_send(ctx)
 
@@ -54,26 +51,26 @@ class AEHelpCommand(commands.HelpCommand):
     def get_command_description(self, command: commands.Command, *, detailed=False):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['cogs'][command.cog_name.lower()]['commands'].get(command.name, dict()).get('help', dict())
-        out = l10n.get('desc', '').format(def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
-        extra = l10n.get('extra', '').format(lang_names='`, `'.join(self.context.bot.l10n.lang_list))
+        out = l10n.get('desc', '').format(prefix=self.context.clean_prefix, def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
+        extra = l10n.get('extra', '').format(prefix=self.context.clean_prefix, def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
         if detailed:
-            return out, extra
+            return out, (extra.format(lang_names='`, `'.join(self.context.bot.l10n.lang_list)) if extra else None)
         return out
 
     async def send_command_help(self, command: commands.Command):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['info']['help']
+            'anastellos']['help']
         if not await command.can_run(self.context):
             raise commands.MissingPermissions
         signature = f'`{self.get_command_signature(command)}`'
         description = self.get_command_description(command, detailed=True)
         embed_title = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""}{command.name}'
-        embed_desc = f'{l10n["usage"]}\n{signature}'
+        embed = AEEmbed(self.context.bot, title=embed_title)
+        embed.add_field(name=l10n["usage"], value=signature, inline=False)
         if description[0]:
-            embed_desc += f'\n{l10n["description"]}\n{description[0]}'
+            embed.add_field(name=l10n["description"], value=description[0], inline=False)
         if description[1]:
-            embed_desc += f'\n{l10n["extra"]}\n{description[1]}'
-        embed = AEEmbed(self.context.bot, title=embed_title, desc=embed_desc)
+            embed.add_field(name=l10n["extra"], value=description[1], inline=False)
         await self.context.reply(embed=embed)
 
     async def send_cog_help(self, cog: AnastellosCog):
@@ -121,8 +118,7 @@ class AEHelpCommand(commands.HelpCommand):
         await self.context.reply(embeds=embeds)
 
     async def send_group_help(self, group: commands.Group):
-        l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['info']['help']
+        # l10n: dict = localization(self.context.bot, self.context.guild.id)['anastellos']['info']['help']
         embed_title = f'{self.context.clean_prefix}{group.full_parent_name+" " if group.parent is not None else ""}{group.name}'
         embed_fields = []
         commandlist = await self.filter_commands(group.commands, sort=True)
@@ -145,8 +141,7 @@ class AEHelpCommand(commands.HelpCommand):
                     return True
             return False
 
-        l10n: dict = localization(self.context.bot, self.context.guild.id)[
-            'anastellos']['help']
+        l10n = localization(self.context.bot, self.context.guild.id)['anastellos']['help']
         guild_config = self.context.bot.guild_config.get_guild_cfg(self.context.guild.id)
         active_cogs = []
         inactive_cogs = []
@@ -156,16 +151,28 @@ class AEHelpCommand(commands.HelpCommand):
             if not valid_cog(cog):
                 continue
             if '__type__' in cog.__dict__ and cog.__type__ == 'internal':
-                internal_cogs.append(cog_name)
+                internal_cogs.append("- " + cog_name)
             elif cog_name not in guild_config.disabled_cogs:
-                active_cogs.append(cog_name)
+                active_cogs.append("- " + cog_name)
             else:
-                inactive_cogs.append(cog_name)
-        embeds = []
-        embeds.append(AEEmbed(self.context.bot, title=l10n['internal_cogs'], desc='\n'.join(internal_cogs)))
-        if active_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['active_cogs'], desc='\n'.join(active_cogs), author_name=None, author_icon=None, colour=Colour.brand_green()))
-        if inactive_cogs: embeds.append(AEEmbed(self.context.bot, title=l10n['inactive_cogs'], desc='\n'.join(inactive_cogs), author_name=None, author_icon=None, colour=None))
-        await self.context.reply(embeds=embeds)
+                inactive_cogs.append("- " + cog_name)
+        embed = AEEmbed(
+            self.context.bot,
+            title=l10n["bot"]["title"],
+            desc=l10n["bot"]["desc"].format(prefix=self.context.clean_prefix)
+        )
+        if internal_cogs:
+            embed.add_field(name=l10n["bot"]["internal_cogs"], value="\n".join(internal_cogs), inline=False)
+        if active_cogs:
+            embed.add_field(name=l10n["bot"]["active_cogs"], value="\n".join(active_cogs), inline=False)
+        if inactive_cogs:
+            embed.add_field(name=l10n["bot"]["inactive_cogs"], value="\n".join(inactive_cogs), inline=False)
+        # embeds.append(AEEmbed(self.context.bot, title=l10n['internal_cogs'], desc='\n'.join(internal_cogs)))
+        # if active_cogs:
+        #     embeds.append(AEEmbed(self.context.bot, title=l10n['active_cogs'], desc='\n'.join(active_cogs), author_name=None, author_icon=None, colour=Colour.brand_green()))
+        # if inactive_cogs:
+        #     embeds.append(AEEmbed(self.context.bot, title=l10n['inactive_cogs'], desc='\n'.join(inactive_cogs), author_name=None, author_icon=None, colour=None))
+        await self.context.reply(embed=embed)
 
-    async def command_not_found(self, string):
+    def command_not_found(self, string):
         raise commands.CommandNotFound(string)

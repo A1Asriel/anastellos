@@ -1,5 +1,6 @@
-__build__ = '2.1.24076.3'
+__build__ = '2.1.24156.1'
 
+import sys
 from logging import getLogger
 from os import listdir
 from time import time
@@ -12,17 +13,21 @@ from .config import Config, GuildConfigFile
 from .exceptions import AnastellosInitError
 from .help import AEHelpCommand
 from .l10n import Localization
-from .utils import get_commit_details, get_prefix
 from .logger import setupLogging
+from .utils import get_commit_details, get_prefix
 
 _log = getLogger(__name__)
 
 
 class AnastellosEngine:
-    def __init__(self, *, additional_guild_params={}, additional_global_params={}):
+    def __init__(self, *, additional_guild_params=None, additional_global_params=None):
+        if additional_guild_params is None:
+            additional_guild_params = {}
+        if additional_global_params is None:
+            additional_global_params = {}
         self.config = Config(additional_guild_params=additional_guild_params, additional_global_params=additional_global_params, build=__build__)
         setupLogging(debug=self.config.mode==2)
-        _log.info(f'Starting {self.config.name} {self.config.full_version}...')
+        _log.info('Starting %s %s...', self.config.name, self.config.full_version)
 
         if self.config.mode == 2:
             activity = nextcord.Game(f'DEBUG mode. The bot may operate unstable. | {self.config.full_version}')
@@ -57,56 +62,56 @@ class AnastellosEngine:
                 bot_repo_prefix = '.git/'
                 bot_commit_details = get_commit_details(bot_repo_prefix)
                 self.config.version += f' {bot_commit_details[0]}:{bot_commit_details[1][:7]}'
-            except Exception as e:
-                _log.debug(f'Couldn\'t retrieve bot repository info while starting up.')
-            _log.warn('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
+            except Exception:
+                _log.debug('Couldn\'t retrieve bot repository info while starting up.')
+            _log.warning('The bot is running in DEBUG mode. Please do not use it on a common basis. Turn it off as soon as possible if you are not testing anything!')
 
         @self.bot.event
         async def on_ready():
             self.bot.startup_time = time()
-            _log.info(f'Logged in as {str(self.bot.user)} - {self.bot.user.id}.')
-            _log.info(f'The bot is running on {len(self.bot.guilds)} guilds.')
+            _log.info('Logged in as %s - %s.', str(self.bot.user), self.bot.user.id)
+            _log.info('The bot is running on %s guilds.', str(len(self.bot.guilds)))
             guildlist = '\n'.join([f'{guild.id} - {guild.name}' for guild in self.bot.guilds])
-            _log.debug(f'Current guilds:\n{guildlist}')
+            _log.debug('Current guilds:\n%s', guildlist)
             
             if self.bot.user.avatar is not None:
                 self.config.self_avatar_url = self.bot.user.avatar.url
             self.bot.owner_id = self.config.owner if self.config.owner is not None else (await self.bot.application_info()).owner.id
 
-    def load_cog(self, path: str, *, type: str = ''):
+    def load_cog(self, path: str, *, _type: str = ''):
         try:
             files = listdir(path)
-        except FileNotFoundError as e:
-            _log.error(f'Failed to find directory named {path}. Skipping it.')
+        except FileNotFoundError:
+            _log.error('Failed to find directory named %s. Skipping it.', path)
             return None
         for cog in files:
             path = path.replace('/', '.')
             if cog.endswith('.py') and cog[-7:-3] != '_dis' and not cog.startswith('__'):
-                _log.info(f'Initializing {type}cog {cog}...')
+                _log.info('Initializing %scog %s...', _type, cog)
                 try:
                     self.bot.load_extension(f'{path}.{cog[:-3]}')
-                except ExtensionFailed as exception:
-                    _log.error(f'Failed to initialize extension {cog}!')
+                except ExtensionFailed:
+                    _log.error('Failed to initialize extension %s!', cog)
                     inp = input('Skip it? Y/n: ').lower()
                     if 'no'.startswith(inp):
                         incl_trace = self.bot.config.mode == 2
-                        _log.fatal('Bot initializing halted.', exc_info=incl_trace)
-                        exit(1)
+                        _log.critical('Bot initializing halted.', exc_info=incl_trace)
+                        sys.exit(1)
 
     def load_cogs(self):
-        self.load_cog('anastellos/cogs', type='internal ')
+        self.load_cog('anastellos/cogs', _type='internal ')
         self.load_cog('cogs')
         if not self.bot.get_cog('Settings'):
-            _log.warn('No custom settings cog found, falling back to the default one.')
+            _log.warning('No custom settings cog found, falling back to the default one.')
             from .classes import Settings
             self.bot.add_cog(Settings(self.bot))
 
     def start(self):
         try:
-            with open('token.txt') as f:
-                TOKEN = f.read()
+            with open('token.txt', "r", encoding="utf-8") as f:
+                token = f.read()
         except FileNotFoundError as e:
-            _log.fatal('Cannot access the token file. The bot is unable to start.')
+            _log.critical('Cannot access the token file. The bot is unable to start.')
             raise AnastellosInitError(__stage__='token') from e
         self.load_cogs()
-        self.bot.run(TOKEN, reconnect=True)
+        self.bot.run(token, reconnect=True)

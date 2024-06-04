@@ -68,7 +68,7 @@ class Settings(AnastellosInternalCog):
     @commands.has_guild_permissions(manage_guild=True)
     async def settings(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['commands']['list']
+            l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['settings']['list']
             cfg = self.bot.guild_config.get_guild_cfg(ctx.guild.id).get_dict
             fields = [
                 [l10n['prefix'], '`'+cfg['prefix']+'`', True],

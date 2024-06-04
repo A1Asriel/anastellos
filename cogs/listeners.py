@@ -16,8 +16,7 @@ _log = logging.getLogger(__name__)
 class Listeners(AnastellosInternalCog):
     @commands.Cog.listener(name='on_guild_join')
     async def new_server_cfg(self, guild: nextcord.Guild):
-        _log.info(
-            f'Joined a server. Name: {guild.name}, ID: {guild.id}. Checking for a config... ')
+        _log.info('Joined a server. Name: %s, ID: %s. Checking for a config... ', guild.name, guild.id)
         if self.bot.guild_config.get_guild_cfg(guild.id) is not None:
             _log.info('Already existing.')
             return None
@@ -34,7 +33,7 @@ class Listeners(AnastellosInternalCog):
 
     @commands.Cog.listener(name='on_guild_remove')
     async def on_guild_leave(self, guild: nextcord.Guild):
-        _log.info(f'Left a guild. Name: {guild.name}, ID: {guild.id}.')
+        _log.info('Left a guild. Name: %s, ID: %s.', guild.name, guild.id)
         return None
 
     @commands.Cog.listener(name='on_ready')
@@ -113,8 +112,7 @@ class Listeners(AnastellosInternalCog):
             try:
                 await ctx.reply(f'{l10n.get(l10n_code, "`"+l10n_code+"`")}{exc_text if is_debug else ""}'[:2000], delete_after=delete_after if not is_debug else None)
             except nextcord.Forbidden:
-                _log.error(
-                    f'Couldn\'t send an error message to {ctx.channel.name}.')
+                _log.error('Couldn\'t send an error message to %s.', ctx.channel.name)
 
 
 def setup(bot):

@@ -1,6 +1,6 @@
 import logging
 from collections.abc import MutableMapping
-from json import loads
+from json import load
 from pathlib import Path
 from typing import Optional, Set, Union
 
@@ -23,19 +23,19 @@ class Localization:
         for f in self.core_lang_list:
             f_path = core_l10n_dir / (f + '.json')
             with open(f_path, 'rb') as f_file:
-                self.l10n_dict[f] = loads(f_file.read())
+                self.l10n_dict[f] = load(f_file)
         for f in self.cust_lang_list:
             f_paths = cust_l10n_dir / f
             for f_path in f_paths.iterdir():
                 with open(f_path, 'rb') as f_file:
-                    f_dict = loads(f_file.read())
-                    if f_path.name == 'custom.json':
-                        self.l10n_dict[f]['anastellos']['cogs']['info']['commands']['about']['desc'] = f_dict.get('desc', self.l10n_dict[f]['anastellos']['cogs']['info']['commands']['about']['desc'])
-                        self.l10n_dict[f]['anastellos']['help']['commands'].update(f_dict.get('help', {}))
-                        self.l10n_dict[f]['anastellos']['cogs']['settings']['list'].update(f_dict.get('settings_list', {}))
-                        self.l10n_dict[f]['cmds'] = f_dict.get('cmds', {})
-                    elif f_path.name == 'privacy.json':
-                        self.l10n_dict[f]['privacy'] = f_dict
+                    f_dict: dict = load(f_file)
+                if f_path.name == 'custom.json':
+                    self.l10n_dict[f]['anastellos']['cogs']['info']['commands']['about']['desc'] = f_dict.get('desc', self.l10n_dict[f]['anastellos']['cogs']['info']['commands']['about']['desc'])
+                    self.l10n_dict[f]['anastellos']['cogs']['settings']['list'].update(f_dict.get('settings_list', {}))
+                    self.l10n_dict[f]['anastellos']['cogs']['settings']['commands'].update(f_dict.get('settings_commands', {}))
+                    self.l10n_dict[f]['anastellos']['cogs'].update(f_dict.get('cogs', {}))
+                elif f_path.name == 'privacy.json':
+                    self.l10n_dict[f]['privacy'] = f_dict
 
     def getlang(self, lang: str):
         return PartialL10n(lang, self.l10n_dict[lang])
@@ -46,7 +46,9 @@ class Localization:
 
 
 class PartialL10n(MutableMapping):
-    def __init__(self, part_str: str = "", part_dict: Optional[Union[dict, list, str]] = {}):
+    def __init__(self, part_str: str = "", part_dict: Optional[Union[dict, list, str]] = None):
+        if part_dict is None:
+            part_dict = {}
         self.store = {}
         if isinstance(part_dict, dict):
             self.update(part_dict)
@@ -61,12 +63,12 @@ class PartialL10n(MutableMapping):
         if '_list' in self.store and isinstance(key, int):
             try:
                 item = self.store['_list'][key]
-            except:
+            except KeyError:
                 pass
         elif '_str' in self.store and isinstance(key, int):
             try:
                 item = self.store['_str'][key]
-            except:
+            except KeyError:
                 pass
         else:
             item = self.store.get(key)
@@ -99,23 +101,19 @@ class PartialL10n(MutableMapping):
             return str(self.store['_str'])
         if not self.store:
             return self.part_str
-        else:
-            return super().__str__()
+        return super().__str__()
 
     def __int__(self):
         if '_str' in self.store:
             return int(self.store['_str'])
-        else:
-            return 0
-    
+        return 0
+
     def __bool__(self):
         if '_str' in self.store:
             return bool(self.store['_str'])
-        else:
-            return bool(self.store)
+        return bool(self.store)
 
     def __add__(self, other):
         if isinstance(other, str) and '_str' in self.store:
             return self.store['_str'] + other
-        else:
-            return self.part_str
+        return self.part_str

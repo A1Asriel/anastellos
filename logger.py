@@ -31,7 +31,7 @@ def setupLogging(*, debug=False) -> None:
     compress(filename, debug)
 
     logging_format = '[%(asctime)s] [%(name)s/%(levelname)s]: %(message)s'
-    logging_timeFormat = '%H:%M:%S'
+    logging_timeFormat = '%Y-%m-%d %H:%M:%S'
     loggingFormater = logging.Formatter(
         logging_format, datefmt=logging_timeFormat)
 
@@ -52,5 +52,5 @@ def setupLogging(*, debug=False) -> None:
     logger.addHandler(cHandler)
     logger.addHandler(fHandler)
 
-    logging.addLevelName(logging.WARN, 'WARN')
-    logging.addLevelName(logging.FATAL, 'FATAL')
+    logging.addLevelName(logging.WARNING, 'WARN')
+    logging.addLevelName(logging.CRITICAL, 'FATAL')

@@ -23,18 +23,19 @@
     "anastellos": {
         "help": {
             "title": "Available commands",
-            "active_cogs": "Active cogs",
-            "inactive_cogs": "Inactive cogs",
-            "internal_cogs": "Internal cogs",
-            "desc": "*`[argument=X]` is an optional argument (empty defaults to X).*\n*`<argument>` requires the explicit input.*",
+            "desc": "> *`<argument>` stands for a __required__ argument.*\n> *`[argument=default]` is an __optional__ argument and will reset to default if not provided.*",
             "desc_groups": "*Use `{prefix}help <group name>` to see the subcommands.*",
-            "usage": "**Command usage:**",
-            "description": "**Description:**",
-            "extra": "**Extra:**",
+            "usage": "Command usage:",
+            "description": "Description:",
+            "extra": "Extra:",
+            "bot": {
+                "title": "Cog list",
+                "desc": "> Cogs are modules of the bot which provide you with their own sets of commands. Non-essential cogs can be disabled manually.\n> Use `{prefix}help CogName` to browse the commands (case-sensitive).",
+                "active_cogs": "Active cogs",
+                "inactive_cogs": "Inactive cogs",
+                "internal_cogs": "Essential cogs"
+            },
             "commands": {
-                "help": {
-                    "desc": "Print this message."
-                },
                 "settings": {
                     "desc": "Print the current local server configuration. Only admins are allowed to use this group and subcommands."
                 },
@@ -45,9 +46,6 @@
         },
         "cogs": {
             "info": {
-                "help": {
-
-                },
                 "commands": {
                     "about": {
                         "help": {
@@ -60,17 +58,18 @@
                     }
                 }
             },
-            "listeners":
-            {
-                "help": {
-
-                }
-            },
             "privacy": {
                 "help": {
-                    "desc": "Show the Privacy Policy document.",
-                    "args": {
-                        "lang": "language"
+
+                },
+                "commands": {
+                    "privacy": {
+                        "help": {
+                            "desc": "Show the Privacy Policy document.",
+                            "args": {
+                                "lang": "language"
+                            }
+                        }
                     }
                 }
             },
@@ -80,15 +79,23 @@
                 },
                 "commands": {
                     "stop": {
+                        "help": {
+                            "desc": "Shut down the bot completely. Only developer is allowed to run this command."
+                        },
                         "msg": "*Stopping the bot...*"
                     },
                     "reload": {
-                        "start": "*Modules reinitializing started...*",
-                        "error": "*An exception occurred while loading {i} module.*{traceback}",
-                        "success": "*Reinitializing complete.*"
+                        "help": {
+                            "desc": "Commence the internal reinitializing process. Only developer is allowed to run this command."
+                        },
+                        "start": "*Reinitializing started...*",
+                        "success": "*Reinitializing completed successfully.*",
+                        "error": "*Reinitializing completed with errors. The details are printed to the console.*",
+                        "cogs_error": "\n> *Following cogs could not be reloaded:*\n- {cogs}",
+                        "l10n_error": "\n> *Couldn't reload the localization files.*"
                     },
                     "host_info": {
-                        "title": "Host info",
+                        "title": "Host machine info",
                         "memory": "{used} of {total} GB ({used_percent}%)",
                         "day": "day",
                         "days": "days",
@@ -104,7 +111,7 @@
                     },
                     "ping": {
                         "help": {
-                            "desc": "Return latency time between the server and the bot."
+                            "desc": "Print the latency time between the server and the bot."
                         }
                     }
                 }
@@ -117,7 +124,7 @@
                     "toggle_cog": "Active/inactive cogs",
                     "enabled": "**active**",
                     "disabled": "**inactive**",
-                    "multilevel": "*multi-level*",
+                    "multilevel": "*complex option*",
                     "list": "*list*"
                 },
                 "commands": {
@@ -129,7 +136,7 @@
                             }
                         },
                         "title": "Prefix changed successfully",
-                        "desc": "New prefix: `{new_prefix}`."
+                        "desc": "My new prefix is `{new_prefix}`."
                     },
                     "language": {
                         "help": {
@@ -140,29 +147,29 @@
                             }
                         },
                         "title": "Bot language changed successfully",
-                        "desc": "The bot will speak English from now on."
+                        "desc": "I will speak English from now on."
                     },
                     "leave": {
                         "help": {
                             "desc": "Properly remove the bot from your server with or without wiping the config. Only admins are allowed to use this command."
                         },
                         "title_msg": "{name} is preparing to leave...",
-                        "desc_msg": "Are you sure you want the bot to leave? Choose an option below.\n\nLeave - the bot will leave and remove only its webhooks and deassign log channel.\nLeave and forget - will also remove every trail of the server from the bot databases.\nCancel - keep the bot.",
+                        "desc_msg": "Are you sure you want me to leave? Please choose an option below.\n- **Leave** - I'll leave the server but keep the settings except for my webhooks log channel in case if you change your mind.\n- **Leave and forget** - I will wipe this server from the my databases completely and will need to be reconfigured if you invite me back.\n- **Cancel** - abort the process.",
                         "ui": {
                             "leave": {
                                 "label": "Leave",
                                 "title": "{name} left the server. Goodbye!",
-                                "desc": "We hope you enjoyed using our bot! Just in case you change your mind, we kept your configuration, so we can continue working just like before when you decide to let us come back."
+                                "desc": "I hope I was helpful while it lasted! Just in case if you change your mind, I kept your configuration, so I can continue working just like before if you decide to let me back."
                             },
                             "purge": {
                                 "label": "Leave and forget",
-                                "title": "{name} left and wiped data",
-                                "desc": "We hope you enjoyed using our bot! All data about your server was wiped from our servers, so you can stay calm and not worry about your privacy. In case if you change your mind about us leaving, you still can get the bot working again, although it may be required to reconfigure it."
+                                "title": "{name} left and wiped all data",
+                                "desc": "I hope I was helpful while it lasted! All data about your server was removed from my database, so you can remain calm and not worry about your privacy. In case if you change your mind, you can still get me working again, although it may require some reconfiguration."
                             },
                             "cancel": {
                                 "label": "Cancel",
                                 "title": "Leaving cancelled",
-                                "desc": "The bot is staying on the server. We won't disappoint you."
+                                "desc": "All operations aborted and I will stay on your server. Thank you for your trust!"
                             }
                         }
                     },
@@ -174,7 +181,7 @@
                         "active": "active",
                         "inactive": "inactive",
                         "nocog_error": "There is no cog with such name.",
-                        "intcog_error": "This cog is essential for the bot and cannot be deactivated.",
+                        "intcog_error": "This cog is essential and cannot be deactivated.",
                         "status_desc": "\"{cog_name}\" cog is currently {status} on this server.",
                         "enable_desc": "\"{cog_name}\" cog has been activated.",
                         "disable_desc": "\"{cog_name}\" cog has been deactivated."
@@ -184,16 +191,16 @@
         },
         "errors": {
             "max_concurrency": "*The maximum amount of command instances is being processed right now.*",
-            "channel_not_found": "*It seems there is no such channel in this server.*",
+            "channel_not_found": "*I can't find such channel on this server.*",
             "bad_argument": "*Bad arguments provided.*",
-            "insufficient_perms": "*Insufficient permissions.*",
-            "bot_insufficient_perms": "*The bot doesn't have enough permissions to complete this action.*",
-            "guild_admins_only": "*You don't have enough permissions to use this command.*",
+            "insufficient_perms": "*You don't have enough server permissions to complete this action.*",
+            "bot_insufficient_perms": "*I don't have enough server permissions to complete this action.*",
+            "guild_admins_only": "*Only certain types of users are allowed to use this command.*",
             "missing_required_argument": "*You have missed a required argument. Check the command usage syntax.*",
-            "command_not_found": "*The specified command not found.*",
+            "command_not_found": "*The specified command wasn't found.*",
             "forbidden": "*Something won't let me do this, sorry.*",
-            "not_owner": "*Only bot owner is allowed to do that.*",
-            "no_history_access": "*The bot cannot access the message history and therefore unable to complete this action.*",
+            "not_owner": "*Only my developer is allowed to do that.*",
+            "no_history_access": "*I cannot access the message history and therefore unable to complete this action. In most cases this is a bug and has to be reported to my developer.*",
             "l10n_unsupported": "*This command is not supported by the current language.*"
         }
     },
