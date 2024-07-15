@@ -52,9 +52,10 @@ class AEHelpCommand(commands.HelpCommand):
         l10n: dict = localization(self.context.bot, self.context.guild.id)[
             'anastellos']['cogs'][command.cog_name.lower()]['commands'].get(command.name, dict()).get('help', dict())
         out = l10n.get('desc', '').format(prefix=self.context.clean_prefix, def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
-        extra = l10n.get('extra', '').format(prefix=self.context.clean_prefix, def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name)
+        extra = l10n.get('extra', '').format(prefix=self.context.clean_prefix, def_prefix=self.context.bot.config.def_prefix, bot_name=self.context.bot.config.name,
+                                             lang_names='`, `'.join(self.context.bot.l10n.lang_list))
         if detailed:
-            return out, (extra.format(lang_names='`, `'.join(self.context.bot.l10n.lang_list)) if extra else None)
+            return out, (extra if extra else None) 
         return out
 
     async def send_command_help(self, command: commands.Command):
