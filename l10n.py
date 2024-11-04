@@ -73,7 +73,7 @@ class PartialL10n(MutableMapping):
         else:
             item = self.store.get(key)
         if item is None:
-            item = default or PartialL10n(self.part_str + '.' + str(key))
+            item = default if default is not None else PartialL10n(self.part_str + '.' + str(key))
         else:
             item = PartialL10n(self.part_str + '.' + str(key), item)
         return item

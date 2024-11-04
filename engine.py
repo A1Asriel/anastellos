@@ -1,4 +1,4 @@
-__build__ = '2.1.24156.2'
+__build__ = '2.1.24309.1'
 
 import sys
 from logging import getLogger
@@ -30,13 +30,13 @@ class AnastellosEngine:
         _log.info('Starting %s %s...', self.config.name, self.config.full_version)
 
         if self.config.mode == 2:
-            activity = nextcord.Game(f'DEBUG mode. The bot may operate unstable. | {self.config.full_version}')
+            activity = nextcord.CustomActivity("Custom Status", state=f"🔧 DEBUG mode. The bot may operate unstable. | {self.config.full_version}")
             status = nextcord.Status.dnd
         elif self.config.mode == 1:
-            activity = nextcord.Game(f'{self.config.full_version} | Some bugs may occur.')
+            activity = nextcord.CustomActivity("Custom Status", state=f"🕒 {self.config.full_version} | Some bugs may occur.")
             status = nextcord.Status.idle
         else:
-            activity = nextcord.Game(f'{self.config.full_version}')
+            activity = nextcord.CustomActivity("Custom Status", state=self.config.full_version)
             status = nextcord.Status.online
 
         intents = nextcord.Intents.all()
