@@ -7,7 +7,7 @@ from nextcord.ext import commands
 from ..checks import reply_or_send
 from ..classes import AnastellosInternalCog
 from ..config import GuildConfigEntry
-from ..exceptions import L10nUnsupported
+from ..exceptions import L10nUnsupported, AnastellosChannelTypeError
 from ..utils import localization
 
 _log = logging.getLogger(__name__)
@@ -81,6 +81,8 @@ class Listeners(AnastellosInternalCog):
             l10n_code = 'command_not_found'
         elif isinstance(exception, L10nUnsupported):
             l10n_code = 'l10n_unsupported'
+        elif isinstance(exception, AnastellosChannelTypeError):
+            l10n_code = 'channel_type_error'
         elif isinstance(exception, commands.CommandInvokeError) and isinstance(exception.original, nextcord.Forbidden):
             if exception.original.code == 160002:
                 # Typically, this is avoided by using `reply_or_send` fix.
@@ -107,8 +109,7 @@ class Listeners(AnastellosInternalCog):
             _log.error(console_msg, exc_info=exception if is_debug else None)
 
         if l10n_code:
-            l10n = localization(self.bot, guild_id=ctx.guild.id)[
-                'anastellos']['errors']
+            l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['errors']
             try:
                 await ctx.reply(f'{l10n.get(l10n_code, "`"+l10n_code+"`")}{exc_text if is_debug else ""}'[:2000], delete_after=delete_after if not is_debug else None)
             except nextcord.Forbidden:

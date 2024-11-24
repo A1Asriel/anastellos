@@ -68,7 +68,7 @@ class SimpleConfig:
         try:
             return fetch_json(filename)
         except FileNotFoundError as e:
-            if schema:
+            if schema is not None:
                 _log.warning('Creating a new file at %s.json and using the default config.', filename)
                 path = dirname(filename)
                 if path:

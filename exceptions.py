@@ -1,3 +1,5 @@
+from typing import Iterable, Type
+import nextcord
 from nextcord.ext.commands import Command, CommandError
 
 
@@ -14,6 +16,13 @@ class AnastellosInitError(AnastellosException):
 
 class AnastellosCommandError(AnastellosException, CommandError):
     ...
+
+class AnastellosChannelTypeError(AnastellosCommandError):
+    def __init__(self, allowed_types: Iterable[Type[nextcord.abc.Messageable]] = None, message=None, **kwargs):
+        self.allowed_types = allowed_types if allowed_types is not None else []
+        for key, value in kwargs.items():
+            self.__setattr__(key, value)
+        super().__init__(message)
 
 class L10nUnsupported(AnastellosCommandError):
     def __init__(self, command: Command, l10n: str, **kwargs):

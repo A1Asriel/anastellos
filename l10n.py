@@ -91,6 +91,8 @@ class PartialL10n(MutableMapping):
         del self.store[key]
 
     def __iter__(self):
+        if "_list" in self.store:
+            return iter(self.store['_list'])
         return iter(self.store)
 
     def __len__(self):
