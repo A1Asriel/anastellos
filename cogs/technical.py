@@ -22,7 +22,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
     @commands.is_owner()
     async def stop(self, ctx: commands.Context):
         l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['technical']['commands']['stop']
-        await ctx.reply(str(l10n))
+        await ctx.reply(l10n["msg"])
         return await self.bot.close()
 
     @commands.command()
