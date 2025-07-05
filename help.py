@@ -67,11 +67,11 @@ class AEHelpCommand(commands.HelpCommand):
         description = self.get_command_description(command, detailed=True)
         embed_title = f'{self.context.clean_prefix}{command.full_parent_name+" " if command.parent is not None else ""}{command.name}'
         embed = AEEmbed(self.context.bot, title=embed_title)
-        embed.add_field(name=l10n["usage"], value=signature, inline=False)
+        embed.add_field(name=str(l10n["usage"]), value=signature, inline=False)
         if description[0]:
-            embed.add_field(name=l10n["description"], value=description[0], inline=False)
+            embed.add_field(name=str(l10n["description"]), value=description[0], inline=False)
         if description[1]:
-            embed.add_field(name=l10n["extra"], value=description[1], inline=False)
+            embed.add_field(name=str(l10n["extra"]), value=description[1], inline=False)
         await self.context.reply(embed=embed)
 
     async def send_cog_help(self, cog: AnastellosCog):
@@ -80,7 +80,7 @@ class AEHelpCommand(commands.HelpCommand):
         bot: commands.Bot = self.context.bot
         embeds = []
         embed_commands_title = cog.qualified_name
-        embed_commands_description = l10n['desc']
+        embed_commands_description = str(l10n['desc'])
 
         commandlist = []
         grouplist = []
@@ -103,8 +103,8 @@ class AEHelpCommand(commands.HelpCommand):
         embeds.append(embed_commands)
 
         if grouplist:
-            embed_groups_title = l10n['title_groups']
-            embed_groups_description = l10n['desc_groups'].format(prefix=self.context.clean_prefix)
+            embed_groups_title = str(l10n['title_groups'])
+            embed_groups_description = str(l10n['desc_groups']).format(prefix=self.context.clean_prefix)
             embed_groups_fields = []
             for group in grouplist:
                 if not group.enabled or group.parent:
@@ -159,15 +159,15 @@ class AEHelpCommand(commands.HelpCommand):
                 inactive_cogs.append("- " + cog_name)
         embed = AEEmbed(
             self.context.bot,
-            title=l10n["bot"]["title"],
-            desc=l10n["bot"]["desc"].format(prefix=self.context.clean_prefix)
+            title=str(l10n["bot"]["title"]),
+            desc=str(l10n["bot"]["desc"]).format(prefix=self.context.clean_prefix)
         )
         if internal_cogs:
-            embed.add_field(name=l10n["bot"]["internal_cogs"], value="\n".join(internal_cogs), inline=False)
+            embed.add_field(name=str(l10n["bot"]["internal_cogs"]), value="\n".join(internal_cogs), inline=False)
         if active_cogs:
-            embed.add_field(name=l10n["bot"]["active_cogs"], value="\n".join(active_cogs), inline=False)
+            embed.add_field(name=str(l10n["bot"]["active_cogs"]), value="\n".join(active_cogs), inline=False)
         if inactive_cogs:
-            embed.add_field(name=l10n["bot"]["inactive_cogs"], value="\n".join(inactive_cogs), inline=False)
+            embed.add_field(name=str(l10n["bot"]["inactive_cogs"]), value="\n".join(inactive_cogs), inline=False)
         # embeds.append(AEEmbed(self.context.bot, title=l10n['internal_cogs'], desc='\n'.join(internal_cogs)))
         # if active_cogs:
         #     embeds.append(AEEmbed(self.context.bot, title=l10n['active_cogs'], desc='\n'.join(active_cogs), author_name=None, author_icon=None, colour=Colour.brand_green()))

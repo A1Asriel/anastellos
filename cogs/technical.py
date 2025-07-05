@@ -80,18 +80,18 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             uptime_str = f'{uptime.tm_yday-1} {l10n["days"]} {uptime_str}'
 
         fields = [
-            (l10n['os'], sys_str),
-            (l10n['mem'], mem_str),
-            (l10n['python_ver'], sys.version),
-            (l10n['nextcord_ver'], nextcord.__version__),
-            (l10n['bot_uptime'], uptime_str)
+            (str(l10n['os']), sys_str),
+            (str(l10n['mem']), mem_str),
+            (str(l10n['python_ver']), sys.version),
+            (str(l10n['nextcord_ver']), nextcord.__version__),
+            (str(l10n['bot_uptime']), uptime_str)
         ]
 
         try:
             bot_repo_prefix = '.git/'
             bot_commit_details = get_commit_details(bot_repo_prefix)
             bot_commit_string = get_commit_string(*bot_commit_details)
-            fields.append((l10n['bot_repo'], bot_commit_string))
+            fields.append((str(l10n['bot_repo']), bot_commit_string))
         except Exception as e:
             _log.debug(f'{ctx.command.name} couldn\'t retrieve bot repository info.', exc_info=1)
 
@@ -101,12 +101,12 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
             else: engine_repo_prefix = '.git/'
             engine_commit_details = get_commit_details(engine_repo_prefix)
             engine_commit_string = get_commit_string(*engine_commit_details)
-            fields.append((l10n['engine_repo'], engine_commit_string))
+            fields.append((str(l10n['engine_repo']), engine_commit_string))
         except Exception as e:
             _log.debug(f'{ctx.command.name} couldn\'t retrieve engine repository info.', exc_info=1)
 
         embed = AEEmbed(self.bot,
-                        title=l10n['title'],
+                        title=str(l10n['title']),
                         fields=fields)
 
         await ctx.reply(embed=embed)
@@ -125,8 +125,8 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
     @commands.command(hidden=False)
     @commands.check_any(
-        commands.is_owner(),
-        commands.has_guild_permissions(manage_guild=True)
+        commands.check(lambda ctx: ctx.author.id == ctx.bot.owner_id),
+        commands.check(lambda ctx: ctx.guild and ctx.author.guild_permissions.manage_guild)
     )
     async def leave(self, ctx: commands.Context):
         class LeaveMessageUI(nextcord.ui.View):
@@ -134,11 +134,11 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                 super().__init__(timeout=180)
                 self.ctx = ctx
                 self.l10n = l10n
-                self.add_item(self.LeaveButton(self.l10n['leave']))
+                self.add_item(self.LeaveButton(str(self.l10n['leave'])))
                 self.add_item(self.PurgeLeaveButton(
-                    self.l10n['purge'], style=nextcord.ButtonStyle.danger))
+                    str(self.l10n['purge']), style=nextcord.ButtonStyle.danger))
                 self.add_item(self.BaseLeaveButton(
-                    self.l10n['cancel'], style=nextcord.ButtonStyle.primary))
+                    str(self.l10n['cancel']), style=nextcord.ButtonStyle.primary))
 
             async def on_timeout(self):
                 for item in self.children:
@@ -160,7 +160,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
 
                 async def callback(self, interaction: nextcord.Interaction):
                     embed = interaction.message.embeds[0]
-                    embed.title = self.l10n['title'].format(
+                    embed.title = str(self.l10n['title']).format(
                         name=interaction.client.config.name)
                     embed.description = str(self.l10n['desc'])
                     _LeaveMessageUI.message = await interaction.message.edit(embed=embed)
@@ -187,7 +187,7 @@ class Technical(AnastellosInternalCog, command_attrs={'hidden': True}):
                     return
 
         l10n = localization(self.bot, guild_id=ctx.guild.id)['anastellos']['cogs']['technical']['commands']['leave']
-        emb1 = AEEmbed(self.bot, title=l10n['title_msg'].format(
+        emb1 = AEEmbed(self.bot, title=str(l10n['title_msg']).format(
             name=self.bot.config.name), desc=str(l10n['desc_msg']), colour=nextcord.Color.brand_red())
         _LeaveMessageUI = LeaveMessageUI(ctx, l10n['ui'])
         msg = await ctx.reply(embed=emb1, view=_LeaveMessageUI)

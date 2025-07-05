@@ -1,4 +1,4 @@
-from discord import HTTPException
+from nextcord import HTTPException
 from nextcord.ext import commands
 
 
